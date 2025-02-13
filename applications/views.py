@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from datetime import datetime, date, timedelta
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
@@ -23,14 +23,15 @@ from actions.models import Action
 from applications import forms as apps_forms
 from applications.models import (
     Application, Referral, Condition, Compliance, Vessel, Location, Record, PublicationNewspaper,
-    PublicationWebsite, PublicationFeedback, Communication, Delegate, OrganisationContact, OrganisationPending, OrganisationExtras, CommunicationAccount,CommunicationOrganisation, ComplianceGroup,CommunicationCompliance, StakeholderComms, ApplicationLicenceFee, Booking, DiscountReason,BookingInvoice)
+    PublicationWebsite, PublicationFeedback, Communication, Delegate, Organisation, OrganisationAddress, OrganisationContact, OrganisationPending, OrganisationExtras, CommunicationAccount,CommunicationOrganisation, ComplianceGroup,CommunicationCompliance, StakeholderComms, ApplicationLicenceFee, Booking, DiscountReason,BookingInvoice)
 from applications.workflow import Flow
 from applications.views_sub import Application_Part5, Application_Emergency, Application_Permit, Application_Licence, Referrals_Next_Action_Check, FormsList
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
 from applications.validationchecks import Attachment_Extension_Check, is_json
 from applications.utils import get_query, random_generator
 from applications import utils
-from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress, PrivateDocument
+# from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress, PrivateDocument
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
 from approvals.models import Approval, CommunicationApproval
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -46,11 +47,14 @@ import mimetypes
 from django.middleware.csrf import get_token
 from django.shortcuts import render, get_object_or_404, redirect
 from decimal import Decimal
-from ledger.payments.models import Invoice
+# from ledger.payments.models import Invoice
+from oscar.defaults import *
+from ledger_api_client.ledger_models import Invoice, Basket
 from oscar.apps.order.models import Order
-from ledger.basket.models import Basket
+# from ledger.basket.models import Basket
 from applications.invoice_pdf import create_invoice_pdf_bytes
-from ledger.payments.mixins import InvoiceOwnerMixin
+# from ledger.mixins import InvoiceOwnerMixin
+from ledger_api_client.mixins import InvoiceOwnerMixin
 from django.views.generic.base import View, TemplateView
 import pathlib
 from django.core.files.base import ContentFile

@@ -14,8 +14,9 @@ from django.utils.safestring import SafeText
 from applications.validationchecks import is_json
 
 from django.utils.encoding import (
-      force_str, force_text, python_2_unicode_compatible,
+      force_str, force_text
 )
+from six import python_2_unicode_compatible
 
 __all__ = (
     'ClearableMultipleFileInput', 'FileInput', 'RendererMixin', 'ChoiceFieldRenderer' 

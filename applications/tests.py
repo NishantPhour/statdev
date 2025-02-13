@@ -6,7 +6,8 @@ from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from mixer.backend.django import mixer
-from ledger.accounts.models import EmailUser, EmailUserManager
+# from ledger.accounts.models import EmailUser, EmailUserManager
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, EmailUserROManager as EmailUserManager
 
 from applications.utils import random_dpaw_email
 from .models import Application, Referral, Condition, Vessel

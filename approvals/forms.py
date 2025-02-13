@@ -8,8 +8,10 @@ from django.contrib.auth.models import Group
 from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field
 from multiupload.fields import MultiFileField
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
+from applications.models import Organisation
 
-from ledger.accounts.models import EmailUser, Address, Organisation
+# from ledger.accounts.models import EmailUser, Address, Organisation
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address
 from .models import Approval, CommunicationApproval
 
 User = get_user_model()

@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
 from public import forms as apps_forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.safestring import SafeText
 from applications.validationchecks import Attachment_Extension_Check, is_json
 from datetime import datetime, date, timedelta

@@ -1,27 +1,32 @@
-Django==1.11.29
-git+https://github.com/dbca-wa/dpaw-utils.git@0.3a16#egg=dpaw-utils
-git+https://github.com/django-oscar/django-oscar.git@8a3288da439cc2a878f44ae5c5101043e658d2a2#egg=django-oscar
+Django==3.2.16
+git+https://github.com/dbca-wa/dpaw-utils.git@0.4.2#egg=dpaw-utils
+# git+https://github.com/django-oscar/django-oscar.git
 git+https://github.com/xzzy/django_crispy_jcaptcha.git#egg=django_crispy_jcaptcha
-#git+https://github.com/dbca-wa/ledger#egg=ledger
-git+https://github.com/xzzy/ledger@master2#egg=ledger
+# git+https://github.com/dbca-wa/ledger#egg=ledger
+# git+https://github.com/xzzy/ledger@master2#egg=ledger
+git+https://github.com/dbca-wa/ledger_api_client.git
 social-auth-app-django==2.1.0
 git+https://github.com/scottp-dpaw/social-core.git@email_fix#egg=social-auth-core
 django-model-utils==2.6.1
 webtemplate-dbca==0.6.0
 django-crispy-forms==1.9.0
+django-extra-views==0.13.0
 #django-extra-views==0.9.0
-django-extra-views==0.6.4
-django-reversion==2.0.8
+# django-reversion==2.0.8
+django-reversion==5.0.0
+django-reversion-compare==0.8.6
 mixer==5.6.6
 pdfkit==0.6.1
 django-multiupload==0.5.2
 django-q==1.0.0
 fpdf==1.7.2
 reportlab==3.3.0
-
-django-tables2==1.11.0
-djangorestframework==3.5.0
-djangorestframework-gis==0.11
+django-utils-six==2.0
+django-tables2==2.3.0
+# djangorestframework==3.5.0
+# djangorestframework-gis==0.11
+djangorestframework==3.13.1
+djangorestframework-gis==1.0
 djangorestframework-csv==2.0.0
 pycountry==17.1.8
 django-countries==6.1.2

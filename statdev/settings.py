@@ -10,7 +10,8 @@ os.environ.setdefault("BASE_DIR", BASE_DIR)
 
 from confy import env, database
 import os
-from ledger.settings_base import *
+from ledger_api_client.settings_base import *
+from oscar.defaults import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,14 +47,54 @@ INSTALLED_APPS += [
     'public',
     'rest_framework',
     'rest_framework_gis',
-    'django_crispy_jcaptcha'
+    'django_crispy_jcaptcha',
+    'ledger_api_client',
+    'django.contrib.flatpages',
+    'oscar.config.Shop',
+    'oscar.apps.analytics.apps.AnalyticsConfig',
+    'oscar.apps.checkout.apps.CheckoutConfig',
+    'oscar.apps.address.apps.AddressConfig',
+    'oscar.apps.shipping.apps.ShippingConfig',
+    'oscar.apps.catalogue.apps.CatalogueConfig',
+    'oscar.apps.catalogue.reviews.apps.CatalogueReviewsConfig',
+    'oscar.apps.communication.apps.CommunicationConfig',
+    'oscar.apps.partner.apps.PartnerConfig',
+    'oscar.apps.basket.apps.BasketConfig',
+    'oscar.apps.payment.apps.PaymentConfig',
+    'oscar.apps.offer.apps.OfferConfig',
+    'oscar.apps.order.apps.OrderConfig',
+    'oscar.apps.customer.apps.CustomerConfig',
+    'oscar.apps.search.apps.SearchConfig',
+    'oscar.apps.voucher.apps.VoucherConfig',
+    'oscar.apps.wishlists.apps.WishlistsConfig',
+    'oscar.apps.dashboard.apps.DashboardConfig',
+    'oscar.apps.dashboard.reports.apps.ReportsDashboardConfig',
+    'oscar.apps.dashboard.users.apps.UsersDashboardConfig',
+    'oscar.apps.dashboard.orders.apps.OrdersDashboardConfig',
+    'oscar.apps.dashboard.catalogue.apps.CatalogueDashboardConfig',
+    'oscar.apps.dashboard.offers.apps.OffersDashboardConfig',
+    'oscar.apps.dashboard.partners.apps.PartnersDashboardConfig',
+    'oscar.apps.dashboard.pages.apps.PagesDashboardConfig',
+    'oscar.apps.dashboard.ranges.apps.RangesDashboardConfig',
+    'oscar.apps.dashboard.reviews.apps.ReviewsDashboardConfig',
+    'oscar.apps.dashboard.vouchers.apps.VouchersDashboardConfig',
+    'oscar.apps.dashboard.communications.apps.CommunicationsDashboardConfig',
+    'oscar.apps.dashboard.shipping.apps.ShippingDashboardConfig',
+
+    # 3rd-party apps that oscar depends on
+    'haystack',
+    'treebeard',
+    'django_tables2',
 ##    'ajax_upload'
 ]
+print('this is installed apps')
+print(INSTALLED_APPS)
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'statdev.perms.OfficerPermission',
     )
 }
+SITE_ID=1
 
 if not DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']=('rest_framework.renderers.JSONRenderer',)
@@ -70,8 +111,14 @@ MIDDLEWARE_CLASSES += [
 #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 #    'reversion.middleware.RevisionMiddleware',
 #    'dpaw_utils.middleware.SSOLoginMiddleware',
-     'social_django.middleware.SocialAuthExceptionMiddleware'
+     'social_django.middleware.SocialAuthExceptionMiddleware',
+      'oscar.apps.basket.middleware.BasketMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
+MIDDLEWARE = MIDDLEWARE_CLASSES
+
+print("this is middleware")
+print(MIDDLEWARE_CLASSES)
 
 #TEMPLATES += [
 #    {
@@ -100,15 +147,19 @@ TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'applications', 'templates'))
 TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'applications', 'templates', 'applications'))
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append('statdev.context_processors.template_context')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.apps.search.context_processors.search_form')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.apps.checkout.context_processors.checkout')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.apps.communication.notifications.context_processors.notifications')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.core.context_processors.metadata')
 
 WSGI_APPLICATION = 'statdev.wsgi.application'
 
 #LOGIN_URL = 'login'
 
-#AUTHENTICATION_BACKENDS = (
-#     'social_core.backends.email.EmailAuth',
-#     'django.contrib.auth.backends.ModelBackend',
-#)
+AUTHENTICATION_BACKENDS = (
+    'oscar.apps.customer.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 LOGIN_REDIRECT_URL = 'home_page'
 STATIC_CONTEXT_VARS = {}

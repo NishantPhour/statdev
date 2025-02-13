@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, HTML, Fieldset, MultiField, Div
 from crispy_forms.bootstrap import FormActions, InlineRadios
@@ -10,14 +10,13 @@ from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Tex
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
 from multiupload.fields import MultiFileField
 from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
-from ledger.accounts.models import EmailUser, Address, Organisation
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
 from .models import (
     Application, Referral, Condition, Compliance, Vessel, Record, PublicationNewspaper,
-    PublicationWebsite, PublicationFeedback, Delegate, Communication, OrganisationContact, OrganisationPending, CommunicationAccount, CommunicationOrganisation,OrganisationExtras, CommunicationCompliance, ConditionPredefined)
+    PublicationWebsite, PublicationFeedback, Delegate, Communication, Organisation, OrganisationAddress, OrganisationContact, OrganisationPending, CommunicationAccount, CommunicationOrganisation,OrganisationExtras, CommunicationCompliance, ConditionPredefined)
 #from ajax_upload.widgets import AjaxClearableFileInput
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
-from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress
 from model_utils import Choices
 
 from django import forms
@@ -162,7 +161,7 @@ class OrganisationAddressForm(ModelForm):
     postal_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postal_postcode = CharField(required=False, max_length=10)
     postal_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    postal_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    postal_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     billing_line1 = CharField(required=False,max_length=255)
     billing_line2 = CharField(required=False, max_length=255)
@@ -170,7 +169,7 @@ class OrganisationAddressForm(ModelForm):
     billing_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     billing_postcode = CharField(required=False, max_length=10)
     billing_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    billing_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    billing_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     class Meta:
         model = OrganisationAddress
@@ -205,7 +204,7 @@ class CreateLinkCompanyForm(ModelForm):
     postal_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postal_postcode = CharField(required=False, max_length=10)
     postal_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    postal_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    postal_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     billing_line1 = CharField(required=False,max_length=255)
     billing_line2 = CharField(required=False, max_length=255)
@@ -213,7 +212,7 @@ class CreateLinkCompanyForm(ModelForm):
     billing_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     billing_postcode = CharField(required=False, max_length=10)
     billing_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    billing_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    billing_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
     company_exists = CharField(required=False,widget=HiddenInput()) 
     company_id = CharField(required=False,max_length=255,widget=HiddenInput())
 
@@ -276,7 +275,7 @@ class FirstLoginInfoForm(ModelForm):
     locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postcode = CharField(required=False, max_length=10)
     state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    country = ChoiceField(sorted(COUNTRIES.items())) 
+    country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
     manage_permits = ChoiceField(label='Do you manage licences, permits or Part 5 on behalf of a company?', required=False,choices=BOOL_CHOICES, widget=RadioSelect(attrs={'class':'radio-inline'}))
 
     class Meta:

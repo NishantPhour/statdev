@@ -4,7 +4,8 @@ from .models import Location, Record, PublicationNewspaper, PublicationWebsite, 
 from django.utils.safestring import SafeText
 from django.contrib.auth.models import Group
 from applications.validationchecks import Attachment_Extension_Check
-from ledger.accounts.models import EmailUser, Address, Organisation, Document
+# from ledger.accounts.models import EmailUser, Address, Organisation, Document
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser
 from django.db.models import Q
 from approvals.models import Approval
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals

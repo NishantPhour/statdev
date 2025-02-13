@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .models import Approval as ApprovalModel, CommunicationApproval 
 from django.db.models import Q
 from django.contrib.auth.models import Group
