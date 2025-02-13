@@ -41,9 +41,6 @@ INSTALLED_APPS += [
     'bootstrap3',
     'webtemplate_dbca',
     'django_q',
-    'applications',
-    'actions',
-    'approvals',
     'public',
     'rest_framework',
     'rest_framework_gis',
@@ -85,10 +82,11 @@ INSTALLED_APPS += [
     'haystack',
     'treebeard',
     'django_tables2',
+    'applications',
+    'actions',
+    'approvals',
 ##    'ajax_upload'
 ]
-print('this is installed apps')
-print(INSTALLED_APPS)
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'statdev.perms.OfficerPermission',
@@ -117,8 +115,6 @@ MIDDLEWARE_CLASSES += [
 ]
 MIDDLEWARE = MIDDLEWARE_CLASSES
 
-print("this is middleware")
-print(MIDDLEWARE_CLASSES)
 
 #TEMPLATES += [
 #    {
