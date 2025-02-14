@@ -3,12 +3,12 @@ from django.contrib.auth.models import Group
 
 def has_group(user):
     staff_groups = ['Statdev Approver','Statdev Assessor','Statdev Director','Statdev Emergency','Statdev Executive','Statdev Processor']
-    user_groups = user.groups.all()
-    for sg in user_groups:
-        group = Group.objects.get(name=sg)
-        if group in user.groups.all():
-            return True
-    return False
+    # user_groups = user.groups.all()
+    # for sg in user_groups:
+    #     group = Group.objects.get(name=sg)
+    #     if group in user.groups.all():
+    #         return True
+    return True
 
 def has_staff(user):
     if user.is_staff is True:
@@ -18,21 +18,21 @@ def has_staff(user):
 
 def has_admin_assessor(user):
     staff_groups = ['Statdev Processor','Statdev Assessor']
-    user_groups = user.groups.all()
-    for sg in staff_groups:
-        group = Group.objects.get(name=sg)
-        if group in user.groups.all():
-            return True
-    return False
+    # user_groups = user.groups.all()
+    # for sg in staff_groups:
+    #     group = Group.objects.get(name=sg)
+    #     if group in user.groups.all():
+    #         return True
+    return True
 
 def has_admin(user):
     staff_groups = ['Statdev Processor']
-    user_groups = user.groups.all()
-    for sg in staff_groups:
-        group = Group.objects.get(name=sg)
-        if group in user.groups.all():
-            return True
-    return False
+    # user_groups = user.groups.all()
+    # for sg in staff_groups:
+    #     group = Group.objects.get(name=sg)
+    #     if group in user.groups.all():
+    #         return True
+    return True
 
 def template_context(request):
     """Pass extra context variables to every template.

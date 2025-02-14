@@ -214,9 +214,10 @@ EMAIL_FROM = env('EMAIL_FROM', ADMINS[0])
 DEFAULT_FROM_EMAIL =env('EMAIL_FROM','DoNotReply@dpaw.wa.gov.au') 
 
 # Database configuration
-DATABASES = {'default': database.config()}
-
-
+print(DATABASES)
+# DATABASES += {'default': database.config()}
+print('this is database')
+print(DATABASES)
 # Password validation
 #AUTH_PASSWORD_VALIDATORS = [
 #    {
