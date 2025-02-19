@@ -9,6 +9,12 @@ from .models import (
     Booking, DiscountReason, BookingInvoice)
 
 
+admin.site.index_template = "admin-index.html"
+admin.site.site_header = "Commercial Operator Admin"
+admin.autodiscover()
+
+
+
 @register(Record)
 class RecordAdmin(ModelAdmin):
     list_display = ('name', 'category', 'file_group','file_group_ref_id', 'upload')
@@ -114,12 +120,12 @@ class DelegateAdmin(ModelAdmin):
 class ApplicationInvoiceAdmin(ModelAdmin):
     pass
 
-@register(Communication)
-class CommunicationAdmin(ModelAdmin):
-    list_display = ('application', 'comms_to', 'comms_from','subject','comms_type','details','created')
-    search_fields = ('comms_to','comms_from','subject','details')
-    raw_id_fields = ('application',)
-    readonly_fields = ('records',)
+# @register(Communication)
+# class CommunicationAdmin(ModelAdmin):
+#     list_display = ('application', 'comms_to', 'comms_from','subject','comms_type','details','created')
+#     search_fields = ('comms_to','comms_from','subject','details')
+#     raw_id_fields = ('application',)
+#     readonly_fields = ('records',)
 
 
 @register(Craft)

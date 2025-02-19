@@ -5,7 +5,7 @@ from django.utils.safestring import SafeText
 from django.contrib.auth.models import Group
 from applications.validationchecks import Attachment_Extension_Check
 # from ledger.accounts.models import EmailUser, Address, Organisation, Document
-from ledger_api_client.ledger_models import EmailUserRO as EmailUser
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Document
 from django.db.models import Q
 from approvals.models import Approval
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
@@ -341,7 +341,7 @@ class FormsList():
     def get_application(self,self_view,userid,context):
 
         user = EmailUser.objects.get(id=userid)
-        delegate = Delegate.objects.filter(email_user=user).values('organisation__id')
+        delegate = Delegate.objects.filter(email_user=user.id).values('organisation__id')
 
         context['nav_other_applications'] = "active"
         context['app'] = ''
@@ -399,7 +399,7 @@ class FormsList():
 
 #        applications = Application.objects.filter(Q(app_type__in=APP_TYPE_CHOICES_IDS) & Q(search_filter) ).exclude(state=17)[:200]
         applications = Application.objects.filter(Q(search_filter) ).exclude(exclude_search_filter).order_by('-id')[:200]
-        usergroups = self_view.request.user.groups.all()
+        usergroups = self_view.request.user.groups().all()
         context['app_list'] = []
         for app in applications:
              row = {}

@@ -5,7 +5,7 @@ from django_crispy_jcaptcha import urls as jcaptchaurls
 from . import api
 
 urlpatterns = [
-    url(r'^$', views.HomePage.as_view(), name='home_page'),
+    url(r'^$', views.HomePage.as_view(), name='home'),
     url(r'^home/(?P<action>\w+)/$', views.HomePage.as_view(), name='home_page_tabs'),
     url(r'^create-account/$', views.CreateAccount.as_view(), name='create_account_form'),
     url(r'^create-account/(?P<application_id>\d+)/$', views.CreateAccount.as_view(), name='create_account_form_application'),

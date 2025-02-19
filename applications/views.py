@@ -31,7 +31,7 @@ from applications.validationchecks import Attachment_Extension_Check, is_json
 from applications.utils import get_query, random_generator
 from applications import utils
 # from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress, PrivateDocument
-from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document, PrivateDocument
 from approvals.models import Approval, CommunicationApproval
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -71,8 +71,10 @@ class HomePage(TemplateView):
         if self.request.user.is_authenticated:
            if len(self.request.user.first_name) > 0 and self.request.user.identification2 is not None:
                donothing = ''
+               '/ledger-ui/system-accounts-firsttime'
            else:
-               return HttpResponseRedirect(reverse('first_login_info_steps', args=(self.request.user.id,1)))
+            #    return HttpResponseRedirect(reverse('first_login_info_steps', args=(self.request.user.id,1)))
+            return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
 
         template = get_template(self.template_name)
         #context = RequestContext(self.request, context)
@@ -97,7 +99,7 @@ class HomePage(TemplateView):
 
         context['referee'] = 'no'
         referee = Group.objects.get(name='Statdev Referee')
-        if referee in self.request.user.groups.all():
+        if referee in self.request.user.groups().all():
             context['referee'] = 'yes'
 
         # Have to manually populate when using render_to_response()
@@ -299,7 +301,7 @@ class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
         elif step == '5':
             context['step5'] = 'active'
         return context
-
+    
     def get_initial(self):
         initial = super(FirstLoginInfoSteps, self).get_initial()
         person = self.get_object()
@@ -378,9 +380,11 @@ class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
             if len(self.object.mobile_number) == 0 and len(self.object.phone_number) == 0:
                 messages.error(self.request,"Please complete at least one phone number")
                 if app_id is None:
-                   return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+                #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
                 else:
-                   return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id))) 
+                #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
+                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime') 
 
         # Upload New Files
         if self.request.FILES.get('identification2'):  # Uploaded new file.
@@ -412,9 +416,11 @@ class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
             except:
                 messages.error(self.request, 'Error Saving Identification File')
                 if app_id is None:
-                   return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+                #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
                 else:
-                   return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
+                #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
+                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
 
             # temporary until all EmailUser Updates go via api.
             eu_obj = EmailUser.objects.get(id=self.object.pk)
@@ -476,9 +482,11 @@ class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
                    return HttpResponseRedirect(reverse('application_update', args=(app_id,)))
         else:
            if app_id is None:
-              return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, nextstep)))
+            #   return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, nextstep)))
+                return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
            else:
-              return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, nextstep, app_id)))
+            #   return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, nextstep, app_id)))
+                return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
 
 class CreateLinkCompany(LoginRequiredMixin,CreateView):
 
@@ -2272,11 +2280,14 @@ class CreateAccount(LoginRequiredMixin, CreateView):
         app_id = None
         if 'application_id'  in self.kwargs:
             app_id = self.kwargs['application_id']
+        path_first_time = '/ledger-ui/system-accounts-firsttime'
         if app_id is None:
             success_url = "/first-login/"+str(self.object.pk)+"/1/"
         else:
             success_url = "/first-login/"+str(self.object.pk)+"/1/"+str(app_id)+"/"
-        return HttpResponseRedirect(success_url)
+        print("success_url")
+        print(success_url)
+        return HttpResponseRedirect(path_first_time)
 
 class ApplicationApply(LoginRequiredMixin, CreateView):
     form_class = apps_forms.ApplicationApplyForm

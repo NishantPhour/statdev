@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^', include('applications.urls')),
     url(r'^', include('approvals.urls')),
     url(r'^', include('public.urls')),
+    url('', include('social_django.urls', namespace='social')),
     # url(r'^ledger/', include('ledger.accounts.urls', namespace='accounts')),
     # url(r'^ledger/', include('social_django.urls', namespace='social')),
     #url(r'^', include('approvals.urls'))
