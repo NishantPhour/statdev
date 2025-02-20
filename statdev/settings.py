@@ -110,6 +110,7 @@ MIDDLEWARE_CLASSES += [
      'social_django.middleware.SocialAuthExceptionMiddleware',
       'oscar.apps.basket.middleware.BasketMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'applications.middleware.FirstTimeNagScreenMiddleware'
     
 ]
 MIDDLEWARE = MIDDLEWARE_CLASSES

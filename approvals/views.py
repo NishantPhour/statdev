@@ -109,7 +109,7 @@ class ApprovalList(ListView):
             context['from_date'] = from_date.strftime('%d/%m/%Y')
             context['to_date'] = to_date.strftime('%d/%m/%Y')
             objlist = ApprovalModel.objects.filter(issue_date__gte=from_date,issue_date__lte=to_date).order_by('-id')
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
 
         context['app_list'] = []
         context['app_applicants'] = {}

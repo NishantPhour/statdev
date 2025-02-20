@@ -32,6 +32,7 @@ from applications.utils import get_query, random_generator
 from applications import utils
 # from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress, PrivateDocument
 from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document, PrivateDocument
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress
 from approvals.models import Approval, CommunicationApproval
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -61,25 +62,20 @@ from django.core.files.base import ContentFile
 from django.utils.crypto import get_random_string
 import base64
 import requests
+from urllib.parse import quote_plus
 
 class HomePage(TemplateView):
     # preperation to replace old homepage with screen designs..
 
     template_name = 'applications/home_page.html'
     def render_to_response(self, context):
-       
-        if self.request.user.is_authenticated:
-           if len(self.request.user.first_name) > 0 and self.request.user.identification2 is not None:
-               donothing = ''
-               '/ledger-ui/system-accounts-firsttime'
-           else:
-            #    return HttpResponseRedirect(reverse('first_login_info_steps', args=(self.request.user.id,1)))
-            return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
-
-        template = get_template(self.template_name)
-        #context = RequestContext(self.request, context)
-        context['csrf_token_value'] = get_token(self.request)
-        return HttpResponse(template.render(context))
+        path_logout = reverse('logout')
+        path_first_time = '/ledger-ui/system-accounts-firsttime'
+        if self.request.user.is_authenticated:     
+            template = get_template(self.template_name)
+            #context = RequestContext(self.request, context)
+            context['csrf_token_value'] = get_token(self.request)
+            return HttpResponse(template.render(context))
 
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)
@@ -163,7 +159,7 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
             #            userGroups = self.request.user.groups.all()
 
         userGroups = []
-        for g in self.request.user.groups.all():
+        for g in self.request.user.groups().all():
              userGroups.append(g.name)
              
         applications_groups = Application.objects.filter(group__name__in=userGroups).exclude(state__in=[Application.APP_STATE_CHOICES.issued, Application.APP_STATE_CHOICES.declined])
@@ -181,7 +177,7 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
         context['may_create'] = True
         # Processor users only: show unassigned applications.
         processor = Group.objects.get(name='Statdev Processor')
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             if Application.objects.filter(assignee__isnull=True, state=Application.APP_STATE_CHOICES.with_admin).exists():
                 applications_unassigned = Application.objects.filter(
                     assignee__isnull=True, state=Application.APP_STATE_CHOICES.with_admin)
@@ -191,7 +187,7 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
         return context
 
     def create_applist(self, applications):
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
         app_list = []
         for app in applications:
             row = {}
@@ -1012,7 +1008,7 @@ class ApplicationFlows(LoginRequiredMixin,TemplateView):
     
 
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1257,7 +1253,7 @@ class ApplicationList(LoginRequiredMixin,ListView):
         #context['app_appstatus'] = list(Application.APP_STATE_CHOICES)
         context['app_wfstatus'] = list(Application.objects.values_list('route_status',flat = True).distinct())
         context['app_appstatus'] = Application.APP_STATUS 
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
         context['app_list'] = []
         for app in applications:
             row = {}
@@ -1285,7 +1281,7 @@ class ApplicationList(LoginRequiredMixin,ListView):
         context['may_create'] = True
         processor = Group.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1357,7 +1353,7 @@ class EmergencyWorksList(ListView):
                if self.request.GET['appstatus'] != '':
                   context['appstatus'] = int(self.request.GET['appstatus'])
 
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
         context['app_list'] = []
         for app in applications:
             row = {}
@@ -1381,7 +1377,7 @@ class EmergencyWorksList(ListView):
         context['may_create'] = True
         processor = Group.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1475,7 +1471,7 @@ class ComplianceList(TemplateView):
 
 
 
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
         context['app_list'] = []
         for item in items:
             row = {}
@@ -1499,7 +1495,7 @@ class ComplianceList(TemplateView):
         context['may_create'] = True
         processor = Group.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -2462,7 +2458,7 @@ class ApplicationDetail(DetailView):
             context['application_assignee_id'] = app.assignee.id
 
         context['may_assign_to_person'] = 'False'
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.groups().all()
         context['stakeholder_communication'] = StakeholderComms.objects.filter(application=app)
         #print ("STAKE HOLDER")
         #print (context['stakeholder_communication'])
@@ -8517,7 +8513,7 @@ class ConditionCreate(LoginRequiredMixin, CreateView):
         # If the request user is not in the "Referee" group, then assume they're an internal user
         # and set the new condition to "applied" status (default = "proposed").
         referee = Group.objects.get(name='Statdev Referee')
-        if referee not in self.request.user.groups.all():
+        if referee not in self.request.user.groups().all():
             self.object.status = Condition.CONDITION_STATUS_CHOICES.applied
         self.object.save()
         # Record an action on the application:
@@ -8575,7 +8571,7 @@ class ConditionUpdate(LoginRequiredMixin, UpdateView):
         # and that referral is not completed.
         assessor = Group.objects.get(name='Statdev Assessor')
         ref = condition.referral
-        if assessor in self.request.user.groups.all() or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
+        if assessor in self.request.user.groups().all() or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
             messages.success(self.request, 'Condition Successfully added')
             return super(ConditionUpdate, self).get(request, *args, **kwargs)
         else:
@@ -9817,7 +9813,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
 #                 print Q(Q(state__in=APP_TYPE_CHOICES_IDS) & Q(search_filter)) 
                  applications = Application.objects.filter(Q(app_type__in=APP_TYPE_CHOICES_IDS) & Q(search_filter) )[:200]
                  context['app_wfstatus'] = list(Application.objects.values_list('route_status',flat = True).distinct())
-                 usergroups = self.request.user.groups.all()
+                 usergroups = self.request.user.groups().all()
                  context['app_list'] = []
 
                  for app in applications:
@@ -9961,7 +9957,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  applications = Application.objects.filter(search_filter)[:200]
 
 #                print applications
-                 usergroups = self.request.user.groups.all()
+                 usergroups = self.request.user.groups().all()
                  context['app_list'] = []
                  for app in applications:
                       row = {}
@@ -10221,7 +10217,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                           for se_wo in query_str_split:
                               search_filter = Q(pk__contains=se_wo) | Q(title__contains=se_wo)
                  applications = Application.objects.filter(search_filter)[:200]
-                 usergroups = self.request.user.groups.all()
+                 usergroups = self.request.user.groups().all()
                  context['app_list'] = []
 
                  for app in applications:
@@ -10332,7 +10328,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                  applications = Application.objects.filter(search_filter)[:200]
 
 #                print applications
-                 usergroups = self.request.user.groups.all()
+                 usergroups = self.request.user.groups().all()
                  context['app_list'] = []
                  for app in applications:
                       row = {}
