@@ -17,6 +17,7 @@ from django.contrib import messages
 from applications.views_pdf import PDFtool
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
 from datetime import datetime, date, timedelta
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 
 import os.path
 import os 
@@ -43,11 +44,12 @@ class ApprovalList(ListView):
             query_str = self.request.GET['q']
             # Replace single-quotes with double-quotes
             query_str = query_str.replace("'", r'"')
-            # Filter by pk, title, applicant__email, organisation__name,
-            # assignee__email
+            # Filter by pk, title
             query = get_query(
-                query_str, ['pk', 'title', 'applicant__email'])
-            qs = qs.filter(query).distinct()
+                query_str, ['pk', 'title'])
+            system_user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            qs= qs.filter(query) | qs.filter(applicant__in=system_user_ids)
+            qs = qs.distinct()
         return qs
 
     def get_context_data(self, **kwargs):
@@ -66,19 +68,21 @@ class ApprovalList(ListView):
 
         if 'action' in self.request.GET and self.request.GET['action']:
             query_str = self.request.GET['q']
-            query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(applicant__email__icontains=query_str)
-
+            query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str)
+            user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            if user_ids:
+                query_obj |= Q(applicant__in=user_ids)
             if self.request.GET['apptype'] != '':
                 query_obj &= Q(app_type=int(self.request.GET['apptype']))
             else:
                 query_obj &= Q(app_type__in=APP_TYPE_CHOICES_IDS)
 
-            if self.request.GET['applicant'] != '':
-                query_obj &= Q(applicant=int(self.request.GET['applicant']))
+            # if self.request.GET['applicant'] != '':
+            #     query_obj &= Q(applicant=int(self.request.GET['applicant']))
             if self.request.GET['appstatus'] != '':
                 query_obj &= Q(status=int(self.request.GET['appstatus']))
 
-            objlist = ApprovalModel.objects.filter(query_obj).order_by('-id')
+            objlist = ApprovalModel.objects.filter(query_obj).distinct().order_by('-id')
             context['query_string'] = self.request.GET['q']
 
             if self.request.GET['apptype'] != '':
@@ -99,7 +103,6 @@ class ApprovalList(ListView):
                  if self.request.GET['to_date'] != '':
                      to_date_db = datetime.strptime(self.request.GET['to_date'], '%d/%m/%Y').date()
                      query_obj &= Q(issue_date__lte=to_date_db)
-
 #        if 'q' in self.request.GET and self.request.GET['q']:
  #           query_str = self.request.GET['q']
   #          objlist = ApprovalModel.objects.filter(Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(applicant__email__icontains=query_str))
@@ -139,7 +142,7 @@ class ApprovalList(ListView):
         processor = Group.objects.get(name='Statdev Processor')
 
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
             context['may_assign_processor'] = True
 
         return context

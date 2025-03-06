@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from applications.validationchecks import Attachment_Extension_Check
 # from ledger.accounts.models import EmailUser, Address, Organisation, Document
 from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Document
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 from django.db.models import Q
 from approvals.models import Approval
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
@@ -340,7 +341,7 @@ class FormsList():
 
     def get_application(self,self_view,userid,context):
 
-        user = EmailUser.objects.get(id=userid)
+        user = SystemUser.objects.get(ledger_id=userid)
         delegate = Delegate.objects.filter(email_user=user.id).values('organisation__id')
 
         context['nav_other_applications'] = "active"
@@ -415,7 +416,7 @@ class FormsList():
 
     def get_approvals(self,self_view,userid,context):
 
-        user = EmailUser.objects.get(id=userid)
+        user = SystemUser.objects.get(ledger_id=userid)
         delegate = Delegate.objects.filter(email_user=user).values('id')
 
         search_filter = Q(applicant=userid, status=1 ) | Q(organisation__in=delegate)
@@ -481,7 +482,7 @@ class FormsList():
         if 'q' in self_view.request.GET and self_view.request.GET['q']:
             context['query_string'] = self_view.request.GET['q']
 
-        user = EmailUser.objects.get(id=userid)
+        user = SystemUser.objects.get(ledger_id=userid)
         delegate = Delegate.objects.filter(email_user=user).values('id')
         search_filter = Q(applicant=userid) | Q(organisation__in=delegate)
 

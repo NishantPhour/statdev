@@ -11,6 +11,7 @@ from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCapt
 from multiupload.fields import MultiFileField
 from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
 from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 from .models import (
     Application, Referral, Condition, Compliance, Vessel, Record, PublicationNewspaper,
     PublicationWebsite, PublicationFeedback, Delegate, Communication, Organisation, OrganisationAddress, OrganisationContact, OrganisationPending, CommunicationAccount, CommunicationOrganisation,OrganisationExtras, CommunicationCompliance, ConditionPredefined)
@@ -135,7 +136,7 @@ class PaymentDetailForm(ModelForm):
 class CreateAccountForm(ModelForm):
 
     class Meta:
-        model = EmailUser 
+        model = SystemUser 
         fields = ['email']
 
     def __init__(self, *args, **kwargs):
@@ -217,7 +218,7 @@ class CreateLinkCompanyForm(ModelForm):
     company_id = CharField(required=False,max_length=255,widget=HiddenInput())
 
     class Meta:
-        model = EmailUser
+        model = SystemUser
         fields = ['first_name']
 
     def __init__(self, *args, **kwargs):
@@ -265,7 +266,7 @@ class CreateLinkCompanyForm(ModelForm):
             if int(step) > 1:
                 self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
             self.helper.add_input(Submit('Next Step', 'Next Step', css_class='btn-lg'))
-
+#TODO remove this
 class FirstLoginInfoForm(ModelForm):
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
@@ -2952,21 +2953,21 @@ class RecordCreateForm(ModelForm):
         self.helper.add_input(Submit('cancel', 'Cancel'))
 
 
-class EmailUserForm(ModelForm):
+class SystemUserForm(ModelForm):
 
     class Meta:
-        model = EmailUser
-        fields = ['first_name', 'last_name', 'title', 'dob', 'phone_number', 'mobile_number', 'fax_number']
+        model = SystemUser
+        fields = ['first_name', 'last_name', 'title', 'legal_dob', 'phone_number', 'mobile_number', 'fax_number']
 
     def __init__(self, *args, **kwargs):
-        super(EmailUserForm, self).__init__(*args, **kwargs)
+        super(SystemUserForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_emailuser_account_update'
         self.helper.attrs = {'novalidate': ''}
 
         # Define the form layout.
         self.helper.layout = Layout(
-            'first_name', 'last_name', 'title', 'dob', 'phone_number', 'mobile_number', 'fax_number',
+            'first_name', 'last_name', 'title', 'legal_dob', 'phone_number', 'mobile_number', 'fax_number',
             FormActions(
                 Submit('save', 'Save', css_class='btn-lg'),
                 Submit('cancel', 'Cancel')
@@ -3000,7 +3001,7 @@ class UserFormIdentificationUpdate(ModelForm):
     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
 
     class Meta:
-        model = EmailUser
+        model = SystemUser
         fields = ['id']
         
 

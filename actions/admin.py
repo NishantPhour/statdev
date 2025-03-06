@@ -2,8 +2,6 @@ from django.contrib.admin import register, ModelAdmin
 from .models import Action
 from django.contrib.gis import admin
 
-# from ledger_api_client.ledger_models import EmailUserRO as EmailUser
-
 admin.site.index_template = "admin-index.html"
 admin.site.site_header = "Commercial Operator Admin"
 admin.autodiscover()

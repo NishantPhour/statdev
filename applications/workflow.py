@@ -260,19 +260,19 @@ class Flow():
         if Group.objects.filter(name='Statdev Emergency').exists():
             emergency = Group.objects.get(name='Statdev Emergency')
 
-        if processor in request.user.groups.all():
+        if processor in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Processor')
-        if assessor in request.user.groups.all():
+        if assessor in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Assessor')
-        if approver in request.user.groups.all():
+        if approver in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Approver')
-        if referee in request.user.groups.all():
+        if referee in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Referee')
-        if director in request.user.groups.all():
+        if director in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Director')
-        if executive in request.user.groups.all():
+        if executive in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Executive')
-        if emergency in request.user.groups.all():
+        if emergency in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Emergency')
 
         return context
