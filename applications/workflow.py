@@ -261,19 +261,21 @@ class Flow():
         if SystemGroup.objects.filter(name='Statdev Emergency').exists():
             emergency = SystemGroup.objects.get(name='Statdev Emergency')
 
-        if processor in request.user.groups().all():
+        usergroups = request.user.get_system_group_permission(request.user.id)
+
+        if processor.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Processor')
-        if assessor in request.user.groups().all():
+        if assessor.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Assessor')
-        if approver in request.user.groups().all():
+        if approver.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Approver')
-        if referee in request.user.groups().all():
+        if referee.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Referee')
-        if director in request.user.groups().all():
+        if director.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Director')
-        if executive in request.user.groups().all():
+        if executive.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Executive')
-        if emergency in request.user.groups().all():
+        if emergency.id in usergroups:
             context = self.getGroupAccess(context,route,'Statdev Emergency')
 
         return context

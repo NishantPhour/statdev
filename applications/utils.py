@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.contrib import messages
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
 from applications import models
-from ledger_api_client.managed_models import SystemUser
+from ledger_api_client.managed_models import SystemUser, SystemGroupPermission
 import random
 import re
 import string
@@ -145,4 +145,3 @@ def application_lodgment_info(request,app):
         emailcontext['body'] = msg
         submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
         sendHtmlEmail([submitted_by.email], emailcontext['application_name'] + ' application submitted ', emailcontext, 'application-lodged.html', None, None, None)
-

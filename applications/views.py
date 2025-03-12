@@ -94,8 +94,10 @@ class HomePage(TemplateView):
         #pdftool.generate_licence()
 
         context['referee'] = 'no'
+        
         referee = SystemGroup.objects.get(name='Statdev Referee')
-        if referee in self.request.user.groups().all():
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        if referee.id in usergroups:
             context['referee'] = 'yes'
 
         # Have to manually populate when using render_to_response()
@@ -159,8 +161,7 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
             #            userGroups = self.request.user.groups().all()
 
         userGroups = []
-        for g in self.request.user.groups().all():
-             userGroups.append(g.name)
+        userGroups = self.request.user.get_system_group_permission(self.request.user.id)
              
         applications_groups = Application.objects.filter(group__name__in=userGroups).exclude(state__in=[Application.APP_STATE_CHOICES.issued, Application.APP_STATE_CHOICES.declined])
         context['applications_groups'] = self.create_applist(applications_groups)
@@ -177,7 +178,7 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
         context['may_create'] = True
         # Processor users only: show unassigned applications.
         processor = SystemGroup.objects.get(name='Statdev Processor')
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in userGroups or self.request.user.is_superuser:
             if Application.objects.filter(assignee__isnull=True, state=Application.APP_STATE_CHOICES.with_admin).exists():
                 applications_unassigned = Application.objects.filter(
                     assignee__isnull=True, state=Application.APP_STATE_CHOICES.with_admin)
@@ -187,13 +188,13 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
         return context
 
     def create_applist(self, applications):
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         app_list = []
         for app in applications:
             row = {}
             row['may_assign_to_person'] = 'False'
             row['app'] = app
-            if app.group in usergroups:
+            if app.group.id in usergroups:
                 if app.group is not None:
                     row['may_assign_to_person'] = 'True'
             app_list.append(row)
@@ -877,8 +878,9 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
                  action.save()
                  emailcontext = {'pending_org': pending_org,  }
                  emailGroup('Organisation pending approval ', emailcontext, 'pending_organisation_approval.html', None, None, None, 'Statdev Assessor')
-
-           if self.request.user.groups().filter(name='Statdev Processor').exists():
+           processor = SystemGroup.objects.get(name='Statdev Processor')
+           usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+           if processor.id in usergroups:
                if app_id is None:
                    return HttpResponseRedirect(reverse('home_page'))
                else:
@@ -1003,14 +1005,15 @@ class ApplicationFlows(LoginRequiredMixin,TemplateView):
         context['application_choices'] = Application.APP_TYPE_CHOICES
         
         processor = SystemGroup.objects.get(name='Statdev Processor')
-
+        userGroups = self.request.user.get_system_group_permission(self.request.user.id)
+        
         for b in Application.APP_TYPE_CHOICES._identifier_map:
            print(b)
            print(Application.APP_TYPE_CHOICES._identifier_map[b])
     
 
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in userGroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1255,7 +1258,7 @@ class ApplicationList(LoginRequiredMixin,ListView):
         #context['app_appstatus'] = list(Application.APP_STATE_CHOICES)
         context['app_wfstatus'] = list(Application.objects.values_list('route_status',flat = True).distinct())
         context['app_appstatus'] = Application.APP_STATUS 
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['app_list'] = []
         for app in applications:
             row = {}
@@ -1274,7 +1277,7 @@ class ApplicationList(LoginRequiredMixin,ListView):
 
             # end of creation
             if app.group is not None:
-                if app.group in usergroups:
+                if app.group.id in usergroups:
                     row['may_assign_to_person'] = 'True'
                     row['may_assign_to_officer'] = 'True'
 
@@ -1284,7 +1287,7 @@ class ApplicationList(LoginRequiredMixin,ListView):
         context['may_create'] = True
         processor = SystemGroup.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in usergroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1355,7 +1358,7 @@ class EmergencyWorksList(ListView):
                if self.request.GET['appstatus'] != '':
                   context['appstatus'] = int(self.request.GET['appstatus'])
 
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['app_list'] = []
         for app in applications:
             row = {}
@@ -1374,14 +1377,14 @@ class EmergencyWorksList(ListView):
             # end of creation
 
             if app.group is not None:
-                if app.group in usergroups:
+                if app.group.id in usergroups:
                     row['may_assign_to_person'] = 'True'
             context['app_list'].append(row)
         # TODO: any restrictions on who can create new applications?
         context['may_create'] = True
         processor = SystemGroup.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in usergroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1480,7 +1483,7 @@ class ComplianceList(TemplateView):
 
 
 
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['app_list'] = []
         for item in items:
             row = {}
@@ -1507,7 +1510,7 @@ class ComplianceList(TemplateView):
         context['may_create'] = True
         processor = SystemGroup.objects.get(name='Statdev Processor')
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in usergroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
         return context
 
@@ -1548,7 +1551,9 @@ class OrganisationAccessRequest(ListView):
         qs = super(OrganisationAccessRequest, self).get_queryset()
         # Did we pass in a search string? If so, filter the queryset and return
         # it.
-        if self.request.user.groups().filter(name='Statdev Processor').exists():
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        if processor.id in usergroups:
            
             if 'q' in self.request.GET and self.request.GET['q']:
                 query_str = self.request.GET['q']
@@ -2299,8 +2304,11 @@ class ApplicationApply(LoginRequiredMixin, CreateView):
     template_name = 'applications/application_apply_form.html'
 
     def get(self, request, *args, **kwargs):
-        if (self.request.user.groups().filter(name='Statdev Processor').exists() or 
-            self.request.user.groups().filter(name='Statdev Assessor').exists()):
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        if (processor.id in usergroups or 
+            assessor.id in usergroups):
             app = Application.objects.create(submitted_by=self.request.user.id
                                              ,submit_date=date.today()
                                              ,state=Application.APP_STATE_CHOICES.new
@@ -2399,7 +2407,10 @@ class ApplicationApplyUpdate(LoginRequiredMixin, UpdateView):
              self.object.assignee = self.request.user.id
              self.object.save()
         if action == 'apptype':
-            if self.request.user.groups().filter(name='Statdev Processor').exists() or self.request.user.groups().filter(name='Statdev Assessor').exists():
+            processor = SystemGroup.objects.get(name='Statdev Processor')
+            assessor = SystemGroup.objects.get(name='Statdev Assessor')
+            usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+            if processor.id in usergroups or assessor.id in usergroups:
                 success_url = reverse('applicant_change', args=(self.object.pk,))
             else:
                 success_url = reverse('application_update', args=(self.object.pk,))
@@ -2468,7 +2479,7 @@ class ApplicationDetail(DetailView):
             context['application_assignee_id'] = app.assignee
 
         context['may_assign_to_person'] = 'False'
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['stakeholder_communication'] = StakeholderComms.objects.filter(application=app)
         #print ("STAKE HOLDER")
         #print (context['stakeholder_communication'])
@@ -5957,7 +5968,9 @@ class ApplicationCancel(LoginRequiredMixin, UpdateView):
         #flow.get(app_type_short_name)
         #flowcontext = {}
         #flowcontext = flow.getAccessRights(request, flowcontext, app.routeid, app_type_short_name)
-        if self.request.user.groups().filter(name='Statdev Processor').exists():
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        if processor.id in usergroups:
             pass
         else:
            messages.error(self.request, 'Forbidden from viewing this page.')
@@ -6407,10 +6420,11 @@ class ComplianceSubmit(LoginRequiredMixin, UpdateView):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
         org = Delegate.objects.filter(email_user=self.request.user.id, organisation=self.object.organisation).count()
-
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         elif self.request.user.id == self.object.applicant:
            pass
@@ -6468,10 +6482,11 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
-
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         else:
            messages.error(self.request, 'Forbidden from viewing this page.')
@@ -7237,10 +7252,11 @@ class ComplianceCompleteExternal(LoginRequiredMixin,UpdateView):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
         org = Delegate.objects.filter(email_user=self.request.user.id, organisation=self.object.organisation).count()
-
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         elif self.request.user.id == self.object.applicant:
            pass
@@ -7329,10 +7345,12 @@ class ComplianceViewExternal(LoginRequiredMixin,DetailView):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
         org = Delegate.objects.filter(email_user=self.request.user.id, organisation=self.object.organisation).count()
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
 
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         elif self.request.user.id == self.object.applicant:
            pass
@@ -7360,10 +7378,11 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
         org = Delegate.objects.filter(email_user=self.request.user, organisation=self.object.organisation).count()
-
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         elif self.request.user.id == self.object.applicant:
            pass
@@ -7575,10 +7594,11 @@ class ComplianceApprovalDetails(LoginRequiredMixin,DetailView):
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
         org = Delegate.objects.filter(email_user=self.request.user.id, organisation=self.object.organisation).count()
-       
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
            pass
-        elif self.request.user.groups().filter(name='Statdev Assessor').exists():
+        elif assessor.id in usergroups:
            pass
         elif self.request.user.id == self.object.applicant:
            pass
@@ -8510,7 +8530,10 @@ class ConditionCreate(LoginRequiredMixin, CreateView):
         initial['may_assessor_advise'] = flowcontext["may_assessor_advise"]
         #initial['may_assessor_advise'] = 'df'
         initial['assessor_staff'] = False
-        if self.request.user.groups().filter(name='Statdev Assessor').exists():
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)        
+        
+        if assessor.id in usergroups:
              initial['assessor_staff'] = True
         initial['condition_no'] = condition_no_max
         initial['advise_no'] = advise_no_max
@@ -8539,8 +8562,9 @@ class ConditionCreate(LoginRequiredMixin, CreateView):
                 application=app, referee=self.request.user.id)
         # If the request user is not in the "Referee" group, then assume they're an internal user
         # and set the new condition to "applied" status (default = "proposed").
-        referee = SystemGroup.objects.get(name='Statdev Referee')
-        if referee not in self.request.user.groups().all():
+        referee = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        if referee.id not in usergroups:
             self.object.status = Condition.CONDITION_STATUS_CHOICES.applied
         self.object.save()
         # Record an action on the application:
@@ -8597,8 +8621,9 @@ class ConditionUpdate(LoginRequiredMixin, UpdateView):
         # or they are assigned the referral to which the condition is attached
         # and that referral is not completed.
         assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         ref = condition.referral
-        if assessor in self.request.user.groups().all() or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
+        if assessor.id in usergroups or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
             messages.success(self.request, 'Condition Successfully added')
             return super(ConditionUpdate, self).get(request, *args, **kwargs)
         else:
@@ -8619,7 +8644,11 @@ class ConditionUpdate(LoginRequiredMixin, UpdateView):
         initial['may_assessor_advise'] = flowcontext["may_assessor_advise"]
 
         initial['assessor_staff'] = False
-        if self.request.user.groups().filter(name='Statdev Assessor').exists():
+        
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        
+        if assessor.id in usergroups:
              initial['assessor_staff'] = True
         return initial
 
@@ -8797,8 +8826,10 @@ class VesselCreate(LoginRequiredMixin, CreateView):
         DefaultGroups = flow.groupList()
         flowcontext = flow.getAccessRights(request, flowcontext, app.routeid, workflowtype)
         flowcontext = flow.getRequired(flowcontext, app.routeid, workflowtype)
-
-        if self.request.user.groups().filter(name='Statdev Processor').exists():
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+        
+        if processor.id in usergroups:
             donothing = ''
         elif flowcontext["may_update_vessels_list"] != "True":
 #        if app.state != app.APP_STATE_CHOICES.draft:
@@ -9098,7 +9129,10 @@ class UserAccountUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         if 'pk' in self.kwargs:
             system_user = SystemUser.objects.get(ledger_id=self.request.user.id)
-            if self.request.user.groups().filter(name='Statdev Processor').exists():
+            processor = SystemGroup.objects.get(name='Statdev Processor')
+            usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+            
+            if processor.id in usergroups:
                user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
                return user
             elif system_user.id == int(self.kwargs['pk']):
@@ -9176,7 +9210,10 @@ class UserAccountIdentificationUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         if 'pk' in self.kwargs:
             pk = self.kwargs['pk']
-            if self.request.user.groups().filter(name='Statdev Processor').exists():
+            processor = SystemGroup.objects.get(name='Statdev Processor')
+            usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+            
+            if processor.id in usergroups:
                user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
                return user
             elif self.request.user.id == int(pk):
@@ -9862,7 +9899,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
 #                 print Q(Q(state__in=APP_TYPE_CHOICES_IDS) & Q(search_filter)) 
                  applications = Application.objects.filter(Q(app_type__in=APP_TYPE_CHOICES_IDS) & Q(search_filter) )[:200]
                  context['app_wfstatus'] = list(Application.objects.values_list('route_status',flat = True).distinct())
-                 usergroups = self.request.user.groups().all()
+                 usergroups = self.request.user.get_system_group_permission(self.request.user.id)
                  context['app_list'] = []
 
                  for app in applications:
@@ -9883,7 +9920,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
             # end of creation
 
                       if app.group is not None:
-                          if app.group in usergroups:
+                          if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
                       context['app_list'].append(row)
 
@@ -10014,7 +10051,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  applications = Application.objects.filter(search_filter)[:200]
 
 #                print applications
-                 usergroups = self.request.user.groups().all()
+                 usergroups = self.request.user.get_system_group_permission(self.request.user.id)
                  context['app_list'] = []
                  for app in applications:
                       row = {}
@@ -10034,7 +10071,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                     # end of creation
 
                       if app.group is not None:
-                          if app.group in usergroups:
+                          if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
                       context['app_list'].append(row)
 
@@ -10280,7 +10317,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                           for se_wo in query_str_split:
                               search_filter = Q(pk__contains=se_wo) | Q(title__contains=se_wo)
                  applications = Application.objects.filter(search_filter)[:200]
-                 usergroups = self.request.user.groups().all()
+                 usergroups = self.request.user.get_system_group_permission(self.request.user.id)
                  context['app_list'] = []
 
                  for app in applications:
@@ -10289,7 +10326,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       row['app'] = app
 
                       if app.group is not None:
-                          if app.group in usergroups:
+                          if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
                       context['app_list'].append(row)
 
@@ -10400,7 +10437,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                  applications = Application.objects.filter(search_filter)[:200]
 
 #                print applications
-                 usergroups = self.request.user.groups().all()
+                 usergroups = self.request.user.get_system_group_permission(self.request.user.id)
                  context['app_list'] = []
                  for app in applications:
                       row = {}
@@ -10408,7 +10445,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       row['app'] = app
 
                       if app.group is not None:
-                          if app.group in usergroups:
+                          if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
                       context['app_list'].append(row)
 
@@ -10982,9 +11019,13 @@ class ApplicationBooking(LoginRequiredMixin, FormView):
         context['application_fee'] = fee_total
         context['override_reasons'] = DiscountReason.objects.all() 
         context['page_heading'] = 'Licence Fees'
+        
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['allow_overide_access'] = (
-            self.request.user.groups().filter(name='Statdev Processor').exists() or 
-            self.request.user.groups().filter(name='Statdev Assessor').exists())
+            processor.id in usergroups or 
+            assessor.id in usergroups)
         return context
 
     def get(self, request, *args, **kwargs):

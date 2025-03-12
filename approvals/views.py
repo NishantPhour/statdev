@@ -112,7 +112,7 @@ class ApprovalList(ListView):
             context['from_date'] = from_date.strftime('%d/%m/%Y')
             context['to_date'] = to_date.strftime('%d/%m/%Y')
             objlist = ApprovalModel.objects.filter(issue_date__gte=from_date,issue_date__lte=to_date).order_by('-id')
-        usergroups = self.request.user.groups().all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
 
         context['app_list'] = []
         context['app_applicants'] = {}
@@ -140,9 +140,10 @@ class ApprovalList(ListView):
 
         # TODO: any restrictions on who can create new applications?
         processor = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
 
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups().all() or self.request.user.is_superuser:
+        if processor.id in usergroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
 
         return context

@@ -400,7 +400,7 @@ class FormsList():
 
 #        applications = Application.objects.filter(Q(app_type__in=APP_TYPE_CHOICES_IDS) & Q(search_filter) ).exclude(state=17)[:200]
         applications = Application.objects.filter(Q(search_filter) ).exclude(exclude_search_filter).order_by('-id')[:200]
-        usergroups = self_view.request.user.groups().all()
+        usergroups = self_view.request.user.get_system_group_permission(self_view.request.user.id)
         context['app_list'] = []
         for app in applications:
              row = {}
@@ -408,7 +408,7 @@ class FormsList():
              row['app'] = app
 
              if app.group is not None:
-                 if app.group in usergroups:
+                 if app.group.id in usergroups:
                      row['may_assign_to_person'] = 'True'
              context['app_list'].append(row)
 
