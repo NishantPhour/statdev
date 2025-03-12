@@ -47,9 +47,6 @@ class FirstTimeNagScreenMiddleware(object):
                 ):
                 # We don't want to redirect the user when the user is accessing the firsttime page or logout page.
                 #TODO
-                print('request.path')
-                print(request.path)
-                print(path_logout)
                 # if request.path not in (path_logout):
                 logger.info('redirect')
                 return redirect(path_first_time + "?next=" + quote_plus(request.get_full_path()))

@@ -6,7 +6,7 @@ from crispy_forms.bootstrap import FormActions, InlineRadios
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field, RadioSelect, ModelChoiceField, Select
+from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field, RadioSelect, ModelChoiceField, Select, FileInput
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
 from multiupload.fields import MultiFileField
 from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
@@ -1912,7 +1912,7 @@ class ReferralForm(ModelForm):
         self.helper.form_id = 'id_form_referral_create'
         self.helper.attrs = {'novalidate': ''}
         # Limit the referee queryset.
-        referee = Group.objects.get(name='Statdev Referee')
+        referee = SystemGroup.objects.get(name='Statdev Referee')
         existing_referees = app.referral_set.all().values_list('referee__email', flat=True)
         self.fields['referee'].queryset = User.objects.filter(groups__in=[referee]).exclude(email__in=existing_referees)
         # TODO: business logic to limit the document queryset.
@@ -2271,7 +2271,7 @@ class AssignPersonForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2330,7 +2330,7 @@ class AssignOfficerForm(ModelForm):
         self.helper.form_id = 'id_form_assign_officer_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
         self.fields['assigned_officer'].queryset = User.objects.filter(groups__in=[assigngroup])
         self.fields['assigned_officer'].required = True
         # Disable all form fields.
@@ -2367,7 +2367,7 @@ class ComplianceAssignPersonForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2603,7 +2603,7 @@ class AssignProcessorForm(ModelForm):
         self.helper.form_id = 'id_form_assign_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        processor = Group.objects.get(name='Statdev Processor')
+        processor = SystemGroup.objects.get(name='Statdev Processor')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[processor])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2637,7 +2637,7 @@ class AssignAssessorForm(ModelForm):
         self.helper.form_id = 'id_form_assign_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assessor = Group.objects.get(name='Statdev Assessor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[assessor])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2671,7 +2671,7 @@ class AssignApproverForm(ModelForm):
         self.helper.form_id = 'id_form_approve_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        approver = Group.objects.get(name='Statdev Approver')
+        approver = SystemGroup.objects.get(name='Statdev Approver')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[approver])
         self.fields['assignee'].required = True
         self.fields['assignee'].label = 'Manager'
@@ -2705,7 +2705,7 @@ class AssignEmergencyForm(ModelForm):
         self.helper.form_id = 'id_form_assign_emergency_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        emergency = Group.objects.get(name='Statdev Emergency')
+        emergency = SystemGroup.objects.get(name='Statdev Emergency')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[emergency])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2878,7 +2878,7 @@ class NewsPaperPublicationCreateForm(ModelForm):
 
 class WebsitePublicationCreateForm(ModelForm):
 
-    original_document = FileField(required=False, max_length=128 , widget=ClearableFileInput(attrs={'multiple':'multiple'}))
+    original_document = FileField(required=False, max_length=128 , widget=ClearableMultipleFileInput(attrs={'multiple':'multiple'}))
     published_document = FileField(required=False, max_length=128 , widget=ClearableMultipleFileInput(attrs={'multiple':'multiple'}))
 
     class Meta:

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import Group
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 import os
 import json
 __all__ = (
@@ -245,20 +246,20 @@ class Flow():
         director = None
         executive = None
 
-        if Group.objects.filter(name='Statdev Processor').exists():
-            processor = Group.objects.get(name='Statdev Processor')
-        if Group.objects.filter(name='Statdev Assessor').exists():
-            assessor = Group.objects.get(name='Statdev Assessor')
-        if Group.objects.filter(name='Statdev Approver').exists():
-            approver = Group.objects.get(name='Statdev Approver')
-        if Group.objects.filter(name='Statdev Referee').exists():
-            referee = Group.objects.get(name='Statdev Referee')
-        if Group.objects.filter(name='Statdev Director').exists():
-            director = Group.objects.get(name='Statdev Director')
-        if Group.objects.filter(name='Statdev Executive').exists():
-            executive = Group.objects.get(name='Statdev Executive')
-        if Group.objects.filter(name='Statdev Emergency').exists():
-            emergency = Group.objects.get(name='Statdev Emergency')
+        if SystemGroup.objects.filter(name='Statdev Processor').exists():
+            processor = SystemGroup.objects.get(name='Statdev Processor')
+        if SystemGroup.objects.filter(name='Statdev Assessor').exists():
+            assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        if SystemGroup.objects.filter(name='Statdev Approver').exists():
+            approver = SystemGroup.objects.get(name='Statdev Approver')
+        if SystemGroup.objects.filter(name='Statdev Referee').exists():
+            referee = SystemGroup.objects.get(name='Statdev Referee')
+        if SystemGroup.objects.filter(name='Statdev Director').exists():
+            director = SystemGroup.objects.get(name='Statdev Director')
+        if SystemGroup.objects.filter(name='Statdev Executive').exists():
+            executive = SystemGroup.objects.get(name='Statdev Executive')
+        if SystemGroup.objects.filter(name='Statdev Emergency').exists():
+            emergency = SystemGroup.objects.get(name='Statdev Emergency')
 
         if processor in request.user.groups().all():
             context = self.getGroupAccess(context,route,'Statdev Processor')

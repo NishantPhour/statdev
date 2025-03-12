@@ -12,6 +12,7 @@ from django.contrib.auth.models import Group
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
+from ledger_api_client.managed_models import SystemGroup
 #from approvals.models import Approval
 # from ledger.accounts.models import Organisation, Address as LedgerAddress, OrganisationAddress
 #from ledger.payments.models import Invoice
@@ -68,7 +69,7 @@ class Record(models.Model):
     upload = models.FileField(max_length=512, upload_to='uploads/%Y/%m/%d', storage=upload_storage)
     name = models.CharField(max_length=256)
     category = models.IntegerField(choices=DOC_CATEGORY_CHOICES, null=True, blank=True)
-    metadata = JSONField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
     text_content = models.TextField(null=True, blank=True, editable=False)  # Text for indexing
     file_group = models.IntegerField(choices=FILE_GROUP, null=True, blank=True)
     file_group_ref_id = models.IntegerField(null=True, blank=True) 
@@ -364,13 +365,13 @@ class Application(models.Model):
     address = models.TextField(null=True, blank=True)
     location_route_access = models.ManyToManyField(Record, blank=True, related_name='location_route_access')
     jetties = models.TextField(null=True, blank=True)
-    jetty_dot_approval = models.NullBooleanField(default=None)
+    jetty_dot_approval = models.BooleanField(default=None, null=True)
     jetty_dot_approval_expiry = models.DateField(null=True, blank=True)
     drop_off_pick_up = models.TextField(null=True, blank=True)
-    food = models.NullBooleanField(default=None)
-    beverage = models.NullBooleanField(default=None)
-    liquor_licence = models.NullBooleanField(default=None)
-    byo_alcohol = models.NullBooleanField(default=None)
+    food = models.BooleanField(default=None, null=True)
+    beverage = models.BooleanField(default=None, null=True)
+    liquor_licence = models.BooleanField(default=None, null=True)
+    byo_alcohol = models.BooleanField(default=None, null=True)
     sullage_disposal = models.TextField(null=True, blank=True)
     waste_disposal = models.TextField(null=True, blank=True)
     refuel_location_method = models.TextField(null=True, blank=True)
@@ -386,9 +387,9 @@ class Application(models.Model):
     land_owner_consent = models.ManyToManyField(Record, blank=True, related_name='land_owner_consent')
     deed = models.ManyToManyField(Record, blank=True, related_name='deed')
     submitted_by = models.IntegerField(blank=True, null=True)
-    river_lease_require_river_lease = models.NullBooleanField(default=None, null=True, blank=True)
+    river_lease_require_river_lease = models.BooleanField(default=None, null=True, blank=True)
     river_lease_scan_of_application = models.ManyToManyField(Record, blank=True, related_name='river_lease_scan_of_application')
-    river_lease_reserve_licence = models.NullBooleanField(default=None, null=True, blank=True)
+    river_lease_reserve_licence = models.BooleanField(default=None, null=True, blank=True)
     river_lease_application_number = models.CharField(max_length=30, null=True, blank=True)
     proposed_development_current_use_of_land = models.TextField(null=True, blank=True)
     proposed_development_plans = models.ManyToManyField(Record, blank=True, related_name='proposed_development_plans')
@@ -410,7 +411,7 @@ class Application(models.Model):
     publish_determination_report = models.DateField(null=True, blank=True)
     routeid = models.CharField(null=True, blank=True, default=1, max_length=4)
     assessment_start_date = models.DateField(null=True, blank=True)
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='application_group_assignment', on_delete=models.CASCADE)
+    group = models.ForeignKey(SystemGroup, null=True, blank=True, related_name='application_group_assignment', on_delete=models.CASCADE)
     swan_river_trust_board_feedback = models.ManyToManyField(Record, blank=True, related_name='document_swan_river_board_feedback')
     document_memo = models.ManyToManyField(Record, blank=True, related_name='document_memo')
     document_memo_2 = models.ManyToManyField(Record, blank=True, related_name='document_memo_2')
@@ -499,7 +500,7 @@ class Booking(models.Model):
     )
 
     customer = models.IntegerField(blank=True, null=True)
-    details = JSONField(null=True, blank=True)
+    details = models.JSONField(null=True, blank=True)
     booking_type = models.SmallIntegerField(choices=BOOKING_TYPE_CHOICES, default=0)
     expiry_time = models.DateTimeField(blank=True, null=True)
     cost_total = models.DecimalField(max_digits=8, decimal_places=2, default='0.00')

@@ -8,13 +8,13 @@ import json
 from django.forms.utils import flatatt, to_current_timezone
 from django.utils.html import conditional_escape, format_html, html_safe
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.forms import Media, MediaDefiningClass, Widget, CheckboxInput
 from django.utils.safestring import SafeText
 from applications.validationchecks import is_json
 
 from django.utils.encoding import (
-      force_str, force_text
+      force_str
 )
 from six import python_2_unicode_compatible
 
@@ -42,7 +42,7 @@ class InputMultiFile(Widget):
         final_attrs = self.build_attrs(self.attrs, attrs)
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
-            final_attrs['value'] = force_text(self.format_value(value))
+            final_attrs['value'] = force_str(self.format_value(value))
         return format_html('<input{} >', flatatt(final_attrs))
 
 class FileInput(InputMultiFile):
@@ -59,9 +59,9 @@ class FileInput(InputMultiFile):
         return name not in files
 
 class ClearableMultipleFileInput(FileInput):
-    initial_text = ugettext_lazy('Currently testing')
-    input_text = ugettext_lazy('Change')
-    clear_checkbox_label = ugettext_lazy('Clear')
+    initial_text = gettext_lazy('Currently testing')
+    input_text = gettext_lazy('Change')
+    clear_checkbox_label = gettext_lazy('Clear')
 
     template_with_initial = (
         '%(initial_text)s: <a href="%(initial_url)s">%(initial)s</a> '
@@ -158,9 +158,9 @@ class ClearableMultipleFileInput(FileInput):
         )
 
 class AjaxFileUploader(FileInput):
-    initial_text = ugettext_lazy('Currently testing')
-    input_text = ugettext_lazy('Change')
-    clear_checkbox_label = ugettext_lazy('Clear')
+    initial_text = gettext_lazy('Currently testing')
+    input_text = gettext_lazy('Change')
+    clear_checkbox_label = gettext_lazy('Clear')
 
     template_with_initial = (
         '%(initial_text)s: <a href="%(initial_url)s">%(initial)s</a>'
@@ -432,7 +432,7 @@ class Select(Widget):
     def render_option(self, selected_choices, option_value, option_label):
         if option_value is None:
             option_value = ''
-        option_value = force_text(option_value)
+        option_value = force_str(option_value)
         if option_value in selected_choices:
             selected_html = mark_safe(' selected="selected"')
             if not self.allow_multiple_selected:
@@ -440,15 +440,15 @@ class Select(Widget):
                 selected_choices.remove(option_value)
         else:
             selected_html = ''
-        return format_html('<option value="{}"{}>{}</option>', option_value, selected_html, force_text(option_label))
+        return format_html('<option value="{}"{}>{}</option>', option_value, selected_html, force_str(option_label))
 
     def render_options(self, selected_choices):
         # Normalize to strings.
-        selected_choices = set(force_text(v) for v in selected_choices)
+        selected_choices = set(force_str(v) for v in selected_choices)
         output = []
         for option_value, option_label in self.choices:
             if isinstance(option_label, (list, tuple)):
-                output.append(format_html('<optgroup label="{}">', force_text(option_value)))
+                output.append(format_html('<optgroup label="{}">', force_str(option_value)))
                 for option in option_label:
                     output.append(self.render_option(selected_choices, *option))
                 output.append('</optgroup>')
@@ -510,7 +510,7 @@ class ChoiceFieldRenderer(object):
                 ))
             else:
                 w = self.choice_input_class(self.name, self.value, self.attrs.copy(), choice, i, self.caption)
-                output.append(format_html(self.inner_html, choice_value=force_text(w), sub_widgets=''))
+                output.append(format_html(self.inner_html, choice_value=force_str(w), sub_widgets=''))
         return format_html(
             self.outer_html,
             id_attr=format_html(' id="{}"', id_) if id_ else '',
@@ -545,8 +545,8 @@ class ChoiceInput(SubWidget):
         self.name = name
         self.value = value
         self.attrs = attrs
-        self.choice_value = force_text(choice[0])
-        self.choice_label = force_text(choice[1])
+        self.choice_value = force_str(choice[0])
+        self.choice_label = force_str(choice[1])
         self.index = index
         self.caption = caption
         if 'id' in self.attrs:
@@ -588,7 +588,7 @@ class RadioChoiceInput(ChoiceInput):
 
     def __init__(self, *args, **kwargs):
         super(RadioChoiceInput, self).__init__(*args, **kwargs)
-        self.value = force_text(self.value)
+        self.value = force_str(self.value)
 
 class RadioFieldRenderer(ChoiceFieldRenderer):
     choice_input_class = RadioChoiceInput

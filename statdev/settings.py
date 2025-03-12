@@ -28,6 +28,7 @@ JCAPTCHA_CLEANUP_MINUTES=100
 # Define the following in the environment:
 DEBUG = env('DEBUG', False)
 SECRET_KEY = env('SECRET_KEY')
+ENABLE_DJANGO_LOGIN = True #TODO delete
 #if not DEBUG:
 #    ALLOWED_HOSTS = [env('ALLOWED_DOMAIN'), ]
 #else:
@@ -37,9 +38,9 @@ SECRET_KEY = env('SECRET_KEY')
 #AUTH_USER_MODEL = 'accounts.EmailUser'
 INSTALLED_APPS += [
 ###    'reversion',
+    'webtemplate_dbca',
     'crispy_forms',
     'bootstrap3',
-    'webtemplate_dbca',
     'django_q',
     'public',
     'rest_framework',
@@ -78,6 +79,7 @@ INSTALLED_APPS += [
     'oscar.apps.dashboard.communications.apps.CommunicationsDashboardConfig',
     'oscar.apps.dashboard.shipping.apps.ShippingDashboardConfig',
     # 3rd-party apps that oscar depends on
+    'crispy_bootstrap5',
     'haystack',
     'treebeard',
     'django_tables2',
@@ -148,6 +150,8 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.apps.communication.n
 TEMPLATES[0]['OPTIONS']['context_processors'].append('oscar.core.context_processors.metadata')
 
 WSGI_APPLICATION = 'statdev.wsgi.application'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 #LOGIN_URL = 'login'
 
@@ -307,7 +311,7 @@ if not os.path.exists(os.path.join(BASE_DIR, 'logs')):
 #}
 
 # django-crispy-forms
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+# CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Cache settings.
 #CACHES = {

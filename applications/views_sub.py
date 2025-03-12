@@ -307,7 +307,7 @@ class Referrals_Next_Action_Check():
         routes = flow.getAllRouteActions(app.routeid,workflowtype)
         action = routes[0]['routegroup']
         if action in DefaultGroups['grouplink']:
-            groupassignment = Group.objects.get(name=DefaultGroups['grouplink'][action])
+            groupassignment = SystemGroup.objects.get(name=DefaultGroups['grouplink'][action])
         else:
             groupassignment = None
         route = flow.getNextRouteObj(action,app.routeid,workflowtype)
