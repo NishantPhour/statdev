@@ -1,46 +1,44 @@
 
-{% with object.applicant as applicant %}
 <div class="col-sm-8 col-md-9 col-lg-4">
     <h4>Applicant details:</h4>
     <table class="table table-borderless">
         <tr>
             <th>Name</th>
-            <td>{{ applicant.get_full_name }}</td>
+            <td>{{ applicant.legal_first_name }}</td>
         </tr>
         <tr>
             <th>Date of birth</th>
-            <td>{{ applicant.dob }}</td>
+            <td>{{ applicant.legal_dob }}</td>
         </tr>
     </table>
 </div>
 <div class="col-sm-8 col-md-9 col-lg-4">
     <h4>Address details:</h4>
     <table class="table table-borderless">
-        {% with applicant.postal_address as address %}
             <tr>
                 <th>Postal address</th>
-                <td>{{ address.line1 }}
-                {% if address.line2 %}
-                <br>{{ address.line2 }}
+                <td>{{ postal_address.line1 }}
+                {% if postal_address.line2 %}
+                <br>{{ postal_address.line2 }}
                 {% endif %}
-                {% if address.line3 %}
-                <br>{{ address.line3 }}
+                {% if postal_address.line3 %}
+                <br>{{ postal_address.line3 }}
                 {% endif %}
                 </td>
             </tr>
             <tr>
                 <th>Town / Suburb</th>
-                <td>{{ address.locality }}</td>
+                <td>{{ postal_address.locality }}</td>
             </tr>
             <tr>
                 <th>State</th>
-                <td>{{ address.get_state_display }}</td>
+                <td>{{ postal_address.state }}</td>
             </tr>
             <tr>
                 <th>Postcode</th>
-                <td>{{ address.postcode }}</td>
+                <td>{{ postal_address.postcode }}</td>
             </tr>
-        {% endwith %}
+
     </table>
 </div>
 <div class="col-sm-8 col-md-9 col-lg-4">
@@ -60,5 +58,4 @@
         </tr>
     </table>
 </div>
-{% endwith %}
 

@@ -53,6 +53,7 @@ class ApprovalList(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
+        print('here')
         context = super(ApprovalList, self).get_context_data(**kwargs)
 
         APP_TYPE_CHOICES = []
@@ -123,6 +124,10 @@ class ApprovalList(ListView):
             row = {}
             row['app'] = app
             row['approval_url'] = app.approval_url
+            
+            if app.applicant is not None:
+                row['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+
         #    if app.group is not None:
 
             #if app.applicant:
@@ -157,6 +162,12 @@ class ApprovalDetails(LoginRequiredMixin,DetailView):
         context_processor = template_context(self.request)
         context['admin_staff'] = context_processor['admin_staff']
         context['approval_history'] = self.get_approval_history(app, [])
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+            context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
+        
+        
+        
         return context
 
     def get_approval_history(self,app,approvals):

@@ -57,10 +57,10 @@
                     <h4>Status:</h4>
                     <p>{{ object.get_state_display }}</p>
                     <h4>Assigned to:</h4>
-                    {% if object.assignee %}
+                    {% if assignee %}
                         <p>
-                        {% if object.assignee.first_name %}{{ object.assignee.first_name }} {{ object.assignee.last_name }}
-                        {% else %}{{ object.assignee.email }}
+                        {% if assignee.legal_first_name %}{{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
+                        {% else %}{{ assignee.email }}
                         {% endif %}
                         </p>
                     {% else %}
@@ -94,8 +94,8 @@
                                 <div class="col-sm-12 col-md-6 col-lg-8">
                                     {% if object.organisation %}
                                         {{ object.organisation.name }}
-                                    {% elif object.applicant %}
-                                        {{ object.applicant.get_full_name }}
+                                    {% elif applicant %}
+                                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
                                     {% endif %}
                                 </div>
                                 </div>
@@ -131,25 +131,25 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th>Postal address</th>
-                                    <td>{{ address.line1 }}</td>
+                                    <td>{{ postal_address.line1 }}</td>
                                 </tr>
                                 {% if address.line2 %}
                                 <tr>
                                     <td></td>
-                                    <td>{{ address.line2 }}</td>
+                                    <td>{{ postal_address.line2 }}</td>
                                 </tr>
                                 {% endif %}
                                 <tr>
                                     <th>Town / Suburb</th>
-                                    <td>{{ address.locality }}</td>
+                                    <td>{{ postal_address.locality }}</td>
                                 </tr>
                                 <tr>
                                     <th>State</th>
-                                    <td>{{ address.state }}</td>
+                                    <td>{{ postal_address.state }}</td>
                                 </tr>
                                 <tr>
                                     <th>Postcode</th>
-                                    <td>{{ address.postcode }}</td>
+                                    <td>{{ postal_address.postcode }}</td>
                                 </tr>
                             </table>
                         </div>

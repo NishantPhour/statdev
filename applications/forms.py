@@ -1244,7 +1244,7 @@ class ApplicationPermitForm(ApplicationFormMixin, ModelForm):
 
         # Location 
         if check_fields_exist(self.fields,['lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority','over_water']) is True and may_update == "True":
-            crispy_boxes.append(crispy_box('location_collapse', 'form_location' , 'Location','street_number_and_name','lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority',InlineRadios('over_water')) )
+            crispy_boxes.append(crispy_box('location_collapse', 'form_location' , 'Location','street_number_and_name','lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority','over_water') )
         else:
             try:
                del self.fields['over_water']
@@ -1900,6 +1900,12 @@ class ApplicationReferralConditionsPart5(ModelForm):
 
 
 class ReferralForm(ModelForm):
+    referee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Referral
         fields = ['referee', 'period', 'details']
@@ -1911,15 +1917,24 @@ class ReferralForm(ModelForm):
         self.helper = PopupFormHelper(self)
         self.helper.form_id = 'id_form_referral_create'
         self.helper.attrs = {'novalidate': ''}
-        # Limit the referee queryset.
-        referee = SystemGroup.objects.get(name='Statdev Referee')
-        existing_referees = app.referral_set.all().values_list('referee__email', flat=True)
-        self.fields['referee'].queryset = User.objects.filter(groups__in=[referee]).exclude(email__in=existing_referees)
-        # TODO: business logic to limit the document queryset.
-        # self.helper.form_id = 'id_form_refer_application'
-        self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
-        self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close' ))
+        
+        # Limit the referee queryset
+        referee_group = SystemGroup.objects.get(name='Statdev Referee')
+        all_referees = app.referral_set.all().distinct('referee')
+        referee_ids = all_referees.values_list('referee', flat=True)
+        group_members_list = referee_group.get_system_group_member_ids()
+        self.fields['referee'].queryset = SystemUser.objects.filter(id__in=group_members_list).exclude(id__in=referee_ids)
+        
+        # Define the form layout, placing the referee field at the top
+        self.helper.layout = Layout(
+            'referee',
+            'period',
+            'details',
+            FormActions(
+                Submit('save', 'Save', css_class='btn-lg ajax-submit'),
+                Submit('cancel', 'Cancel', css_class='ajax-close')
+            )
+        )
 
 
 class ReferralCompleteForm(ModelForm):
@@ -2259,11 +2274,15 @@ class ApplicationAssignNextAction(ModelForm):
 class AssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assignee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assignee']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignPersonForm, self).__init__(*args, **kwargs)
@@ -2272,7 +2291,8 @@ class AssignPersonForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
         assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
-        self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
+        usergroups = assigngroup.get_system_group_member_ids()
+        self.fields['assignee'].queryset = SystemUser.objects.filter(ledger_id__in=usergroups)
         self.fields['assignee'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():
@@ -2330,7 +2350,7 @@ class AssignOfficerForm(ModelForm):
         self.helper.form_id = 'id_form_assign_officer_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
+        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
         self.fields['assigned_officer'].queryset = User.objects.filter(groups__in=[assigngroup])
         self.fields['assigned_officer'].required = True
         # Disable all form fields.
@@ -2355,11 +2375,16 @@ class AssignOfficerForm(ModelForm):
 class ComplianceAssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assignee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assignee']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(ComplianceAssignPersonForm, self).__init__(*args, **kwargs)
@@ -2368,7 +2393,8 @@ class ComplianceAssignPersonForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
         assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
-        self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
+        usergroups = assigngroup.get_system_group_member_ids()
+        self.fields['assignee'].queryset = SystemUser.objects.filter(ledger_id__in=usergroups)
         self.fields['assignee'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():
@@ -2390,11 +2416,15 @@ class ComplianceAssignPersonForm(ModelForm):
 class AssignApplicantForm(ModelForm):
     """A form for assigning or change the applicant on application.
     """
-
+    applicant = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['applicant']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignApplicantForm, self).__init__(*args, **kwargs)
@@ -2402,9 +2432,8 @@ class AssignApplicantForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        
         applicant = self.initial['applicant']
-        self.fields['applicant'].queryset = User.objects.filter(pk=applicant)
+        self.fields['applicant'].queryset = SystemUser.objects.filter(id=applicant)
         self.fields['applicant'].required = True
         self.fields['applicant'].disabled = True
      
@@ -2603,7 +2632,7 @@ class AssignProcessorForm(ModelForm):
         self.helper.form_id = 'id_form_assign_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        processor = SystemGroup.objects.get(name='Statdev Processor')
+        processor = Group.objects.get(name='Statdev Processor')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[processor])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2637,7 +2666,7 @@ class AssignAssessorForm(ModelForm):
         self.helper.form_id = 'id_form_assign_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        assessor = Group.objects.get(name='Statdev Assessor')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[assessor])
         self.fields['assignee'].required = True
         # Disable all form fields.
@@ -2671,7 +2700,7 @@ class AssignApproverForm(ModelForm):
         self.helper.form_id = 'id_form_approve_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        approver = SystemGroup.objects.get(name='Statdev Approver')
+        approver = Group.objects.get(name='Statdev Approver')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[approver])
         self.fields['assignee'].required = True
         self.fields['assignee'].label = 'Manager'
@@ -2705,7 +2734,7 @@ class AssignEmergencyForm(ModelForm):
         self.helper.form_id = 'id_form_assign_emergency_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        emergency = SystemGroup.objects.get(name='Statdev Emergency')
+        emergency = Group.objects.get(name='Statdev Emergency')
         self.fields['assignee'].queryset = User.objects.filter(groups__in=[emergency])
         self.fields['assignee'].required = True
         # Disable all form fields.

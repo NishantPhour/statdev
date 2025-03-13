@@ -39,10 +39,10 @@
 				<div class="panel-body">
 					<h4>Submitted by:</h4>
 					<p>
-					{% if object.applicant.first_name %}
-                        {{ object.applicant.first_name }} {{ object.applicant.last_name }}
+					{% if applicant.first_name %}
+                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
 					{% else %}
-                        {{ object.applicant.email }}
+                        {{ applicant.email }}
 					{% endif %}
 					</p>
 					<h4>Lodged on</h4>
@@ -61,10 +61,10 @@
 					<h4>Status:</h4>
 					<p>{{ object.get_state_display }}</p>
 					<h4>Assigned to:</h4>
-					{% if object.assignee %}
+					{% if assignee %}
 					<p>
-					{% if object.assignee.first_name %}{{ object.assignee.first_name }} {{ object.assignee.last_name }}
-					{% else %}{{ object.assignee.email }}
+					{% if assignee.legal_first_name %}{{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
+					{% else %}{{ assignee.email }}
 					{% endif %}
 					</p>
 					{% else %}
@@ -95,8 +95,8 @@
 									<th>Name</th>
 									{% if object.organisation %}
 									<td>{{ object.organisation.name }}</td>
-									{% elif object.applicant %}
-									<td>{{ object.applicant.get_full_name }}</td>
+									{% elif applicant %}
+									<td>{{ applicant.legal_first_name }} {{ applicant.legal_last_name }}</td>
 									{% endif %}
 								</tr>
 								<tr>
@@ -128,16 +128,16 @@
 										<label>Postal Address</label>
 									</div>
 									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ object.applicant.postal_address.line1 }}
+										{{ postal_address.line1 }}
 									</div>
 								</div>
-								{% if object.applicant.postal_address.line2 %}
+								{% if postal_address.line2 %}
 								<div class="col-sm-12 col-md-12 col-lg-12">
 									<div class="col-sm-12 col-md-3 col-lg-3">
 										<label>Postal Address</label>
 									</div>
 									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ object.applicant.postal_address.line2 }}
+										{{ postal_address.line2 }}
 									</div>
 								</div> 
 								{% endif %}
@@ -146,7 +146,7 @@
 										<label>Town / Suburb</label>
 									</div>
 									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ object.applicant.postal_address.locality }}
+										{{ postal_address.locality }}
 									</div>
 								</div>		
 
@@ -155,7 +155,7 @@
 										<label>State</label>
 									</div>
 									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ object.applicant.postal_address.state }}
+										{{ postal_address.state }}
 									</div>
 								</div>
 
@@ -164,7 +164,7 @@
 									<label>Postcode</label>
 								</div>
 								<div class="col-sm-12 col-md-9 col-lg-9">
-									{{ object.applicant.postal_address.postcode }}
+									{{ postal_address.postcode }}
 								</div>
 							</div>
 						</div>

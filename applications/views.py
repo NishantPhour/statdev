@@ -185,6 +185,9 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
                 context['applications_unassigned'] = self.create_applist(applications_unassigned)
             # Rule: admin officers may self-assign applications.
             context['may_assign_processor'] = True
+        
+        
+        
         return context
 
     def create_applist(self, applications):
@@ -197,7 +200,25 @@ class HomePageOLD(LoginRequiredMixin, TemplateView):
             if app.group.id in usergroups:
                 if app.group is not None:
                     row['may_assign_to_person'] = 'True'
+            
+            if app.applicant:
+                applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                row['applicant'] = applicant            
+            
+            if app.assignee:
+                assignee = SystemUser.objects.get(ledger_id=app.assignee)
+                row['assignee'] = assignee
+
+            if app.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
+                row['submitted_by'] = submitted_by            
+
+            if app.assigned_officer:
+                assigned_officer = SystemUser.objects.get(ledger_id=app.assigned_officer)
+                row['assigned_officer'] = assigned_officer 
+            
             app_list.append(row)
+            
         return app_list
 
 
@@ -1266,21 +1287,33 @@ class ApplicationList(LoginRequiredMixin,ListView):
             row['may_assign_to_officer'] = 'False'
             row['app'] = app
 
-            # Create a distinct list of applicants 
+            # Create a distinct list of applicants
             if app.applicant:
                 applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                row['applicant'] = applicant
                 if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-                    context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
 
             # end of creation
             if app.group is not None:
                 if app.group.id in usergroups:
                     row['may_assign_to_person'] = 'True'
                     row['may_assign_to_officer'] = 'True'
+            
+            if app.assignee:
+                assignee = SystemUser.objects.get(ledger_id=app.assignee)
+                row['assignee'] = assignee
 
+            if app.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
+                row['submitted_by'] = submitted_by            
+
+            if app.assigned_officer:
+                assigned_officer = SystemUser.objects.get(ledger_id=app.assigned_officer)
+                row['assigned_officer'] = assigned_officer 
 
             context['app_list'].append(row)
         # TODO: any restrictions on who can create new applications?
@@ -1372,8 +1405,8 @@ class EmergencyWorksList(ListView):
                 if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-                    context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
             # end of creation
 
             if app.group is not None:
@@ -1497,8 +1530,8 @@ class ComplianceList(TemplateView):
             #     if applicant.ledger_id in context['app_applicants']:
             #         donothing = ''
             #     else:
-            #         context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-            #         context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+            #         context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+            #         context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
             
             # end of creation
 
@@ -1568,7 +1601,10 @@ class OrganisationAccessRequest(ListView):
     def get_context_data(self, **kwargs):
         context = super(OrganisationAccessRequest, self).get_context_data(**kwargs)
         context['orgs_pending_status'] = OrganisationPending.STATUS_CHOICES
-        context['orgs_pending_applicants'] = OrganisationPending.objects.all().values('email_user','email_user__first_name','email_user__last_name').distinct('email_user')
+        pending_org = OrganisationPending.objects.all().distinct('email_user')
+        email_user_ids = pending_org.values_list('email_user', flat=True)
+        applicants = SystemUser.objects.filter(ledger_id__in=email_user_ids)
+        context['orgs_pending_applicants'] = applicants
         query = Q()
         if 'q' in self.request.GET and self.request.GET['q']:
             query_str = self.request.GET['q']
@@ -2322,6 +2358,7 @@ class ApplicationApply(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ApplicationApply, self).get_context_data(**kwargs)
         context['page_heading'] = 'Create new application'
+
        
         return context
 
@@ -2477,7 +2514,20 @@ class ApplicationDetail(DetailView):
         #emailGroup('HTML TEST EMAIL',emailcontext,'email.html' ,None,None,None,'Processor')
         if app.assignee is not None:
             context['application_assignee_id'] = app.assignee
+            
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+            context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
 
+        if app.assignee is not None:
+            context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+
+        if app.assigned_officer is not None:
+            context['assigned_officer'] = SystemUser.objects.get(ledger_id=app.assigned_officer)
+        
+        if app.submitted_by is not None:
+            context['submitted_by'] = SystemUser.objects.get(ledger_id=app.submitted_by)        
+            
         context['may_assign_to_person'] = 'False'
         usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         context['stakeholder_communication'] = StakeholderComms.objects.filter(application=app)
@@ -3915,7 +3965,6 @@ class ApplicationUpdate(LoginRequiredMixin, UpdateView):
         # TODO: business logic to check the application may be changed.
         app = self.get_object()
 
-
         if app.state == 18:
              return HttpResponseRedirect(reverse('application_booking', args=(app.id,)))
 
@@ -3934,7 +3983,6 @@ class ApplicationUpdate(LoginRequiredMixin, UpdateView):
         if app.assignee is None and float(app.routeid) > 1:
              messages.error(self.request, 'Must be assigned to you before any changes can be made.')
              return HttpResponseRedirect("/")
-
 
         # Rule: if the application status is 'draft', it can be updated.
         context = {}
@@ -3975,7 +4023,6 @@ class ApplicationUpdate(LoginRequiredMixin, UpdateView):
         return super(ApplicationUpdate, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-
         context = super(ApplicationUpdate, self).get_context_data(**kwargs)
         context['page_heading'] = 'Update application details'
         context['left_sidebar'] = 'yes'
@@ -4010,7 +4057,10 @@ class ApplicationUpdate(LoginRequiredMixin, UpdateView):
 
         if app.assignee is None:
            context['workflow_actions'] = []
-
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+            context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
+            
         if app.app_type == app.APP_TYPE_CHOICES.part5:
             part5 = Application_Part5()
             context = part5.get(app, self, context)
@@ -5082,6 +5132,8 @@ class ApplicationRefer(LoginRequiredMixin, CreateView):
 #            app.routeid = nextroute
 
         self.object = form.save(commit=False)
+        referee = form.cleaned_data['referee'].ledger_id.id
+        self.object.referee = referee
         self.object.application = app
         #self.object.sent_date = date.today()
         self.object.save()
@@ -5235,6 +5287,7 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             assignee = None
             assessed_by = self.request.user.id 
             groupassignment = SystemGroup.objects.get(name=DefaultGroups['grouplink'][action])
+            #TODO check this
             if app.assigned_officer:
                assigned_officer = EmailUser.objects.get(ledger_id=app.assigned_officer)
                if assigned_officer.groups().filter(group__in=[groupassignment.name]).exists():
@@ -5383,12 +5436,12 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
                applicant = SystemUser.objects.get(ledger_id=app.applicant)
                StakeholderComms.objects.create(application=app,
                                                 email=applicant.email,
-                                                name=applicant.first_name + ' '+ applicant.last_name,
+                                                name=applicant.legal_first_name + ' '+ applicant.legal_last_name,
                                                 sent_date=date.today(),
                                                 role=1,
                                                 comm_type=1
                )
-               emailcontext = {'person': applicant.first_name + ' '+ applicant.last_name}
+               emailcontext = {'person': applicant.legal_first_name + ' '+ applicant.legal_last_name}
                sendHtmlEmail([applicant.email], 'Appplication has progressed', emailcontext, 'application-stakeholder-comms.html', None, None, None)
 
                # get only applicant name and email
@@ -5448,7 +5501,7 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
          submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
          emailcontext = {}
          emailcontext['app'] = app
-
+         emailcontext['applicant'] = SystemUser.objects.get(ledger_id=app.applicant) 
 #        if app.app_type == 3:
          emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
          emailcontext['person'] = app.submitted_by
@@ -5461,7 +5514,8 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
 
          if app.app_type == 3:
             emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
-            emailcontext['person'] = app.submitted_by 
+            emailcontext['person'] = app.submitted_by
+            submitted_by = SystemUser.objects.get(ledger_id=submitted_by) 
             emailcontext['EXTERNAL_URL'] = settings.EXTERNAL_URL
             sendHtmlEmail([submitted_by.email], 'Final Report - Part  - '+str(app.id), emailcontext, 'application-part5-final-report.html', None, None, None)
 
@@ -5827,7 +5881,12 @@ class ApplicationAssignPerson(LoginRequiredMixin, UpdateView):
         return reverse('application_update', args=(self.object.pk,))
 
     def form_valid(self, form):
-        self.object = form.save(commit=True)
+        self.object = form.save(commit=False)  # Do not commit the save yet
+
+        assignee = form.cleaned_data['assignee'].ledger_id.id  # Get the selected assignee from the form
+        self.object.assignee = assignee  # Assign the selected assignee to the application
+        self.object.save()  # Save the application
+        
         app = self.object
 
         flow = Flow()
@@ -6035,6 +6094,11 @@ class ComplianceAssignPerson(LoginRequiredMixin, UpdateView):
         return reverse('compliance_approval_update_internal', args=(self.object.pk,))
 
     def form_valid(self, form):
+        self.object = form.save(commit=False)  # Do not commit the save yet
+
+        assignee = form.cleaned_data['assignee'].ledger_id.id  # Get the selected assignee from the form
+        self.object.assignee = assignee  # Assign the selected assignee to the application
+        self.object.save()  # Save the application
         self.object = form.save(commit=True)
         app = self.object
 
@@ -6180,7 +6244,9 @@ class ApplicationAssignApplicant(LoginRequiredMixin, UpdateView):
         return super(ApplicationAssignApplicant, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
+        self.object = form.save(commit=False)  # Do not commit the save yet
+        applicant = form.cleaned_data['applicant'].ledger_id.id  # Get the selected assignee from the form
+        self.object.applicant = applicant  # Assign the selected assignee to the application
         self.object.organisation = None
         self.object.save()
 
@@ -6623,7 +6689,7 @@ class ApplicationIssue(LoginRequiredMixin, UpdateView):
                 initial['abn'] = app.organisation.abn
             elif app.applicant:
                 applicant = SystemUser.objects.get(ledger_id=app.applicant)
-                initial['holder'] = applicant.first_name + " " + applicant.last_name
+                initial['holder'] = applicant.legal_first_name + " " + applicant.legal_last_name
 
         return initial
 
@@ -7421,6 +7487,19 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
         app = self.get_object()
         # context['conditions'] = Compliance.objects.filter(approval_id=app.id)
         context['conditions'] = Compliance.objects.filter(id=app.id)
+        
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+        
+        if app.assignee is not None:
+            context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+        
+        if app.submitted_by is not None:
+            context['submitted_by'] = SystemUser.objects.get(ledger_id=app.submitted_by) 
+        
+        if app.assessed_by is not None:
+            context['assessed_by'] = SystemUser.objects.get(ledger_id=app.assessed_by) 
+        
         return context
 
     def post(self, request, *args, **kwargs):
@@ -7613,6 +7692,19 @@ class ComplianceApprovalDetails(LoginRequiredMixin,DetailView):
         context = super(ComplianceApprovalDetails, self).get_context_data(**kwargs)
         app = self.get_object()
         # context['conditions'] = Compliance.objects.filter(approval_id=app.id)
+        
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+        
+        if app.assignee is not None:
+            context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+        
+        if app.submitted_by is not None:
+            context['submitted_by'] = SystemUser.objects.get(ledger_id=app.submitted_by) 
+        
+        if app.assessed_by is not None:
+            context['assessed_by'] = SystemUser.objects.get(ledger_id=app.assessed_by) 
+        
         context['conditions'] = Compliance.objects.filter(id=app.id)
         return context
 
@@ -9914,8 +10006,8 @@ class PersonOther(LoginRequiredMixin, DetailView):
             #     if applicant.ledger_id in context['app_applicants']:
             #         donothing = ''
             #     else:
-            #         context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-            #         context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+            #         context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+            #         context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
             
             # end of creation
 
@@ -9991,11 +10083,12 @@ class PersonOther(LoginRequiredMixin, DetailView):
                      row = {}
                      row['app'] = app
                      if app.applicant:
-                         if app.applicant in context['app_applicants']:
+                         applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                         if applicant.ledger_id in context['app_applicants']:
                              donothing = ''
                          else:
-                             context['app_applicants'][app.applicant] = app.applicant.first_name + ' ' + app.applicant.last_name
-                             context['app_applicants_list'].append({"id": app.applicant, "name": app.applicant.first_name + ' ' + app.applicant.last_name})
+                             context['app_applicants'][app.applicant] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                             context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
 
                      context['app_list'].append(row)
 
@@ -10065,8 +10158,8 @@ class PersonOther(LoginRequiredMixin, DetailView):
                     #     if applicant.ledger_id in context['app_applicants']:
                     #         donothing = ''
                     #     else:
-                    #         context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-                    #         context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+                    #         context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                    #         context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
                     
                     # end of creation
 
@@ -10389,8 +10482,8 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                         if applicant.ledger_id in context['app_applicants']:
                             donothing = ''
                         else:
-                            context['app_applicants'][applicant.ledger_id] = applicant.first_name + ' ' + applicant.last_name
-                            context['app_applicants_list'].append({"id": applicant.ledger_id, "name": applicant.first_name + ' ' + applicant.last_name  })
+                            context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                            context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
                     # end of creation
 
                      context['app_list'].append(row)

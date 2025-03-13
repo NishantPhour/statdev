@@ -118,12 +118,12 @@
         </p>
 	</div>
         <h4>Assigned to:</h4>
-        {% if object.assignee %}
+        {% if assignee %}
         <p>
-        {% if object.assignee.first_name %}
-		{{ object.assignee.first_name }} {{ object.assignee.last_name }}
+        {% if assignee.legal_first_name %}
+		{{ assignee.legal_first_name }} {{ assignee.legal_first_name }}
         {% else %}
-		{{ object.assignee.email }}
+		{{ assignee.email }}
         {% endif %}
         </p>
         {% else %}
@@ -132,12 +132,12 @@
 
 	
         <h4>Assigned Officer:</h4>
-        {% if object.assigned_officer %}
+        {% if assigned_officer %}
         <p>
-        {% if object.assigned_officer.first_name %}
-                {{ object.assigned_officer.first_name }} {{ object.assigned_officer.last_name }}
+        {% if assigned_officer.legal_first_name %}
+                {{ assigned_officer.legal_first_name }} {{ assigned_officer.legal_last_name }}
         {% else %}
-                {{ object.assigned_officer.email }}
+                {{ assigned_officer.email }}
         {% endif %}
         </p>
         {% else %}

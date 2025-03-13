@@ -8,6 +8,7 @@ from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferr
 from fpdf import FPDF
 import textwrap
 import os
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress
 
 class PDF(FPDF):
     def header(self):
@@ -259,10 +260,12 @@ class PDFtool(FPDF):
 
          pdf.set_font('Arial', '', 10)
          pdf = self.horizontal_line(pdf)
+         #TODO check this
          if app.organisation: 
              holder_name = app.organisation.name 
          else:
-             holder_name = app.applicant.first_name + ' ' + app.applicant.last_name
+             applicant = SystemUser.objects.get(ledger_id=app.applicant)
+             holder_name = applicant.legal_first_name + ' ' + applicant.legal_last_name
 
 
          pdf = self.column_para(pdf,'Licence/Permit holder',holder_name,None)
@@ -641,7 +644,8 @@ class PDFtool(FPDF):
          if app.organisation:
              holder_name = app.organisation.name
          else:
-             holder_name = app.applicant.first_name + ' ' + app.applicant.last_name
+             applicant = SystemUser.objects.get(ledger_id=app.applicant)
+             holder_name = applicant.legal_first_name + ' ' + applicant.legal_last_name
 
          pdf.cell(6, 5, ' ',0,0,'L')
          pdf.cell(60, 5, 'APPLICANT',0,0,'L')
@@ -805,8 +809,9 @@ class PDFtool(FPDF):
              holder_name = app.organisation.name
              holder_address = app.organisation.postal_address
          else:
-             holder_name = app.applicant.first_name + ' ' + app.applicant.last_name
-             holder_address = app.applicant.postal_address
+             applicant = SystemUser.objects.get(ledger_id=app.applicant)
+             holder_name = applicant.legal_first_name + ' ' + applicant.legal_last_name
+             holder_address = SystemUserAddress.objects.get(system_user=applicant, address_type='postal_address')
          landowner = '----'
          land_description = '----'
          if app.application.landowner:
@@ -949,7 +954,8 @@ class PDFtool(FPDF):
          if app.organisation:
              holder_name = app.organisation.name
          else:
-             holder_name = app.applicant.first_name + ' ' + app.applicant.last_name
+             applicant = SystemUser.objects.get(ledger_id=app.applicant)
+             holder_name = applicant.legal_first_name + ' ' + applicant.legal_last_name
 
          pdf.cell(0,5,' ', 0,1,'L')
          pdf.cell(6, 5, ' ',0,0,'L')
@@ -1078,7 +1084,8 @@ class PDFtool(FPDF):
          if app.organisation:
              holder_name = app.organisation.name
          else:
-             holder_name = app.applicant.first_name + ' ' + app.applicant.last_name
+             applicant = SystemUser.objects.get(ledger_id=app.applicant)
+             holder_name = applicant.legal_first_name + ' ' + applicant.legal_last_name
 
          pdf.cell(0,5,' ', 0,1,'L')
          pdf.cell(6, 5, ' ',0,0,'L')

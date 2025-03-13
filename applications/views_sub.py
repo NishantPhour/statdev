@@ -410,6 +410,19 @@ class FormsList():
              if app.group is not None:
                  if app.group.id in usergroups:
                      row['may_assign_to_person'] = 'True'
+             
+             if app.assignee:
+                assignee = SystemUser.objects.get(ledger_id=app.assignee)
+                row['assignee'] = assignee
+
+             if app.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
+                row['submitted_by'] = submitted_by            
+
+             if app.assigned_officer:
+                assigned_officer = SystemUser.objects.get(ledger_id=app.assigned_officer)
+                row['assigned_officer'] = assigned_officer 
+
              context['app_list'].append(row)
 
         return context
@@ -467,11 +480,15 @@ class FormsList():
             row['app'] = app
             row['approval_url'] = app.approval_url
             if app.applicant:
-                if app.applicant.id in context['app_applicants']:
+                applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                row['applicant'] = applicant
+                if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][app.applicant.id] = app.applicant.first_name + ' ' + app.applicant.last_name
-                    context['app_applicants_list'].append({"id": app.applicant.id, "name": app.applicant.first_name + ' ' + app.applicant.last_name})
+                    #TODO check this
+                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
+
 
             context['app_list'].append(row)
 
@@ -499,6 +516,8 @@ class FormsList():
 
         context['app_appstatus'] = list(APP_STATUS_CHOICES)
         context['compliance'] = items
+
+        #TODO check this: do we need to include applicant in context data
 
         return context
 
