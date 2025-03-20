@@ -190,7 +190,7 @@
                                                 {% if app_obj.app.state == 14 %} 
 							<!-- do nothing -->
 						{% else %}
-                                                {% if request.user == app_obj.app.assignee %}
+                                                {% if request.user.id == app_obj.app.assignee %}
                                                 <li><a href="{% url 'application_update' app_obj.app.pk %}" title="Process">Process</a></li>
                                                 {% else %}
 							{% if app_obj.may_assign_to_person == "True" %}

@@ -1346,6 +1346,7 @@ class ApplicationChange(ApplicationFormMixin, ModelForm):
 
         self.helper = BaseFormHelper()
         self.fields['proposed_development_description'].label = "Details of proposed ammendment"
+        self.fields['app_type'].widget.attrs.update({'class': 'form-control'})
         self.fields['app_type'].disabled = True
         self.fields['title'].disabled = True
         self.helper.form_id = 'id_form_change_ammend'
@@ -1422,7 +1423,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 
         may_update =  self.initial["workflow"]['may_update']
         show_form_buttons = self.initial["workflow"]['show_form_buttons']
-
         self.fields['title'].required = False
         self.fields['river_lease_require_river_lease'].required = False
         self.fields['river_lease_reserve_licence'].required = False
@@ -1540,9 +1540,9 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 
                  crispy_boxes.append(HTML('{% include "applications/application_river_lease_32.html" %}'))
 
-        # Details of Proposed Developmen
+        # Details of Proposed Development
         if check_fields_exist(self.fields,['cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans']) is True and may_update == "True":
-             crispy_boxes.append(crispy_box('proposed_development_collapse', 'form_proposed_development' , 'Details of Proposed Development','cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans'))
+            crispy_boxes.append(crispy_box('proposed_development_collapse', 'form_proposed_development' , 'Details of Proposed Development','cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans'))
         else:
              try:
                 del self.fields['cost']
@@ -1590,7 +1590,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
              crispy_boxes.append(HTML('{% include "applications/application_referrals.html" %}'))
         if self.initial["workflow"]["hidden"]["conditions"] == 'False':
              crispy_boxes.append(HTML('{% include "applications/application_conditions.html" %}'))
-
         # Assessment Update Step
         #if check_fields_exist(self.fields,['assessment_start_date']) is True and may_update == "True":
         if self.initial["workflow"]["hidden"]["assessments"] == 'False':
@@ -1721,7 +1720,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
                       else:
                           self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
                           self.helper.add_input(Submit('cancel', 'Cancel'))
-
 
         if 'assessment_start_date' in self.fields:
             self.fields['assessment_start_date'].label = "Start Date" 
@@ -1908,14 +1906,14 @@ class ReferralForm(ModelForm):
 
     class Meta:
         model = Referral
-        fields = ['referee', 'period', 'details']
+        fields = ['period', 'details']
 
     def __init__(self, *args, **kwargs):
         # Application must be passed in as a kwarg.
         app = kwargs.pop('application')
         super(ReferralForm, self).__init__(*args, **kwargs)
         self.helper = PopupFormHelper(self)
-        self.helper.form_id = 'id_form_referral_create'
+        self.helper.form_id = 'id_form_modals'
         self.helper.attrs = {'novalidate': ''}
         
         # Limit the referee queryset
@@ -1923,7 +1921,7 @@ class ReferralForm(ModelForm):
         all_referees = app.referral_set.all().distinct('referee')
         referee_ids = all_referees.values_list('referee', flat=True)
         group_members_list = referee_group.get_system_group_member_ids()
-        self.fields['referee'].queryset = SystemUser.objects.filter(id__in=group_members_list).exclude(id__in=referee_ids)
+        self.fields['referee'].queryset = SystemUser.objects.filter(ledger_id__in=group_members_list).exclude(id__in=referee_ids)
         
         # Define the form layout, placing the referee field at the top
         self.helper.layout = Layout(
@@ -2117,7 +2115,7 @@ class ConditionSuspension(ModelForm):
         self.helper.add_input(Submit('cancel', 'Cancel' , css_class='ajax-close'))
 
 class ConditionCreateForm(ModelForm):
-    predefined_conditions = ModelChoiceField(queryset=ConditionPredefined.objects.filter(status=1).order_by('title'), help_text="Select a predefined condition from the drop down to append condition rules to condition automtically.", widget=Select(attrs={'onchange':'select_condition(this.id);'})) 
+    predefined_conditions = ModelChoiceField(queryset=ConditionPredefined.objects.filter(status=1).order_by('title'), help_text="Select a predefined condition from the drop down to append condition rules to condition automtically.", widget=forms.Select(attrs={'class': 'form-control'})) 
 
     class Meta:
         model = Condition
@@ -2126,6 +2124,8 @@ class ConditionCreateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ConditionCreateForm, self).__init__(*args, **kwargs)
         self.helper = PopupFormHelper(self)
+        self.fields['recur_pattern'].widget = forms.Select(attrs={'class': 'form-control'})
+        self.fields['recur_pattern'].choices = self.fields['recur_pattern'].choices
 
         if self.initial['may_assessor_advise'] != True:
             self.fields['predefined_conditions'].required = False
@@ -2338,11 +2338,16 @@ class AssignCancelForm(ModelForm):
 class AssignOfficerForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assigned_officer = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assigned_officer']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignOfficerForm, self).__init__(*args, **kwargs)
@@ -2350,8 +2355,9 @@ class AssignOfficerForm(ModelForm):
         self.helper.form_id = 'id_form_assign_officer_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
-        self.fields['assigned_officer'].queryset = User.objects.filter(groups__in=[assigngroup])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
+        users_in_group = assigngroup.get_system_group_member_ids()
+        self.fields['assigned_officer'].queryset = SystemUser.objects.filter(ledger_id__in=users_in_group)
         self.fields['assigned_officer'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():

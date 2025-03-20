@@ -238,11 +238,12 @@ class Application_Emergency():
         #context['workflow_actions'] = flow.getAllRouteActions(app.routeid,workflowtype)
         context['formcomponent'] = flow.getFormComponent(app.routeid,workflowtype)
         context['workflowoptions'] = flow.getWorkflowOptions()
+        applicant = SystemUser.objects.get(ledger_id=app.applicant)
 
         if app.organisation:
            context['address'] = app.organisation.postal_address
         elif app.applicant:
-           context['address'] = app.applicant.postal_address
+           context['address'] = SystemUserAddress.objects.get(system_user=applicant, address_type='postal_address')
 
         return context
 

@@ -69,11 +69,11 @@
 
                             <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
-                            <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ app_obj.app.organisation }}</td>
                             <td>{{ app_obj.app.get_state_display }}</td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
                             <td></td>
                         </tr>
                         {% endfor %}

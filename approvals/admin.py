@@ -14,7 +14,7 @@ admin.autodiscover()
 class ApprovalsAdmin(ModelAdmin):
     date_hierarchy = 'start_date'
 #    filter_horizontal = ('records',)
-    list_display = ('id', 'title','app_type', 'applicant','application', 'start_date', 'expiry_date', 'status', 'issue_date')
+    list_display = ('id', 'title','app_type', 'applicant','application', 'start_date', 'expiry_date', 'status', 'issue_date',)
     list_filter = ('app_type','status')
     search_fields = ('applicant__email', 'organisation__name', 'title')
 

@@ -17,6 +17,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from extra_views import ModelFormSetView
 from itertools import chain
+from django.utils.decorators import method_decorator
 import pdfkit
 import re
 from actions.models import Action
@@ -46,6 +47,7 @@ import os.path
 from applications.views_pdf import PDFtool
 import mimetypes
 from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from decimal import Decimal
 # from ledger.payments.models import Invoice
@@ -880,8 +882,8 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
                system_user = SystemUser.objects.get(ledger_id=pending_org.email_user)
                OrganisationContact.objects.create(
                                                   email=system_user.email,
-                                                  first_name=system_user.first_name,
-                                                  last_name=system_user.last_name,
+                                                  first_name=system_user.legal_first_name,
+                                                  last_name=system_user.legal_last_name,
                                                   phone_number=system_user.phone_number,
                                                   mobile_number=system_user.mobile_number,
                                                   fax_number=system_user.fax_number,
@@ -894,7 +896,7 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
               else:
                  messages.success(self.request, 'Your company has been submitted for approval and now pending attention by our Staff.')
                  action = Action(
-                      content_object=pending_org, user=self.request.user,
+                      content_object=pending_org, user=self.request.user.id,
                       action='Organisation is pending approval')
                  action.save()
                  emailcontext = {'pending_org': pending_org,  }
@@ -1078,7 +1080,7 @@ class ApplicationFlowRoutes(LoginRequiredMixin,TemplateView):
             if 'options' in workflow_steps:
                 del workflow_steps['options']
             #context['workflow'] = sorted(workflow_steps.items(), key=lambda dct: float(dct[0]))
-            context['workflow'] = workflow_steps
+            context['workflow'] = workflow_steps.items()
             context['workflow_route'] = flow.getAllRouteConf(app_type,route)
             if 'condition_based_actions' in context['workflow_route']:
                 context['workflow_route']['condition_based_actions'] = context['workflow_route']['condition-based-actions']
@@ -1161,8 +1163,6 @@ class ApplicationFlowDiagrams(LoginRequiredMixin,TemplateView):
                #b = i[0].replace(".","-")
                #print (b)
                
- 
-            print (context['workflow'])
             context['workflow_route'] = flow.getAllRouteConf(app_type,route)
             if 'condition_based_actions' in context['workflow_route']:
                 context['workflow_route']['condition_based_actions'] = context['workflow_route']['condition-based-actions']
@@ -2752,9 +2752,20 @@ class ApplicationActions(LoginRequiredMixin,DetailView):
     def get_context_data(self, **kwargs):
         context = super(ApplicationActions, self).get_context_data(**kwargs)
         app = self.get_object()
+        # context['user'] = SystemUser.objects.get(ledger_id = app.app)
         # TODO: define a GenericRelation field on the Application model.
-        context['actions'] = Action.objects.filter(
+        actions = Action.objects.filter(
             content_type=ContentType.objects.get_for_model(app), object_id=app.pk).order_by('-timestamp')
+
+        new_actions = []
+        # Updating the user field with systemuser from ledger api
+        for action in actions:
+            if action.user:
+                new_user = SystemUser.objects.get(ledger_id = action.user)
+                action.user = new_user
+            new_actions.append(action)
+        context['actions'] = new_actions      
+                
         return context
 
 class ApplicationComms(LoginRequiredMixin,DetailView):
@@ -3534,12 +3545,12 @@ class ApplicationChange(LoginRequiredMixin, CreateView):
         initial['description'] = application.description
 #       initial['cost'] = application.cost
 
-        if action == "amend": 
+        if action == "amend":
             if approval.app_type == 3:
                if approval.ammendment_application: 
                    initial['app_type'] = 6
                else:
-                   raise ValidationError('There was and error raising your Application Change.')
+                   raise ValidationError('There was an error raising your Application Change.')
             elif approval.app_type == 1:
                    initial['app_type'] = 1
             elif approval.app_type == 2:
@@ -3553,8 +3564,7 @@ class ApplicationChange(LoginRequiredMixin, CreateView):
         elif action == 'renewpermit':
             initial['app_type'] = 10
         else:
-            raise ValidationError('There was and error raising your Application Change.')
-
+            raise ValidationError('There was an error raising your Application Change.')
         return initial
 
     def post(self, request, *args, **kwargs):
@@ -3576,7 +3586,7 @@ class ApplicationChange(LoginRequiredMixin, CreateView):
             if approval.ammendment_application:
                 self.object.app_type = 6
             else:
-                raise ValidationError('There was and error raising your Application Change.')
+                raise ValidationError('There was an error raising your Application Change.')
         elif action == 'requestamendment':
                 self.object.app_type = 5
         elif action == 'renewlicence':
@@ -3584,7 +3594,7 @@ class ApplicationChange(LoginRequiredMixin, CreateView):
         elif action == 'renewpermit':
                 self.object.app_type = 10
         else: 
-            raise ValidationError('There was and error raising your Application Change.')
+            raise ValidationError('There was an error raising your Application Change.')
 
         self.object.proposed_development_description = forms_data['proposed_development_description'] 
         self.object.applicant = self.request.user.id
@@ -4057,9 +4067,20 @@ class ApplicationUpdate(LoginRequiredMixin, UpdateView):
 
         if app.assignee is None:
            context['workflow_actions'] = []
+           
         if app.applicant is not None:
             context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
             context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
+       
+        if app.assignee is not None:
+            context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+
+        if app.assigned_officer is not None:
+            context['assigned_officer'] = SystemUser.objects.get(ledger_id=app.assigned_officer)
+        
+        if app.submitted_by is not None:
+            context['submitted_by'] = SystemUser.objects.get(ledger_id=app.submitted_by)  
+        
             
         if app.app_type == app.APP_TYPE_CHOICES.part5:
             part5 = Application_Part5()
@@ -4947,7 +4968,7 @@ class ApplicationLodge(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         #return reverse('application_list')
-        return reverse('home_page')
+        return reverse('home')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
@@ -5054,7 +5075,6 @@ class ApplicationLodge(LoginRequiredMixin, UpdateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
-
 class ApplicationRefer(LoginRequiredMixin, CreateView):
     """A view to create a Referral object on an Application (if allowed).
     """
@@ -5092,7 +5112,8 @@ class ApplicationRefer(LoginRequiredMixin, CreateView):
         """Override to redirect to the referral's parent application detail view.
         """
         #messages.success(self.request, 'Referral has been added! ')
-        return reverse('application_refer', args=(self.object.application.pk,))
+        #TODO check this
+        return reverse('home')
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationRefer, self).get_context_data(**kwargs)
@@ -5124,7 +5145,6 @@ class ApplicationRefer(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         app = Application.objects.get(pk=self.kwargs['pk'])
-
 #        if app.app_type == app.APP_TYPE_CHOICES.part5:
 #            flow = Flow()
 #            flow.get('part5')
@@ -5396,7 +5416,6 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             self.ammendment_approved(app) 
         if self.object.state == '8':
             self.decline_notification(app, forms_data)
- 
         if 'process' in route:
             if 'draft_completed' in route['process']:
                 self.draft_completed(app)
@@ -5514,8 +5533,10 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
 
          if app.app_type == 3:
             emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
+            if app.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id = app.submitted_by)
+                emailcontext['person'] = submitted_by
             emailcontext['person'] = app.submitted_by
-            submitted_by = SystemUser.objects.get(ledger_id=submitted_by) 
             emailcontext['EXTERNAL_URL'] = settings.EXTERNAL_URL
             sendHtmlEmail([submitted_by.email], 'Final Report - Part  - '+str(app.id), emailcontext, 'application-part5-final-report.html', None, None, None)
 
@@ -5527,13 +5548,11 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
                 json_data = json.loads(self.request.POST['attach_to_email_json'])
                 doc = Record.objects.get(id=json_data['doc_id'])
                 attachment1 = doc.upload.path
-         print ("ATTACHMENT")
-         print (attachment1)
          emailcontext = {}
          emailcontext['app'] = app
 
          emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
-         emailcontext['person'] = app.submitted_by
+         emailcontext['person'] = submitted_by
          emailcontext['communication_details'] =  forms_data['details']
          sendHtmlEmail([submitted_by.email], Application.APP_TYPE_CHOICES[app.app_type]+' application declined - '+str(app.id), emailcontext, 'application-declined.html', None, None, None, attachment1)
 
@@ -5969,8 +5988,12 @@ class ApplicationAssignOfficer(LoginRequiredMixin, UpdateView):
         return reverse('application_update', args=(self.object.pk,))
 
     def form_valid(self, form):
-        self.object = form.save(commit=True)
+        
+        self.object = form.save(commit=False)
+        assigned_officer = form.cleaned_data['assigned_officer'].ledger_id.id
+        self.object.assigned_officer = assigned_officer
         app = self.object
+        self.object.save()
 
         flow = Flow()
         workflowtype = flow.getWorkFlowTypeFromApp(app)
@@ -6108,7 +6131,7 @@ class ComplianceAssignPerson(LoginRequiredMixin, UpdateView):
         #flow.get(workflowtype)
         #emailcontext = {'person': app.assignee}
         #emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
-        #if self.request.user != app.assignee:
+        #if self.request.user.id != app.assignee:
         #    sendHtmlEmail([app.assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
 
 
@@ -6321,7 +6344,7 @@ class ApplicationAssign(LoginRequiredMixin, UpdateView):
                 if app.state != app.APP_STATE_CHOICES.with_assessor:
                     messages.error(self.request, 'You are unable to assign this application for approval/issue!')
                     return HttpResponseRedirect(app.get_absolute_url())
-                if app.assignee != request.user and not request.user.is_superuser:
+                if app.assignee != request.user.id and not request.user.is_superuser:
                     messages.error(self.request, 'You are unable to assign this application for approval/issue!')
                     return HttpResponseRedirect(app.get_absolute_url())
         return super(ApplicationAssign, self).get(request, *args, **kwargs)
@@ -6660,7 +6683,7 @@ class ApplicationIssue(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         # Rule: only the assignee (or a superuser) can perform this action.
         app = self.get_object()
-        if app.assignee == request.user or request.user.is_superuser:
+        if app.assignee == request.user.id or request.user.is_superuser:
             return super(ApplicationIssue, self).get(request, *args, **kwargs)
         messages.error(
             self.request, 'You are unable to issue this application!')
@@ -6790,7 +6813,7 @@ class OLDComplianceAssignPerson(LoginRequiredMixin, UpdateView):
             app.routeid = 1
         initial['assigngroup'] = app.group
         return initial
-
+#TODO check this
 class ReferralComplete(LoginRequiredMixin, UpdateView):
     """A view to allow a referral to be marked as 'completed'.
     """
@@ -6813,7 +6836,7 @@ class ReferralComplete(LoginRequiredMixin, UpdateView):
             return HttpResponseRedirect(referral.application.get_absolute_url())
         # Rule: only the referee (or a superuser) can mark a referral
         # "complete".
-        if referral.referee == request.user or request.user.is_superuser:
+        if referral.referee == request.use.id or request.user.is_superuser:
             return super(ReferralComplete, self).get(request, *args, **kwargs)
         messages.error(
             self.request, 'You are unable to mark this referral as complete!')
@@ -7247,6 +7270,8 @@ class ReferralDelete(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ReferralDelete, self).get_context_data(**kwargs)
         context['referral'] = self.get_object()
+        referee = SystemUser.objects.get(ledger_id=self.get_object().referee)
+        context['referee'] = referee
         return context
 
     def get_success_url(self, application_id):
@@ -7443,7 +7468,7 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
         self.object = self.get_object()
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
-        org = Delegate.objects.filter(email_user=self.request.user, organisation=self.object.organisation).count()
+        org = Delegate.objects.filter(email_user=self.request.user.id, organisation=self.object.organisation).count()
         assessor = SystemGroup.objects.get(name='Statdev Assessor')
         usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         if admin_staff == True:
@@ -8715,7 +8740,7 @@ class ConditionUpdate(LoginRequiredMixin, UpdateView):
         assessor = SystemGroup.objects.get(name='Statdev Assessor')
         usergroups = self.request.user.get_system_group_permission(self.request.user.id)
         ref = condition.referral
-        if assessor.id in usergroups or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
+        if assessor.id in usergroups or (ref and ref.referee == request.user.id and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
             messages.success(self.request, 'Condition Successfully added')
             return super(ConditionUpdate, self).get(request, *args, **kwargs)
         else:
@@ -8821,7 +8846,7 @@ class ConditionDelete(LoginRequiredMixin, DeleteView):
         #    # and that referral is not completed.
         #    assessor = SystemGroup.objects.get(name='Statdev Assessor')
         #    ref = condition.referral
-        #    if assessor in self.request.user.groups().all() or (ref and ref.referee == request.user and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
+        #    if assessor in self.request.user.groups().all() or (ref and ref.referee == request.user.id and ref.status == Referral.REFERRAL_STATUS_CHOICES.referred):
         #        return super(ConditionDelete, self).get(request, *args, **kwargs)
         #    else:
         #        messages.warning(self.request, 'You cannot delete this condition')
@@ -8829,7 +8854,7 @@ class ConditionDelete(LoginRequiredMixin, DeleteView):
         #else:
             # Rule: can only delete a condition if the request user is the assignee and the application
             # has not been issued.
-            #if condition.application.assignee == request.user and condition.application.state != Application.APP_STATE_CHOICES.issued:
+            #if condition.application.assignee == request.user.id and condition.application.state != Application.APP_STATE_CHOICES.issued:
             #    return super(ConditionDelete, self).get(request, *args, **kwargs)
             #else:
             #    messages.warning(self.request, 'You cannot delete this condition')
@@ -9485,7 +9510,7 @@ class AddressCreate(LoginRequiredMixin, CreateView):
 #
         if admin_staff is True:
              return super(AddressCreate, self).get(request, *args, **kwargs)
-        elif request.user == self.object:
+        elif request.user.id == self.object.ledger_id:
              return super(AddressCreate, self).get(request, *args, **kwargs)
         else:
              messages.error(self.request, 'You are not authorised to view.')
@@ -9781,7 +9806,7 @@ class PersonDetails(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         if admin_staff is True:
              return super(PersonDetails, self).get(request, *args, **kwargs)
-        elif request.user == self.object:
+        elif request.user.id == self.object.ledger_id:
              return super(PersonDetails, self).get(request, *args, **kwargs)
         else:
                messages.error(self.request, 'You are not authorised to view.')
@@ -9888,7 +9913,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
 
         if admin_staff is True:
              return super(PersonOther, self).get(request, *args, **kwargs)
-        #elif request.user == self.object:
+        #elif request.user.id == self.object.ledger_id:
         #     return super(PersonOther, self).get(request, *args, **kwargs)
         else:
                messages.error(self.request, 'You are not authorised')
@@ -10652,7 +10677,7 @@ class OrganisationUpdate(LoginRequiredMixin, UpdateView):
 
 #    def get(self, request, *args, **kwargs):
 #        # Rule: only a delegated user can update an organisation.
-#        if not Delegate.objects.filter(email_user=request.user, organisation=self.get_object()).exists():
+#        if not Delegate.objects.filter(email_user=request.user.id, organisation=self.get_object()).exists():
 #            messages.warning(self.request, 'You are not authorised to update this organisation. Please request delegated authority if required.')
 #            return HttpResponseRedirect(self.get_success_url())
 #        return super(OrganisationUpdate, self).get(request, *args, **kwargs)
@@ -10813,7 +10838,7 @@ class OrganisationAddressCreate(LoginRequiredMixin, CreateView):
 #    def get(self, request, *args, **kwargs):
 #        # Rule: redirect if the user is already a delegate.
 #        org = self.get_organisation()
-#        if Delegate.objects.filter(email_user=request.user, organisation=org).exists():
+#        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
 #            messages.warning(self.request, 'You are already a delegate for this organisation!')
 #            return HttpResponseRedirect(self.get_success_url())
 #        return super(RequestDelegateAccess, self).get(request, *args, **kwargs)
@@ -10833,7 +10858,7 @@ class OrganisationAddressCreate(LoginRequiredMixin, CreateView):
 #        # contains a unique URL to confirm the request. The URL consists of the
 #        # requesting user PK (base 64-encoded) plus a unique token for that user.
 #        org = self.get_organisation()
-#        delegates = Delegate.objects.filter(email_user=request.user, organisation=org)
+#        delegates = Delegate.objects.filter(email_user=request.user.id, organisation=org)
 #        if not delegates.exists():
 #            # In the event that an organisation has no delegates, the request
 #            # will be sent to all users in the "Processor" group.
@@ -10880,7 +10905,7 @@ class OrganisationAddressCreate(LoginRequiredMixin, CreateView):
 #    def get(self, request, *args, **kwargs):
 #        # Rule: request user must be an existing delegate.
 #        org = self.get_organisation()
-#        delegates = Delegate.objects.filter(email_user=request.user, organisation=org)
+#        delegates = Delegate.objects.filter(email_user=request.user.id, organisation=org)
 #        if delegates.exists():
 #            uid = urlsafe_base64_decode(self.kwargs['uid'])
 #            user = EmailUser.objects.get(pk=uid)
@@ -10974,7 +10999,7 @@ class UnlinkDelegate(LoginRequiredMixin, FormView):
         messages.success(self.request, '{} has been removed as a delegate for {}.'.format(user, org.name))
         # Generate an action record:
         action = Action(content_object=org, user=self.request.user.id,
-            action='Unlinked delegate access for {}'.format(user.get_full_name()))
+            action='Unlinked delegate access for {} {}'.format(user.legal_first_name, user.legal_last_name))
         action.save()
         return HttpResponseRedirect(self.get_success_url())
 

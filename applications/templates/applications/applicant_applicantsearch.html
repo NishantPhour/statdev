@@ -62,8 +62,8 @@
                 {% for acc_obj in acc_list %}
                 <tr>
                     <td>{{ acc_obj.acc_row.pk }}</td>
-                    <td>{{ acc_obj.acc_row.first_name }}</td>
-                    <td>{{ acc_obj.acc_row.last_name }}</td>
+                    <td>{{ acc_obj.acc_row.legal_first_name }}</td>
+                    <td>{{ acc_obj.acc_row.legal_last_name }}</td>
                     <td>{{ acc_obj.acc_row.email }}</td>
                     <td> 
                         {% for o in acc_obj.acc_row.organisations %}

@@ -255,7 +255,7 @@ class PDFtool(FPDF):
          #print pdf.font_size_pt
 
         # from pprint import pprint
-#         pprint(vars(pdf))
+#         print(vars(pdf))
   #       pdf.cell(0, 1,'_____________________________________________________________' ,0,1,'L')
 
          pdf.set_font('Arial', '', 10)
@@ -606,7 +606,12 @@ class PDFtool(FPDF):
 #         pdf.cell(0, 8, 'DETERMINATION OF REQUEST FOR VARIATION',0,1,'C')
 #         pdf.set_font('Arial', '', 9)   
          BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-         pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
+         output_dir = os.path.join(BASE_DIR, 'pdfs', 'approvals')
+         if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+         file_path = os.path.join(output_dir, f"{str(app.id)}-approval.pdf")
+         pdf.output(file_path, 'F')
+        #  pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
 
 
     def generate_section_84(self,app):
@@ -775,8 +780,12 @@ class PDFtool(FPDF):
          pdf.cell(6, 5, ' ',0,0,'L')
          pdf.cell(11, 5, 'DATE:',0,0,'L')
          pdf.cell(60, 5, '20 Feb 2018',0,1,'L')
-
-         pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
+         output_dir = os.path.join(BASE_DIR, 'pdfs', 'approvals')
+         if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+         file_path = os.path.join(output_dir, f"{str(app.id)}-approval.pdf")
+         pdf.output(file_path, 'F')
+        #  pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
 
     def generate_part5(self,app):
 
@@ -909,8 +918,12 @@ class PDFtool(FPDF):
          pdf.cell(6, 5, ' ',0,0,'L')
          pdf.cell(11, 5, 'DATE:',0,0,'L')      
          pdf.cell(60, 5, '20 Feb 2018',0,1,'L')
-         
-         pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
+         output_dir = os.path.join(BASE_DIR, 'pdfs', 'approvals')
+         if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+         file_path = os.path.join(output_dir, f"{str(app.id)}-approval.pdf")
+         pdf.output(file_path, 'F')
+        #  pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
 
     def generate_permitold(self,app):
          BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1062,8 +1075,11 @@ class PDFtool(FPDF):
 
          # group spacer
          pdf.cell(0,5,' ', 0,1,'L')
-
-         pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
+         output_dir = os.path.join(BASE_DIR, 'pdfs', 'approvals')
+         if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+         file_path = os.path.join(output_dir, f"{str(app.id)}-approval.pdf")
+         pdf.output(file_path, 'F')
 
     def generate_emergency_works(self,app):
          application_location = Location.objects.filter(application=app.application)
@@ -1177,8 +1193,12 @@ class PDFtool(FPDF):
 
          # group spacer
          pdf.cell(0,5,' ', 0,1,'L')
-
-         pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
+         output_dir = os.path.join(BASE_DIR, 'pdfs', 'approvals')
+         if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+         file_path = os.path.join(output_dir, f"{str(app.id)}-approval.pdf")
+         pdf.output(file_path, 'F')
+        #  pdf.output(BASE_DIR+'/pdfs/approvals/'+str(app.id)+'-approval.pdf', 'F')
 
     def get(self,app,self_view,context):
         request = self_view.request

@@ -37,7 +37,6 @@ class ApprovalList(ListView):
 
     def get_queryset(self):
         qs = super(ApprovalList, self).get_queryset()
-
         # Did we pass in a search string? If so, filter the queryset and return
         # it.
         if 'q' in self.request.GET and self.request.GET['q']:
@@ -53,7 +52,6 @@ class ApprovalList(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        print('here')
         context = super(ApprovalList, self).get_context_data(**kwargs)
 
         APP_TYPE_CHOICES = []
@@ -245,7 +243,7 @@ class ApprovalStatusChange(LoginRequiredMixin,UpdateView):
 
         action = Action(
             content_object=app, category=Action.ACTION_CATEGORY_CHOICES.change,
-            user=self.request.user, action='Approval Change')
+            user=self.request.user.id, action='Approval Change')
         action.save()
         if status == 'surrendered':
              emailcontext = {'approval_id': app.id, 'app': app}
@@ -349,7 +347,7 @@ def getPDF(request,approval_id):
       can_view = True
   elif app.applicant == request.user:
       can_view = True
-  elif Delegate.objects.filter(email_user=request.user,organisation=app.organisation).exists(): 
+  elif Delegate.objects.filter(email_user=request.user.id,organisation=app.organisation).exists(): 
       can_view = True
 
 

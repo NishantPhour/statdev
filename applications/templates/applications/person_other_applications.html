@@ -147,7 +147,7 @@
                             <td>{% if app_obj.app.organisation %}
                                  {{ app_obj.app.organisation }}
                                 {% else %}
-                                 {{ app_obj.app.applicant.get_full_name }}
+                                 {{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}
                                 {% endif %}
                             </td>
                             <td>
@@ -170,10 +170,10 @@
 			    <td>{{ app_obj.app.get_status_display }} </td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
                             {% if staff == True %}
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
 			    {% endif %}
 
-				<td>{{ app_obj.app.submitted_by.get_full_name }}</td>
+				<td>{{ app_obj.submitted_by.legal_first_name }} {{ app_obj.submitted_by.legal_last_name }}</td>
                             {% if staff == True %} 
                             <td></td>
                             {% endif %}

@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
-from ledger_api_client.managed_models import SystemGroup
+from ledger_api_client.managed_models import SystemGroup, SystemUser
 #from approvals.models import Approval
 # from ledger.accounts.models import Organisation, Address as LedgerAddress, OrganisationAddress
 #from ledger.payments.models import Invoice
@@ -636,7 +636,8 @@ class Referral(models.Model):
         unique_together = ('application', 'referee')
 
     def __str__(self):
-        return 'Referral {} to {} ({})'.format(self.pk, self.referee, self.application)
+        referee = SystemUser.objects.get(ledger_id=self.referee)
+        return 'Referral {} to {} ({})'.format(self.pk, referee, self.application)
 
     def save(self, *args, **kwargs):
         """Override save to set the expire_date field.
