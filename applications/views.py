@@ -2903,7 +2903,6 @@ class AccountComms(LoginRequiredMixin,DetailView):
         # TODO: define a GenericRelation field on the Application model.
         context['communications'] = CommunicationAccount.objects.filter(user=u.ledger_id).order_by('-created')
         return context
-    # xoxo
 
 
 class AccountCommsCreate(LoginRequiredMixin,CreateView):
