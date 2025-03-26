@@ -800,6 +800,7 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
         self.fields['description'].label = "Summary"
 #       self.fields['project_no'].label = "Riverbank Project Number"
         self.fields['purpose'].label = "Purpose of Approval"
+        self.fields['purpose'].widget.attrs.update({'class': 'form-control'})
         self.fields['proposed_commence'].label = "Proposed Commencement Date"
         self.fields['proposed_commence'].widget.attrs['autocomplete'] = 'off'
 
@@ -810,6 +811,7 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
         self.fields['max_participants'].label = "Maximum Number of Participants"
         self.fields['address'].label = "Address of any landbased component of the commercial activity"
         self.fields['proposed_location'].label = "Proposed Location"
+        self.fields['proposed_location'].widget.attrs.update({'class': 'form-control'})
         self.fields['location_route_access'].label = "Location / Route and Access Points (mark clearly on map)"
         # self.fields['proposed_location'].label = "Location / Route and Access Points"
         self.fields['jetties'].label = "List all jetties to be used"
@@ -2874,6 +2876,7 @@ class VesselForm(ModelForm):
         self.helper.form_id = 'id_form_modals'
         self.helper.attrs = {'novalidate': ''}
         #application_vessel_craft_js_dynamics.html
+        self.fields['vessel_type'].widget.attrs.update({'class': 'form-control'})
         self.fields['name'].required = False
         self.fields['vessel_id'].required = False
         self.fields['size'].required = False
@@ -2970,6 +2973,7 @@ class FeedbackPublicationCreateForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         self.fields['application'].widget = HiddenInput()
         self.fields['status'].widget = HiddenInput()
+        self.fields['state'].widget.attrs.update({'class': 'form-control'})
         self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
 

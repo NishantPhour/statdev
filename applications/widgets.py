@@ -35,7 +35,7 @@ class InputMultiFile(Widget):
             return formats.localize_input(value)
         return value
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value is None:
             value = ''
 #        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name, )
@@ -48,7 +48,7 @@ class InputMultiFile(Widget):
 class FileInput(InputMultiFile):
     input_type = 'file'
     needs_multipart_form = True
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         return super(FileInput, self).render(name, None, attrs=attrs)
 
     def value_from_datadict(self, data, files, name):
@@ -98,7 +98,7 @@ class ClearableMultipleFileInput(FileInput):
         #    'initial_url': conditional_escape(value.url),
         #}
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         substitutions = {
             'initial_text': self.initial_text,
             'input_text': self.input_text,
@@ -198,7 +198,7 @@ class AjaxFileUploader(FileInput):
         #}
 
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
 
         substitutions = {
             'initial_text': self.initial_text,
@@ -387,7 +387,7 @@ class RendererMixin(object):
         final_attrs = self.build_attrs(attrs)
         return self.renderer(name, value, final_attrs, self.choices, self.caption)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         return self.get_renderer(name, value, attrs).render()
 
     def id_for_label(self, id_):
@@ -418,7 +418,7 @@ class Select(Widget):
         memo[id(self)] = obj
         return obj
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value is None:
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
@@ -483,7 +483,7 @@ class ChoiceFieldRenderer(object):
     def __str__(self):
         return self.render()
 
-    def render(self):
+    def render(self, renderer=None):
         """
         Outputs a <ul> for this set of choice fields.
         If an id was given to the field, it is applied to the <ul> (each
@@ -555,7 +555,7 @@ class ChoiceInput(SubWidget):
     def __str__(self):
         return self.render()
 
-    def render(self, name=None, value=None, attrs=None, caption=None):
+    def render(self, name=None, value=None, attrs=None, caption=None, renderer=None):
         if self.id_for_label:
             label_for = format_html(' for="{}"', self.id_for_label)
         else:
