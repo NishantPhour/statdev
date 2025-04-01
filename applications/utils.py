@@ -5,6 +5,7 @@ from django.db.models import Q
 # from ledger.payments.utils import oracle_parser_on_invoice,update_payments
 # from ledger.checkout.utils import create_basket_session, create_checkout_session, place_order_submission, get_cookie_basket
 from ledger_api_client.utils import create_basket_session, create_checkout_session
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser
 # from oscar.apps.order.models import Order
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
@@ -58,33 +59,40 @@ def set_session_booking(session, key, value):
     session[key] = value
     session.modified = True
 
-def checkout(request, booking, lines, invoice_text=None, vouchers=[], internal=False):
+def checkout(request, booking, lines, booking_reference, invoice_text=None, vouchers=[], internal=False):
     basket_params = {
         'products': lines,
         'vouchers': vouchers,
         'system': settings.PS_PAYMENT_SYSTEM_ID,
         'custom_basket': True,
+        'tax_override': True, #TODO: check this not sure if needed
+        'booking_reference': booking_reference,
+        'booking_reference_link': booking_reference,
     }
     set_session_booking(request.session, 'test', 'JASON TEST')
 
-    basket, basket_hash = create_basket_session(request, basket_params)
+    basket_hash = create_basket_session(request, booking['booking'].customer, basket_params)
     checkout_params = {
         'system': settings.PS_PAYMENT_SYSTEM_ID,
         'fallback_url': request.build_absolute_uri('/'),
-        'return_url': request.build_absolute_uri(reverse('payment_success')), #request.build_absolute_uri(reverse('public_booking_success')),
-        'return_preload_url': request.build_absolute_uri(reverse('payment_success')), #request.build_absolute_uri(reverse('public_booking_success')),
+        'return_url': request.build_absolute_uri(reverse('payment_success', kwargs={"booking_id": booking['booking'].id})), #request.build_absolute_uri(reverse('public_booking_success')),
+        'return_preload_url': request.build_absolute_uri(reverse('payment_success_preload', kwargs={"booking_id": booking['booking'].id, "booking_hash": booking['booking'].booking_hash})), #request.build_absolute_uri(reverse('public_booking_success')),
         'force_redirect': True,
-        'proxy': True if internal else False,
         'invoice_text': invoice_text,
+        'basket_owner': booking['booking'].customer,
+        'session_type': 'ledger_api',
     }
 #    if not internal:
 #        checkout_params['check_url'] = request.build_absolute_uri('/api/booking/{}/booking_checkout_status.json'.format(booking.id))
-    if internal or request.user.is_anonymous():
-        checkout_params['basket_owner'] = booking.customer.id
-
-
+    if internal or request.user.is_anonymous:
+        checkout_params['basket_owner'] = booking['booking'].customer
     create_checkout_session(request, checkout_params)
-    set_session_booking(request.session, 'basket_id', basket.id)
+    response = HttpResponse(
+        "<script> window.location='" + reverse('ledgergw-payment-details') + "';</script> <a href='" + reverse(
+            'ledgergw-payment-details'
+            ) + "'> Redirecting please wait: " + reverse('ledgergw-payment-details') + "</a>"
+        )
+
     set_session_booking(request.session, 'application_id', booking['app'].id)
     set_session_booking(request.session, 'booking_id', booking['booking'].id)
     set_session_booking(request.session, 'routeid', booking['app'].routeid)
@@ -93,14 +101,14 @@ def checkout(request, booking, lines, invoice_text=None, vouchers=[], internal=F
 #    if internal:
 #        response = place_order_submission(request)
 #    else:
-    response = HttpResponseRedirect(reverse('checkout:index'))
+    # response = HttpResponseRedirect(reverse('checkout:index'))
     # inject the current basket into the redirect response cookies
     # or else, anonymous users will be directionless
-    response.set_cookie(
-            settings.OSCAR_BASKET_COOKIE_OPEN, basket_hash,
-            max_age=settings.OSCAR_BASKET_COOKIE_LIFETIME,
-            secure=settings.OSCAR_BASKET_COOKIE_SECURE, httponly=True
-    )
+    # response.set_cookie(
+    #         settings.OSCAR_BASKET_COOKIE_OPEN, basket_hash,
+    #         max_age=settings.OSCAR_BASKET_COOKIE_LIFETIME,
+    #         secure=settings.OSCAR_BASKET_COOKIE_SECURE, httponly=True
+    # )
 
     #if booking.cost_total < 0:
     #    response = HttpResponseRedirect('/refund-payment')
@@ -138,10 +146,10 @@ def application_lodgment_info(request,app):
         You will be notified by email once your {0} application has been determined and/or
         further action is required.""".format(app.get_app_type_display(), app.pk)
         messages.success(request, msg)
+        submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
         emailcontext = {}
         emailcontext['app'] = app
         emailcontext['application_name'] = models.Application.APP_TYPE_CHOICES[app.app_type]
-        emailcontext['person'] = app.submitted_by
+        emailcontext['person'] = submitted_by
         emailcontext['body'] = msg
-        submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
         sendHtmlEmail([submitted_by.email], emailcontext['application_name'] + ' application submitted ', emailcontext, 'application-lodged.html', None, None, None)

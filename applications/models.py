@@ -13,9 +13,10 @@ from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 from ledger_api_client.managed_models import SystemGroup, SystemUser
-#from approvals.models import Approval
+# from oscar.apps.address.abstract_models import AbstractUserAddress, AbstractCountry
+# from approvals.models import Approval
 # from ledger.accounts.models import Organisation, Address as LedgerAddress, OrganisationAddress
-#from ledger.payments.models import Invoice
+# from ledger.payments.models import Invoice
 
 upload_storage = FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
 

@@ -2,7 +2,7 @@ import os
 
 from decimal import Decimal as D
 from io import BytesIO
-from oscar.templatetags.currency_filters import currency
+from ledger_api_client.utils import currency
 from reportlab.lib import enums
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, ListFlowable, \

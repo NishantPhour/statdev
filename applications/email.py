@@ -157,7 +157,6 @@ def sendHtmlEmail(to,subject,context,template,cc,bcc,from_email,attachment1=None
     return True
 #TODO change to system users groups
 def emailGroup(subject,context,template,cc,bcc,from_email,group):
-    # xoxo
     group_object = SystemGroup.objects.get(name=group)
     users_in_group_ids = group_object.get_system_group_member_ids()
     UsersInGroup = SystemUser.objects.filter(ledger_id__in=users_in_group_ids)

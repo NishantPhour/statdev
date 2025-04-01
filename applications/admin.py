@@ -164,10 +164,16 @@ class StakeholderComms(ModelAdmin):
     search_fields = ('application','email','name','sent_date','role')
     raw_id_fields = ('application',)
 
+# @register(UserAddress)
+# class UserAddress(admin.ModelAdmin):
+#     readonly_fields = (
+#         "num_orders_as_billing_address",
+#         "num_orders_as_shipping_address",
+#     )
 
-@register(ConditionPredefined)
-class ConditionPredefined(ModelAdmin):
-    list_display = ('title','condition','status')
-    search_fields = ('title','condition','status')
-
+# @register(Country)
+# class Country(admin.ModelAdmin):
+#     list_display = ["__str__", "display_order"]
+#     list_filter = ["is_shipping_country"]
+#     search_fields = ["name", "printable_name", "iso_3166_1_a2", "iso_3166_1_a3"]
 

@@ -15,11 +15,14 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from rest_framework.views import APIView
 from extra_views import ModelFormSetView
 from itertools import chain
 from django.utils.decorators import method_decorator
 import pdfkit
 import re
+import logging
+import hashlib
 from actions.models import Action
 from applications import forms as apps_forms
 from applications.models import (
@@ -51,9 +54,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from decimal import Decimal
 # from ledger.payments.models import Invoice
-from oscar.defaults import *
+# from oscar.defaults import *
 from ledger_api_client.ledger_models import Invoice, Basket
-from oscar.apps.order.models import Order
+# from oscar.apps.order.models import Order
 # from ledger.basket.models import Basket
 from applications.invoice_pdf import create_invoice_pdf_bytes
 # from ledger.mixins import InvoiceOwnerMixin
@@ -65,6 +68,8 @@ from django.utils.crypto import get_random_string
 import base64
 import requests
 from urllib.parse import quote_plus
+
+logger = logging.getLogger(__name__)
 
 class HomePage(TemplateView):
     # preperation to replace old homepage with screen designs..
@@ -11005,7 +11010,7 @@ class UnlinkDelegate(LoginRequiredMixin, FormView):
 class BookingSuccessView(TemplateView):
     template_name = 'applications/success.html'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, booking_id, *args, **kwargs):
         print ("BOOKING SUCCESS")
         
         context_processor = template_context(self.request)
@@ -11016,12 +11021,9 @@ class BookingSuccessView(TemplateView):
             print (request.session['test'])
     
         print ("END TEST")
-        print (request.session['basket_id'])    
+        # print (request.session['basket_id'])    
         print (request.session['application_id'])
         checkout_routeid  = request.session['routeid']
-        basket_id = request.session['basket_id']
-        booking_id = request.session['booking_id']
-        booking = Booking.objects.get(id=booking_id)
 
         app = Application.objects.get(id=request.session['application_id'])
         flow = Flow()
@@ -11034,17 +11036,10 @@ class BookingSuccessView(TemplateView):
         actions = flow.getAllRouteActions(app.routeid, workflowtype)
 
         route = {} 
-        if app.routeid == checkout_routeid: 
+        if app.routeid == checkout_routeid:
             for a in actions:
                  if a['payment'] == 'success':
                      route = a 
-            
-
-            basket_row =  Basket.objects.get(id=basket_id)
-            order = Order.objects.get(basket_id=basket_row.id)
-            invoices = Invoice.objects.filter(order_number=order.number)
-            for i in invoices:
-                    BookingInvoice.objects.get_or_create(booking=booking, invoice_reference=i.reference) 
             #route = flow.getNextRouteObj('payment', app.routeid, workflowtype)
             print ("PAYMENT ROUTE")
             print (route)
@@ -11080,6 +11075,30 @@ class BookingSuccessView(TemplateView):
         #sendHtmlEmail([app.submitted_by.email], emailcontext['application_name'] + ' application submitted ', emailcontext, 'application-lodged.html', None, None, None)
 
         return render(request, self.template_name, context)
+
+
+class BookingSuccessViewPreload(APIView):
+    def get(self, request, booking_id, booking_hash):
+        #booking_hash=request.GET.get('booking_hash',None)
+        #booking_id = request.GET.get('booking_id', None)
+        jsondata={"status": "error completing booking"}
+        if booking_hash:
+            try: 
+                    booking = Booking.objects.get(id=booking_id,booking_hash=booking_hash)
+                    basket = Basket.objects.filter(status='Submitted', booking_reference=settings.BOOKING_PREFIX+'-'+str(booking.id)).order_by('-id')[:1]
+                    #TODO: check this booking_reference for statdev
+                    if basket.count() > 0:
+                        pass
+                    else:
+                        raise ValidationError('Error unable to find basket')
+                    jsondata={"status": "success"}
+            except Exception as e:
+                print ("EXCEPTION")
+                print (e)
+                jsondata={"status": "error binding"}
+        response = HttpResponse(json.dumps(jsondata), content_type='application/json')
+        return response
+
 
 class InvoicePDFView(InvoiceOwnerMixin,View):
 
@@ -11250,15 +11269,21 @@ class ApplicationBooking(LoginRequiredMixin, FormView):
                 booking_obj = Booking.objects.create(customer=app.applicant,cost_total=fee_total,application=app,override_price=Decimal(overridePrice),override_reason_info=overrideDetail, override_reason=DiscountReason.objects.get(id=overrideReason))
             else:
                 booking_obj = Booking.objects.create(customer=app.applicant,cost_total=fee_total,application=app,override_price=None,override_reason_info=None, override_reason=None)
-
+        booking_obj.booking_hash = hashlib.sha256(str(booking_obj.pk).encode('utf-8')).hexdigest()
+        booking_obj.save()
         booking['booking'] = booking_obj
         invoice_text = u"Your licence {} ".format('fees')
         
         lines = []
-        lines.append({'ledger_description':booking['app'].get_app_type_display(),"quantity":1,"price_incl_tax": fee_total,"oracle_code":'00123sda', 'line_status': 1})
-        result = utils.checkout(request, booking, lines, invoice_text=invoice_text)
-       
-        return result
+        lines.append({'ledger_description':booking['app'].get_app_type_display(),"quantity":1,"price_incl_tax": float(fee_total), "price_excl_tax": float(fee_total), "oracle_code":'00123sda', 'line_status': 1})
+        checkout_response = utils.checkout(
+                    request,
+                    booking,
+                    lines,
+                    booking_reference=str(booking['booking'].id),
+                    invoice_text=invoice_text,
+                )
+        return checkout_response
 
 def getPDFapplication(request,application_id):
 
