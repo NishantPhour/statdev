@@ -5,7 +5,7 @@ from applications import uploads
 from . import api
 
 urlpatterns = [
-    re_path(r'^$', views.HomePage.as_view(), name='home'),
+    re_path(r'^$', views.HomePage.as_view(), name='home_page'),
     re_path(r'^home/(?P<action>\w+)/$', views.HomePage.as_view(), name='home_page_tabs'),
     re_path(r'^create-account/$', views.CreateAccount.as_view(), name='create_account_form'),
     re_path(r'^create-account/(?P<application_id>\d+)/$', views.CreateAccount.as_view(), name='create_account_form_application'),

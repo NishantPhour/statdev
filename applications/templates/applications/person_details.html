@@ -12,9 +12,9 @@
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12">
                         <ul class="nav nav-tabs">
-                            <li role="presentation" class="{{ nav_details }}"><a href="{% url "person_details_actions" object.pk "personal" %}">Details</a></li>
+                            <li role="presentation" class="{{ nav_details }}"><a href="{% url "person_details_actions" object.ledger_id.id "personal" %}">Details</a></li>
 			    {% if request.user.is_staff %}
-                            <li role="presentation" class="{{ nav_other }}"><a href="{% url "person_other_actions" object.pk "applications" %}">Other</a></li>
+                            <li role="presentation" class="{{ nav_other }}"><a href="{% url "person_other_actions" object.ledger_id.id "applications" %}">Other</a></li>
 			    {% endif %}
                         </ul>
                         <BR>
@@ -25,12 +25,11 @@
 
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <ul class="nav nav-pills">
-                                <!-- object.ledger_id.id -->
-                                <li role="presentation" class="{{ nav_details_personal }}"><a href="{% url "person_details_actions" object.pk "personal" %}">Personal Details</a></li>
-                                <li role="presentation" class="{{ nav_details_identification }}" ><a href="{% url "person_details_actions" object.pk "identification" %}">Identification</a></li>
-                                <li role="presentation" class="{{ nav_details_address }}" ><a href="{% url "person_details_actions" object.pk "address" %}">Address Details</a></li>
-                                <li role="presentation" class="{{ nav_details_contactdetails }}" ><a href="{% url "person_details_actions" object.pk "contactdetails" %}">Contact Details</a></li>
-                                <li role="presentation" class="{{ nav_details_companies }}" ><a href="{% url "person_details_actions" object.pk "companies" %}">Companies</a></li>
+                                <li role="presentation" class="{{ nav_details_personal }}"><a href="{% url "person_details_actions" object.ledger_id.id "personal" %}">Personal Details</a></li>
+                                <li role="presentation" class="{{ nav_details_identification }}" ><a href="{% url "person_details_actions" object.ledger_id.id "identification" %}">Identification</a></li>
+                                <li role="presentation" class="{{ nav_details_address }}" ><a href="{% url "person_details_actions" object.ledger_id.id "address" %}">Address Details</a></li>
+                                <li role="presentation" class="{{ nav_details_contactdetails }}" ><a href="{% url "person_details_actions" object.ledger_id.id "contactdetails" %}">Contact Details</a></li>
+                                <li role="presentation" class="{{ nav_details_companies }}" ><a href="{% url "person_details_actions" object.ledger_id.id "companies" %}">Companies</a></li>
                             </ul>
                             <br>
                         </div>
@@ -71,7 +70,7 @@
                                             &nbsp;
                                         </div>
                                         <div class="col-sm-12 col-md-1 col-lg-1">
-                                            <a class="btn btn-primary btn-sm" role="button" href="{% url "user_account_update_admin" object.pk %}">Edit</a>
+                                            <a class="btn btn-primary btn-sm" role="button" href="{% url "user_account_update_admin" object.ledger_id.id %}">Edit</a>
                                         </div>
                                     </div>
                                 </div>
@@ -100,11 +99,11 @@
 						<A HREF='/private-ledger/view/{{ object.identification2.id }}-{{ object.identification2.name }}.{{ object.identification2.extension }}' target="new_tab_{{ object.identification2.id }}">{{ object.identification2.name }}.{{ object.identification2.extension }}</A>
                                         </div>
                                         <div class="col-sm-12 col-md-5 col-lg-4">
-                                            <A HREF='{% url "user_account_update_identification_admin" object.pk %}'><img src='{% static "images/bin_blue.png" %}'>Remove & Provide New ID</A>
+                                            <A HREF='{% url "user_account_update_identification_admin" object.ledger_id.id %}'><img src='{% static "images/bin_blue.png" %}'>Remove & Provide New ID</A>
                                         </div>
                                     </div>
                                     {% else %}
-                                    <A HREF='{% url "user_account_update_identification_admin" object.pk %}'>Add Identification</A>
+                                    <A HREF='{% url "user_account_update_identification_admin" object.ledger_id.id %}'>Add Identification</A>
                                     {% endif %}
 
                                 </div>
@@ -167,7 +166,7 @@
                                                 {% if object.postal_address %}
                                                 <a class="btn btn-primary btn-sm" role="button" href="{% url 'address_update' object.postal_address.pk %}">Edit</a>
                                                 {% else %}
-                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'address_create_user' 'postal' object.pk %}">Edit</a>
+                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'address_create_user' 'postal' object.ledger_id.id %}">Edit</a>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -226,7 +225,7 @@
                                         &nbsp;
                                     </div>
                                     <div class="col-sm-12 col-md-1 col-lg-1">
-                                        <a class="btn btn-primary btn-sm" role="button" href="{% url "user_account_update_admin" object.pk %}">Edit</a>
+                                        <a class="btn btn-primary btn-sm" role="button" href="{% url "user_account_update_admin" object.ledger_id.id %}">Edit</a>
                                     </div>
                                 </div>
                             </div>
@@ -279,10 +278,10 @@
 
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <ul class="nav nav-pills">
-                        <li role="presentation" class="{{ nav_other_applications }}"><a href="{% url "person_other_actions" object.pk "applications" %}">Applications</a></li>
-                        <li role="presentation" class="{{ nav_other_approvals }}" ><a href="{% url "person_other_actions" object.pk "approvals" %}">Approvals</a></li>
-                        <li style='display:none' role="presentation" class="{{ nav_other_emergency }}" ><a href="{% url "person_other_actions" object.pk "emergency" %}">Emergency Works</a></li>
-                        <li role="presentation" class="{{ nav_other_clearance }}" ><a href="{% url "person_other_actions" object.pk "clearance" %}">Clearance of Conditions</a></li>
+                        <li role="presentation" class="{{ nav_other_applications }}"><a href="{% url "person_other_actions" object.ledger_id.id "applications" %}">Applications</a></li>
+                        <li role="presentation" class="{{ nav_other_approvals }}" ><a href="{% url "person_other_actions" object.ledger_id.id "approvals" %}">Approvals</a></li>
+                        <li style='display:none' role="presentation" class="{{ nav_other_emergency }}" ><a href="{% url "person_other_actions" object.ledger_id.id "emergency" %}">Emergency Works</a></li>
+                        <li role="presentation" class="{{ nav_other_clearance }}" ><a href="{% url "person_other_actions" object.ledger_id.id "clearance" %}">Clearance of Conditions</a></li>
                     </ul>
                     <br>
                 </div>
