@@ -10,8 +10,9 @@ from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Tex
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
 from django_crispy_jcaptcha.widget import CaptchaImages, CaptchaValidation
 from multiupload.fields import MultiFileField
-from ledger.accounts.models import EmailUser, Address, Organisation
-from applications.models import Application, PublicationFeedback
+# from ledger.accounts.models import EmailUser, Address, Organisation
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address
+from applications.models import Application, PublicationFeedback, Organisation
 from applications.crispy_common import crispy_heading, crispy_box, crispy_empty_box, crispy_para, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6
 
 User = get_user_model()

@@ -25,6 +25,7 @@
 
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <ul class="nav nav-pills">
+                                <!-- object.ledger_id.id -->
                                 <li role="presentation" class="{{ nav_details_personal }}"><a href="{% url "person_details_actions" object.pk "personal" %}">Personal Details</a></li>
                                 <li role="presentation" class="{{ nav_details_identification }}" ><a href="{% url "person_details_actions" object.pk "identification" %}">Identification</a></li>
                                 <li role="presentation" class="{{ nav_details_address }}" ><a href="{% url "person_details_actions" object.pk "address" %}">Address Details</a></li>

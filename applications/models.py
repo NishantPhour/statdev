@@ -1,19 +1,30 @@
 from __future__ import unicode_literals
 from datetime import timedelta
+import zlib
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.db import transaction
 from django.contrib.postgres.fields import JSONField
-from django.core.urlresolvers import reverse
-from django.utils.encoding import python_2_unicode_compatible
+from django.urls import reverse
+from six import python_2_unicode_compatible
 from model_utils import Choices
 from django.contrib.auth.models import Group
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
-#from approvals.models import Approval
-from ledger.accounts.models import Organisation, Address as LedgerAddress, OrganisationAddress
-#from ledger.payments.models import Invoice
+from django_countries.fields import CountryField
+from ledger_api_client.managed_models import SystemGroup, SystemUser
+# from oscar.apps.address.abstract_models import AbstractUserAddress, AbstractCountry
+# from approvals.models import Approval
+# from ledger.accounts.models import Organisation, Address as LedgerAddress, OrganisationAddress
+# from ledger.payments.models import Invoice
 
 upload_storage = FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
+
+def unicode_compatible(value):
+    try: 
+        return unicode(value)
+    except:
+        return str(value)
 
 @python_2_unicode_compatible
 class Record(models.Model):
@@ -59,7 +70,7 @@ class Record(models.Model):
     upload = models.FileField(max_length=512, upload_to='uploads/%Y/%m/%d', storage=upload_storage)
     name = models.CharField(max_length=256)
     category = models.IntegerField(choices=DOC_CATEGORY_CHOICES, null=True, blank=True)
-    metadata = JSONField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
     text_content = models.TextField(null=True, blank=True, editable=False)  # Text for indexing
     file_group = models.IntegerField(choices=FILE_GROUP, null=True, blank=True)
     file_group_ref_id = models.IntegerField(null=True, blank=True) 
@@ -117,6 +128,139 @@ class Craft(models.Model):
 
     def __str__(self):
         return self.name
+
+
+@python_2_unicode_compatible
+class BaseAddress(models.Model):
+    """Generic address model, intended to provide billing and shipping
+    addresses.
+    Taken from django-oscar address AbstrastAddress class.
+    """
+    STATE_CHOICES = (
+        ('ACT', 'ACT'),
+        ('NSW', 'NSW'),
+        ('NT', 'NT'),
+        ('QLD', 'QLD'),
+        ('SA', 'SA'),
+        ('TAS', 'TAS'),
+        ('VIC', 'VIC'),
+        ('WA', 'WA')
+    )
+
+    # Addresses consist of 1+ lines, only the first of which is
+    # required.
+    line1 = models.CharField('Line 1', max_length=255)
+    line2 = models.CharField('Line 2', max_length=255, blank=True)
+    line3 = models.CharField('Line 3', max_length=255, blank=True)
+    locality = models.CharField('Suburb / Town', max_length=255)
+    state = models.CharField(max_length=255, default='WA', blank=True)
+    country = CountryField(default='AU')
+    postcode = models.CharField(max_length=10)
+    # A field only used for searching addresses.
+    search_text = models.TextField(editable=False)
+    hash = models.CharField(max_length=255, db_index=True, editable=False)
+
+    def __str__(self):
+        return self.summary
+
+#    def __unicode__(self):
+#        return ''
+
+    class Meta:
+        abstract = True
+
+    def clean(self):
+        # Strip all whitespace
+        for field in ['line1', 'line2', 'line3',
+                      'locality', 'state']:
+            if self.__dict__[field]:
+                self.__dict__[field] = self.__dict__[field].strip()
+
+    def save(self, *args, **kwargs):
+        self._update_search_text()
+        self.hash = self.generate_hash()
+        super(BaseAddress, self).save(*args, **kwargs)
+
+    def _update_search_text(self):
+        search_fields = filter(
+            bool, [self.line1, self.line2, self.line3, self.locality,
+                   self.state, str(self.country.name), self.postcode])
+        self.search_text = ' '.join(search_fields)
+
+    @property
+    def summary(self):
+        """Returns a single string summary of the address, separating fields
+        using commas.
+        """
+        return u', '.join(self.active_address_fields())
+
+    # Helper methods
+#    def active_address_fields(self):
+#        """Return the non-empty components of the address.
+#        """
+#        fields = [self.line1, self.line2, self.line3,
+#                  self.locality, self.state, self.country, self.postcode]
+#        fields = [str(f).strip() for f in fields if f]
+#        
+#        return fields
+
+
+    # Helper methods
+    def active_address_fields(self):
+        """Return the non-empty components of the address.
+        """
+        fields = [self.line1, self.line2, self.line3,
+                  self.locality, self.state, self.country, self.postcode]
+        #for f in fields:
+        #    print unicode(f).encode('utf-8').decode('unicode-escape').strip()
+        #fields = [str(f).strip() for f in fields if f]
+        fields = [unicode_compatible(f).encode('utf-8').decode('unicode-escape').strip() for f in fields if f]
+        
+        return fields
+
+    def join_fields(self, fields, separator=u', '):
+        """Join a sequence of fields using the specified separator.
+        """
+        field_values = []
+        for field in fields:
+            value = getattr(self, field)
+            field_values.append(value)
+        return separator.join(filter(bool, field_values))
+
+    def generate_hash(self):
+        """
+            Returns a hash of the address summary
+        """
+        return zlib.crc32(self.summary.strip().upper().encode('UTF8'))   
+    
+@python_2_unicode_compatible
+class Organisation(models.Model):
+    """This model represents the details of a company or other organisation.
+    Management of these objects will be delegated to 0+ EmailUsers.
+    """
+    name = models.CharField(max_length=128, unique=True)
+    abn = models.CharField(max_length=50, null=True, blank=True, verbose_name='ABN')
+    # TODO: business logic related to identification file upload/changes.
+    identification = models.FileField(upload_to='%Y/%m/%d', null=True, blank=True)
+    postal_address = models.ForeignKey('OrganisationAddress', related_name='org_postal_address', blank=True, null=True, on_delete=models.SET_NULL)
+    billing_address = models.ForeignKey('OrganisationAddress', related_name='org_billing_address', blank=True, null=True, on_delete=models.SET_NULL)
+    email = models.EmailField(blank=True, null=True,)
+    trading_name = models.CharField(max_length=256, null=True, blank=True)
+
+    def upload_identification(self, request):
+        with transaction.atomic():
+            self.identification = request.data.dict()['identification']
+            self.save()
+
+    def __str__(self):
+        return self.name
+    
+@python_2_unicode_compatible    
+class OrganisationAddress(BaseAddress):
+    organisation = models.ForeignKey(Organisation, null=True,blank=True, related_name='adresses', on_delete=models.SET_NULL)
+    class Meta:
+        verbose_name_plural = 'organisation addresses'
+        #unique_together = ('organisation','hash') 
 
 
 @python_2_unicode_compatible
@@ -194,12 +338,12 @@ class Application(models.Model):
         (0, 'none', ('No'))
     )
 
-    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='applicant')
+    applicant = models.IntegerField(blank=True, null=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
     app_type = models.IntegerField(choices=APP_TYPE_CHOICES, blank=True, null=True)
     apply_on_behalf_of = models.IntegerField(choices=APP_APPLY_ON, blank=True, null=True)
-    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='assignee')
-    assigned_officer = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='assigned_officer')
+    assignee = models.IntegerField(blank=True, null=True)
+    assigned_officer = models.IntegerField(blank=True, null=True)
     status = models.IntegerField(choices=APP_STATUS, default=APP_STATUS.active, editable=True, ) 
     state = models.IntegerField(choices=APP_STATE_CHOICES, default=APP_STATE_CHOICES.draft, editable=True)
     title = models.CharField(max_length=256)
@@ -216,19 +360,19 @@ class Application(models.Model):
     records = models.ManyToManyField(Record, blank=True, related_name='records')
     vessels = models.ManyToManyField(Vessel, blank=True)
     vessel_or_craft_details = models.IntegerField(null=True, blank=True)
-    purpose = models.ForeignKey(ApplicationPurpose, null=True, blank=True)
+    purpose = models.ForeignKey(ApplicationPurpose, null=True, blank=True, on_delete=models.CASCADE)
     max_participants = models.IntegerField(null=True, blank=True)
     proposed_location = models.SmallIntegerField(choices=APP_LOCATION_CHOICES, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     location_route_access = models.ManyToManyField(Record, blank=True, related_name='location_route_access')
     jetties = models.TextField(null=True, blank=True)
-    jetty_dot_approval = models.NullBooleanField(default=None)
+    jetty_dot_approval = models.BooleanField(default=None, null=True)
     jetty_dot_approval_expiry = models.DateField(null=True, blank=True)
     drop_off_pick_up = models.TextField(null=True, blank=True)
-    food = models.NullBooleanField(default=None)
-    beverage = models.NullBooleanField(default=None)
-    liquor_licence = models.NullBooleanField(default=None)
-    byo_alcohol = models.NullBooleanField(default=None)
+    food = models.BooleanField(default=None, null=True)
+    beverage = models.BooleanField(default=None, null=True)
+    liquor_licence = models.BooleanField(default=None, null=True)
+    byo_alcohol = models.BooleanField(default=None, null=True)
     sullage_disposal = models.TextField(null=True, blank=True)
     waste_disposal = models.TextField(null=True, blank=True)
     refuel_location_method = models.TextField(null=True, blank=True)
@@ -243,10 +387,10 @@ class Application(models.Model):
     other_relevant_documents = models.ManyToManyField(Record, blank=True, related_name='other_relevant_documents')
     land_owner_consent = models.ManyToManyField(Record, blank=True, related_name='land_owner_consent')
     deed = models.ManyToManyField(Record, blank=True, related_name='deed')
-    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='Submitted_by')
-    river_lease_require_river_lease = models.NullBooleanField(default=None, null=True, blank=True)
+    submitted_by = models.IntegerField(blank=True, null=True)
+    river_lease_require_river_lease = models.BooleanField(default=None, null=True, blank=True)
     river_lease_scan_of_application = models.ManyToManyField(Record, blank=True, related_name='river_lease_scan_of_application')
-    river_lease_reserve_licence = models.NullBooleanField(default=None, null=True, blank=True)
+    river_lease_reserve_licence = models.BooleanField(default=None, null=True, blank=True)
     river_lease_application_number = models.CharField(max_length=30, null=True, blank=True)
     proposed_development_current_use_of_land = models.TextField(null=True, blank=True)
     proposed_development_plans = models.ManyToManyField(Record, blank=True, related_name='proposed_development_plans')
@@ -268,25 +412,25 @@ class Application(models.Model):
     publish_determination_report = models.DateField(null=True, blank=True)
     routeid = models.CharField(null=True, blank=True, default=1, max_length=4)
     assessment_start_date = models.DateField(null=True, blank=True)
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='application_group_assignment')
+    group = models.ForeignKey(SystemGroup, null=True, blank=True, related_name='application_group_assignment', on_delete=models.CASCADE)
     swan_river_trust_board_feedback = models.ManyToManyField(Record, blank=True, related_name='document_swan_river_board_feedback')
     document_memo = models.ManyToManyField(Record, blank=True, related_name='document_memo')
     document_memo_2 = models.ManyToManyField(Record, blank=True, related_name='document_memo_2')
     document_briefing_note = models.ManyToManyField(Record, blank=True, related_name='document_briefing_note')
     document_determination_approved = models.ManyToManyField(Record, blank=True, related_name='document_determination_approved')
     approval_id = models.IntegerField(null=True, blank=True)
-    assessed_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='assessed_by')
+    assessed_by = models.IntegerField(blank=True, null=True)
     supporting_info_demonstrate_compliance_trust_policies = models.ManyToManyField(Record, blank=True, related_name='supporting_info_demonstrate_compliance_trust_policies')
-    type_of_crafts = models.ForeignKey(Craft, null=True, blank=True, related_name='craft') 
+    type_of_crafts = models.ForeignKey(Craft, null=True, blank=True, related_name='craft', on_delete=models.CASCADE) 
     number_of_crafts  = models.IntegerField(null=True, blank=True)
     route_status = models.CharField(null=True, blank=True, default='Draft', max_length=256)
     submitter_comment = models.TextField(null=True, blank=True, default='', max_length=1000)
     referral_comment = models.TextField(null=True, blank=True, default='', max_length=1000)
     landowner = models.TextField(null=True, blank=True) 
     land_description = models.TextField(null=True, blank=True)
-    approval_document = models.ForeignKey(Record, null=True, blank=True, related_name='application_approval_document')
-    approval_document_signed = models.ForeignKey(Record, null=True, blank=True, related_name='application_approval_document_signed')
-    old_application = models.ForeignKey('Application', null=True, blank=True, related_name='application_old_application')
+    approval_document = models.ForeignKey(Record, null=True, blank=True, related_name='application_approval_document', on_delete=models.CASCADE)
+    approval_document_signed = models.ForeignKey(Record, null=True, blank=True, related_name='application_approval_document_signed', on_delete=models.CASCADE)
+    old_application = models.ForeignKey('Application', null=True, blank=True, related_name='application_old_application', on_delete=models.CASCADE)
     old_approval_id = models.IntegerField(null=True, blank=True) 
 
     def __str__(self):
@@ -356,27 +500,27 @@ class Booking(models.Model):
         (4, 'Cancelled Booking'),
     )
 
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, blank=True, null=True)
-    details = JSONField(null=True, blank=True)
+    customer = models.IntegerField(blank=True, null=True)
+    details = models.JSONField(null=True, blank=True)
     booking_type = models.SmallIntegerField(choices=BOOKING_TYPE_CHOICES, default=0)
     expiry_time = models.DateTimeField(blank=True, null=True)
     cost_total = models.DecimalField(max_digits=8, decimal_places=2, default='0.00')
     override_price = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    override_reason = models.ForeignKey('DiscountReason', null=True, blank=True)
+    override_reason = models.ForeignKey('DiscountReason', null=True, blank=True, on_delete=models.CASCADE)
     override_reason_info = models.TextField(blank=True, null=True)
-    overridden_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, blank=True, null=True, related_name='overridden_bookings')
-    application = models.ForeignKey('Application', null=True)
+    overridden_by = models.IntegerField(blank=True, null=True)
+    application = models.ForeignKey('Application', null=True, on_delete=models.CASCADE)
     send_invoice = models.BooleanField(default=False)
     cancellation_reason = models.TextField(null=True,blank=True)
     cancelation_time = models.DateTimeField(null=True,blank=True)
     confirmation_sent = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, blank=True, null=True,related_name='created_by_booking')
-    canceled_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, blank=True, null=True,related_name='canceled_bookings')
+    created_by = models.IntegerField(blank=True, null=True)
+    canceled_by = models.IntegerField(blank=True, null=True)
 
 
 class BookingInvoice(models.Model):
-    booking = models.ForeignKey(Booking, related_name='invoices')
+    booking = models.ForeignKey(Booking, related_name='invoices', on_delete=models.CASCADE)
     invoice_reference = models.CharField(max_length=50, null=True, blank=True, default='')
     system_invoice = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -431,8 +575,8 @@ class PublicationWebsite(models.Model):
     """This model represents Application Published in Website
     """
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
-    original_document = models.ForeignKey(Record, blank=True, null=True, related_name='original_document')
-    published_document = models.ForeignKey(Record, blank=True, null=True, related_name='published_document')
+    original_document = models.ForeignKey(Record, blank=True, null=True, related_name='original_document', on_delete=models.CASCADE)
+    published_document = models.ForeignKey(Record, blank=True, null=True, related_name='published_document', on_delete=models.CASCADE)
 
     def __str__(self):
         return 'PublicationWebsite {} ({})'.format(self.pk, self.application)
@@ -478,7 +622,7 @@ class Referral(models.Model):
     )
 
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
-    referee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    referee = models.IntegerField(blank=True, null=True)
     details = models.TextField(blank=True, null=True)
     sent_date = models.DateField(blank=True, null=True)
     period = models.PositiveIntegerField(verbose_name='period (days)')
@@ -493,7 +637,8 @@ class Referral(models.Model):
         unique_together = ('application', 'referee')
 
     def __str__(self):
-        return 'Referral {} to {} ({})'.format(self.pk, self.referee, self.application)
+        referee = SystemUser.objects.get(ledger_id=self.referee)
+        return 'Referral {} to {} ({})'.format(self.pk, referee, self.application)
 
     def save(self, *args, **kwargs):
         """Override save to set the expire_date field.
@@ -576,11 +721,11 @@ class ComplianceGroup(models.Model):
     title = models.CharField(max_length=256, blank=True, null=True)
     app_type = models.IntegerField(choices=Application.APP_TYPE_CHOICES, blank=True, null=True)
 #    cid = models.ManyToManyField(Compliance, blank=True)
-    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_group_applicant')
+    applicant = models.IntegerField(blank=True, null=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
     status = models.IntegerField(choices=COMPLIANCE_GROUP_STATUS_CHOICES, default=COMPLIANCE_GROUP_STATUS_CHOICES.future)
     due_date = models.DateField(blank=True, null=True)
-    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_group_assignee')
+    assignee = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return 'Condition Group {}: {}'.format(self.pk, self.title)
@@ -607,13 +752,13 @@ class Compliance(models.Model):
     title = models.CharField(max_length=256, blank=True, null=True) 
     app_type = models.IntegerField(choices=Application.APP_TYPE_CHOICES, blank=True, null=True)
     condition = models.ForeignKey(Condition, on_delete=models.PROTECT)
-    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_applicant')
-    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_assignee')
+    applicant = models.IntegerField(blank=True, null=True)
+    assignee = models.IntegerField(blank=True, null=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT) 
-    assessed_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_assigned_by')
+    assessed_by = models.IntegerField(blank=True, null=True)
     assessed_date = models.DateField(blank=True, null=True)
     status = models.IntegerField(choices=COMPLIANCE_STATUS_CHOICES, default=COMPLIANCE_STATUS_CHOICES.future)
-    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='compliance_submitted_by')
+    submitted_by = models.IntegerField(blank=True, null=True)
     submit_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateField(blank=True, null=True)
     compliance = models.TextField(blank=True, null=True, help_text='Information to fulfil requirement of condition.')
@@ -623,7 +768,7 @@ class Compliance(models.Model):
     approve_date = models.DateField(blank=True, null=True)
     records = models.ManyToManyField(Record, blank=True)
     compliance_group = models.ForeignKey(ComplianceGroup, blank=True, null=True, on_delete=models.PROTECT)
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='compliance_group_assignment')
+    group = models.ForeignKey(Group, null=True, blank=True, related_name='compliance_group_assignment', on_delete=models.CASCADE)
 
     def __str__(self):
         return 'Compliance {} ({})'.format(self.pk, self.condition)
@@ -660,7 +805,7 @@ class CommunicationAccount(models.Model):
         (3, 'mail', ('Mail')),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    user = models.IntegerField(null=True)
     comms_to = models.CharField(max_length=256, null=True, blank=True)
     comms_from = models.CharField(max_length=256, null=True, blank=True)
     subject = models.CharField(max_length=256, null=True, blank=True)
@@ -717,7 +862,7 @@ class Delegate(models.Model):
     submit applications on behalf of an Organisation, within the Statutory
     Development application.
     """
-    email_user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, on_delete=models.PROTECT)
+    email_user = models.IntegerField(blank=False, null=True)
     organisation = models.ForeignKey(Organisation, blank=False, on_delete=models.PROTECT)
     
     def __str__(self):
@@ -760,8 +905,8 @@ class OrganisationPending(models.Model):
     #identification = models.ManyToManyField(Record, blank=True, related_name='Identification Documents')
     postal_address = models.ForeignKey(OrganisationAddress, related_name='org_pending_postal_address', blank=True, null=True, on_delete=models.SET_NULL)
     billing_address = models.ForeignKey(OrganisationAddress, related_name='org_pending_billing_address', blank=True, null=True, on_delete=models.SET_NULL)
-    email_user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, on_delete=models.PROTECT, null=True)
-    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT, related_name='org_pending_assignee')
+    email_user = models.IntegerField(blank=False, null=True)
+    assignee = models.IntegerField(blank=True, null=True)
     company_exists = models.BooleanField(default=False)
     submit_date = models.DateField(auto_now_add=True, null=True, blank=True)
     pin1 = models.CharField(max_length=50, null=True, blank=True)
@@ -788,7 +933,7 @@ class ApplicationInvoice(models.Model):
     """This model represents a reference to an invoice for payment raised against
     an application.
     """
-    application = models.ForeignKey(Application)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
     invoice_reference = models.CharField(max_length=64)
 
     def __str__(self):
@@ -813,7 +958,7 @@ class StakeholderComms(models.Model):
         (2, 'posted', ('Posted')),
     )
 
-    application = models.ForeignKey(Application)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
     email = models.EmailField(unique=False, blank=False)
     name = models.CharField(max_length=255)
     sent_date = models.DateTimeField(auto_now_add=True)

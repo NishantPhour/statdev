@@ -96,7 +96,7 @@
                             <td>{% if row_obj.application.organisation %}
                                  {{ row_obj.application.organisation }}
                                 {% else %}
-                                 {{ row_obj.application.applicant.get_full_name }}
+                                {{ row_obj.applicant.legal_first_name }} {{ row_obj.applicant.legal_last_name }}
                                 {% endif %}
                             </td>
                             <td>
@@ -127,7 +127,7 @@
 
 			    </td>
                             <td>{{ row_obj.application.submit_date|date:"d-M-Y" }}</td>
-				<td>{{ row_obj.application.submitted_by.get_full_name }}</td>
+				<td>{{ row_obj.submitted_by.legal_first_name }} {{ row_obj.submitted_by.legal_last_name }}</td>
 			     <td>{{ row_obj.sent_date }}</td>
                              <td>{{ row_obj.expire_date }}</td>
                             <td>

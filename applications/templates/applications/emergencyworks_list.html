@@ -113,7 +113,7 @@
                                     {% if app_obj.app.organisation %}
                                         {{ app_obj.app.organisation }}
                                     {% else %}
-                                        {{ app_obj.app.applicant.get_full_name }}
+                                        {{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}
                                     {% endif %}
                                 </td>
                                 <td>{{ app_obj.app.get_state_display }}

@@ -1,23 +1,23 @@
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, HTML, Fieldset, MultiField, Div
 from crispy_forms.bootstrap import FormActions, InlineRadios
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field, RadioSelect, ModelChoiceField, Select
+from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field, RadioSelect, ModelChoiceField, Select, FileInput
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
 from multiupload.fields import MultiFileField
 from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
-from ledger.accounts.models import EmailUser, Address, Organisation
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 from .models import (
     Application, Referral, Condition, Compliance, Vessel, Record, PublicationNewspaper,
-    PublicationWebsite, PublicationFeedback, Delegate, Communication, OrganisationContact, OrganisationPending, CommunicationAccount, CommunicationOrganisation,OrganisationExtras, CommunicationCompliance, ConditionPredefined)
+    PublicationWebsite, PublicationFeedback, Delegate, Communication, Organisation, OrganisationAddress, OrganisationContact, OrganisationPending, CommunicationAccount, CommunicationOrganisation,OrganisationExtras, CommunicationCompliance, ConditionPredefined)
 #from ajax_upload.widgets import AjaxClearableFileInput
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
-from ledger.accounts.models import EmailUser, Address, Organisation, Document, OrganisationAddress
 from model_utils import Choices
 
 from django import forms
@@ -136,7 +136,7 @@ class PaymentDetailForm(ModelForm):
 class CreateAccountForm(ModelForm):
 
     class Meta:
-        model = EmailUser 
+        model = SystemUser 
         fields = ['email']
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class OrganisationAddressForm(ModelForm):
     postal_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postal_postcode = CharField(required=False, max_length=10)
     postal_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    postal_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    postal_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     billing_line1 = CharField(required=False,max_length=255)
     billing_line2 = CharField(required=False, max_length=255)
@@ -170,7 +170,7 @@ class OrganisationAddressForm(ModelForm):
     billing_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     billing_postcode = CharField(required=False, max_length=10)
     billing_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    billing_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    billing_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     class Meta:
         model = OrganisationAddress
@@ -205,7 +205,7 @@ class CreateLinkCompanyForm(ModelForm):
     postal_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postal_postcode = CharField(required=False, max_length=10)
     postal_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    postal_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    postal_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
 
     billing_line1 = CharField(required=False,max_length=255)
     billing_line2 = CharField(required=False, max_length=255)
@@ -213,12 +213,12 @@ class CreateLinkCompanyForm(ModelForm):
     billing_locality = CharField(required=False, max_length=255, label='Town/Suburb')
     billing_postcode = CharField(required=False, max_length=10)
     billing_state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    billing_country = ChoiceField(sorted(COUNTRIES.items()), required=False)
+    billing_country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
     company_exists = CharField(required=False,widget=HiddenInput()) 
     company_id = CharField(required=False,max_length=255,widget=HiddenInput())
 
     class Meta:
-        model = EmailUser
+        model = SystemUser
         fields = ['first_name']
 
     def __init__(self, *args, **kwargs):
@@ -266,7 +266,7 @@ class CreateLinkCompanyForm(ModelForm):
             if int(step) > 1:
                 self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
             self.helper.add_input(Submit('Next Step', 'Next Step', css_class='btn-lg'))
-
+#TODO remove this
 class FirstLoginInfoForm(ModelForm):
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
@@ -276,7 +276,7 @@ class FirstLoginInfoForm(ModelForm):
     locality = CharField(required=False, max_length=255, label='Town/Suburb')
     postcode = CharField(required=False, max_length=10)
     state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    country = ChoiceField(sorted(COUNTRIES.items())) 
+    country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
     manage_permits = ChoiceField(label='Do you manage licences, permits or Part 5 on behalf of a company?', required=False,choices=BOOL_CHOICES, widget=RadioSelect(attrs={'class':'radio-inline'}))
 
     class Meta:
@@ -800,6 +800,7 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
         self.fields['description'].label = "Summary"
 #       self.fields['project_no'].label = "Riverbank Project Number"
         self.fields['purpose'].label = "Purpose of Approval"
+        self.fields['purpose'].widget.attrs.update({'class': 'form-control'})
         self.fields['proposed_commence'].label = "Proposed Commencement Date"
         self.fields['proposed_commence'].widget.attrs['autocomplete'] = 'off'
 
@@ -810,6 +811,7 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
         self.fields['max_participants'].label = "Maximum Number of Participants"
         self.fields['address'].label = "Address of any landbased component of the commercial activity"
         self.fields['proposed_location'].label = "Proposed Location"
+        self.fields['proposed_location'].widget.attrs.update({'class': 'form-control'})
         self.fields['location_route_access'].label = "Location / Route and Access Points (mark clearly on map)"
         # self.fields['proposed_location'].label = "Location / Route and Access Points"
         self.fields['jetties'].label = "List all jetties to be used"
@@ -1244,7 +1246,7 @@ class ApplicationPermitForm(ApplicationFormMixin, ModelForm):
 
         # Location 
         if check_fields_exist(self.fields,['lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority','over_water']) is True and may_update == "True":
-            crispy_boxes.append(crispy_box('location_collapse', 'form_location' , 'Location','street_number_and_name','lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority',InlineRadios('over_water')) )
+            crispy_boxes.append(crispy_box('location_collapse', 'form_location' , 'Location','street_number_and_name','lot','reserve_number','town_suburb','nearest_road_intersection','local_government_authority','over_water') )
         else:
             try:
                del self.fields['over_water']
@@ -1346,6 +1348,7 @@ class ApplicationChange(ApplicationFormMixin, ModelForm):
 
         self.helper = BaseFormHelper()
         self.fields['proposed_development_description'].label = "Details of proposed ammendment"
+        self.fields['app_type'].widget.attrs.update({'class': 'form-control'})
         self.fields['app_type'].disabled = True
         self.fields['title'].disabled = True
         self.helper.form_id = 'id_form_change_ammend'
@@ -1422,7 +1425,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 
         may_update =  self.initial["workflow"]['may_update']
         show_form_buttons = self.initial["workflow"]['show_form_buttons']
-
         self.fields['title'].required = False
         self.fields['river_lease_require_river_lease'].required = False
         self.fields['river_lease_reserve_licence'].required = False
@@ -1540,9 +1542,9 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 
                  crispy_boxes.append(HTML('{% include "applications/application_river_lease_32.html" %}'))
 
-        # Details of Proposed Developmen
+        # Details of Proposed Development
         if check_fields_exist(self.fields,['cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans']) is True and may_update == "True":
-             crispy_boxes.append(crispy_box('proposed_development_collapse', 'form_proposed_development' , 'Details of Proposed Development','cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans'))
+            crispy_boxes.append(crispy_box('proposed_development_collapse', 'form_proposed_development' , 'Details of Proposed Development','cost','proposed_development_current_use_of_land','proposed_development_description','proposed_development_plans'))
         else:
              try:
                 del self.fields['cost']
@@ -1590,7 +1592,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
              crispy_boxes.append(HTML('{% include "applications/application_referrals.html" %}'))
         if self.initial["workflow"]["hidden"]["conditions"] == 'False':
              crispy_boxes.append(HTML('{% include "applications/application_conditions.html" %}'))
-
         # Assessment Update Step
         #if check_fields_exist(self.fields,['assessment_start_date']) is True and may_update == "True":
         if self.initial["workflow"]["hidden"]["assessments"] == 'False':
@@ -1721,7 +1722,6 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
                       else:
                           self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
                           self.helper.add_input(Submit('cancel', 'Cancel'))
-
 
         if 'assessment_start_date' in self.fields:
             self.fields['assessment_start_date'].label = "Start Date" 
@@ -1900,26 +1900,41 @@ class ApplicationReferralConditionsPart5(ModelForm):
 
 
 class ReferralForm(ModelForm):
+    referee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Referral
-        fields = ['referee', 'period', 'details']
+        fields = ['period', 'details']
 
     def __init__(self, *args, **kwargs):
         # Application must be passed in as a kwarg.
         app = kwargs.pop('application')
         super(ReferralForm, self).__init__(*args, **kwargs)
         self.helper = PopupFormHelper(self)
-        self.helper.form_id = 'id_form_referral_create'
-        self.helper.attrs = {'novalidate': ''}
-        # Limit the referee queryset.
-        referee = Group.objects.get(name='Statdev Referee')
-        existing_referees = app.referral_set.all().values_list('referee__email', flat=True)
-        self.fields['referee'].queryset = User.objects.filter(groups__in=[referee]).exclude(email__in=existing_referees)
-        # TODO: business logic to limit the document queryset.
-        # self.helper.form_id = 'id_form_refer_application'
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
-        self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close' ))
+        self.helper.attrs = {'novalidate': ''}
+        
+        # Limit the referee queryset
+        referee_group = SystemGroup.objects.get(name='Statdev Referee')
+        all_referees = app.referral_set.all().distinct('referee')
+        referee_ids = all_referees.values_list('referee', flat=True)
+        group_members_list = referee_group.get_system_group_member_ids()
+        self.fields['referee'].queryset = SystemUser.objects.filter(ledger_id__in=group_members_list).exclude(id__in=referee_ids)
+        
+        # Define the form layout, placing the referee field at the top
+        self.helper.layout = Layout(
+            'referee',
+            'period',
+            'details',
+            FormActions(
+                Submit('save', 'Save', css_class='btn-lg ajax-submit'),
+                Submit('cancel', 'Cancel', css_class='ajax-close')
+            )
+        )
 
 
 class ReferralCompleteForm(ModelForm):
@@ -2102,7 +2117,7 @@ class ConditionSuspension(ModelForm):
         self.helper.add_input(Submit('cancel', 'Cancel' , css_class='ajax-close'))
 
 class ConditionCreateForm(ModelForm):
-    predefined_conditions = ModelChoiceField(queryset=ConditionPredefined.objects.filter(status=1).order_by('title'), help_text="Select a predefined condition from the drop down to append condition rules to condition automtically.", widget=Select(attrs={'onchange':'select_condition(this.id);'})) 
+    predefined_conditions = ModelChoiceField(queryset=ConditionPredefined.objects.filter(status=1).order_by('title'), help_text="Select a predefined condition from the drop down to append condition rules to condition automtically.", widget=forms.Select(attrs={'class': 'form-control'})) 
 
     class Meta:
         model = Condition
@@ -2111,6 +2126,8 @@ class ConditionCreateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ConditionCreateForm, self).__init__(*args, **kwargs)
         self.helper = PopupFormHelper(self)
+        self.fields['recur_pattern'].widget = forms.Select(attrs={'class': 'form-control'})
+        self.fields['recur_pattern'].choices = self.fields['recur_pattern'].choices
 
         if self.initial['may_assessor_advise'] != True:
             self.fields['predefined_conditions'].required = False
@@ -2259,11 +2276,15 @@ class ApplicationAssignNextAction(ModelForm):
 class AssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assignee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assignee']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignPersonForm, self).__init__(*args, **kwargs)
@@ -2271,8 +2292,9 @@ class AssignPersonForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
-        self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
+        usergroups = assigngroup.get_system_group_member_ids()
+        self.fields['assignee'].queryset = SystemUser.objects.filter(ledger_id__in=usergroups)
         self.fields['assignee'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():
@@ -2318,11 +2340,16 @@ class AssignCancelForm(ModelForm):
 class AssignOfficerForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assigned_officer = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assigned_officer']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignOfficerForm, self).__init__(*args, **kwargs)
@@ -2330,8 +2357,9 @@ class AssignOfficerForm(ModelForm):
         self.helper.form_id = 'id_form_assign_officer_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
-        self.fields['assigned_officer'].queryset = User.objects.filter(groups__in=[assigngroup])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
+        users_in_group = assigngroup.get_system_group_member_ids()
+        self.fields['assigned_officer'].queryset = SystemUser.objects.filter(ledger_id__in=users_in_group)
         self.fields['assigned_officer'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():
@@ -2355,11 +2383,16 @@ class AssignOfficerForm(ModelForm):
 class ComplianceAssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
-
+    assignee = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['assignee']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(ComplianceAssignPersonForm, self).__init__(*args, **kwargs)
@@ -2367,8 +2400,9 @@ class ComplianceAssignPersonForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        assigngroup = Group.objects.get(name=self.initial['assigngroup'])
-        self.fields['assignee'].queryset = User.objects.filter(groups__in=[assigngroup])
+        assigngroup = SystemGroup.objects.get(name=self.initial['assigngroup'])
+        usergroups = assigngroup.get_system_group_member_ids()
+        self.fields['assignee'].queryset = SystemUser.objects.filter(ledger_id__in=usergroups)
         self.fields['assignee'].required = True
         # Disable all form fields.
         for k, v in self.fields.items():
@@ -2390,11 +2424,15 @@ class ComplianceAssignPersonForm(ModelForm):
 class AssignApplicantForm(ModelForm):
     """A form for assigning or change the applicant on application.
     """
-
+    applicant = forms.ModelChoiceField(
+        queryset=SystemUser.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Application
         #fields = ['app_type', 'title', 'description', 'submit_date', 'assignee']
-        fields = ['applicant']
+        fields = []
 
     def __init__(self, *args, **kwargs):
         super(AssignApplicantForm, self).__init__(*args, **kwargs)
@@ -2402,9 +2440,8 @@ class AssignApplicantForm(ModelForm):
         self.helper.form_id = 'id_form_assign_person_application'
         self.helper.attrs = {'novalidate': ''}
         # Limit the assignee queryset.
-        
         applicant = self.initial['applicant']
-        self.fields['applicant'].queryset = User.objects.filter(pk=applicant)
+        self.fields['applicant'].queryset = SystemUser.objects.filter(id=applicant)
         self.fields['applicant'].required = True
         self.fields['applicant'].disabled = True
      
@@ -2839,6 +2876,7 @@ class VesselForm(ModelForm):
         self.helper.form_id = 'id_form_modals'
         self.helper.attrs = {'novalidate': ''}
         #application_vessel_craft_js_dynamics.html
+        self.fields['vessel_type'].widget.attrs.update({'class': 'form-control'})
         self.fields['name'].required = False
         self.fields['vessel_id'].required = False
         self.fields['size'].required = False
@@ -2878,7 +2916,7 @@ class NewsPaperPublicationCreateForm(ModelForm):
 
 class WebsitePublicationCreateForm(ModelForm):
 
-    original_document = FileField(required=False, max_length=128 , widget=ClearableFileInput(attrs={'multiple':'multiple'}))
+    original_document = FileField(required=False, max_length=128 , widget=ClearableMultipleFileInput(attrs={'multiple':'multiple'}))
     published_document = FileField(required=False, max_length=128 , widget=ClearableMultipleFileInput(attrs={'multiple':'multiple'}))
 
     class Meta:
@@ -2935,6 +2973,7 @@ class FeedbackPublicationCreateForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         self.fields['application'].widget = HiddenInput()
         self.fields['status'].widget = HiddenInput()
+        self.fields['state'].widget.attrs.update({'class': 'form-control'})
         self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
 
@@ -2953,21 +2992,21 @@ class RecordCreateForm(ModelForm):
         self.helper.add_input(Submit('cancel', 'Cancel'))
 
 
-class EmailUserForm(ModelForm):
+class SystemUserForm(ModelForm):
 
     class Meta:
-        model = EmailUser
-        fields = ['first_name', 'last_name', 'title', 'dob', 'phone_number', 'mobile_number', 'fax_number']
+        model = SystemUser
+        fields = ['first_name', 'last_name', 'title', 'legal_dob', 'phone_number', 'mobile_number', 'fax_number']
 
     def __init__(self, *args, **kwargs):
-        super(EmailUserForm, self).__init__(*args, **kwargs)
+        super(SystemUserForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_emailuser_account_update'
         self.helper.attrs = {'novalidate': ''}
 
         # Define the form layout.
         self.helper.layout = Layout(
-            'first_name', 'last_name', 'title', 'dob', 'phone_number', 'mobile_number', 'fax_number',
+            'first_name', 'last_name', 'title', 'legal_dob', 'phone_number', 'mobile_number', 'fax_number',
             FormActions(
                 Submit('save', 'Save', css_class='btn-lg'),
                 Submit('cancel', 'Cancel')
@@ -3001,7 +3040,7 @@ class UserFormIdentificationUpdate(ModelForm):
     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
 
     class Meta:
-        model = EmailUser
+        model = SystemUser
         fields = ['id']
         
 

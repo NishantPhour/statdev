@@ -88,7 +88,7 @@
                                 <td><a href="{% url 'approval_detail' app_obj.app.pk %}">AP-{{ app_obj.app.pk }}</a></td>
                                 <td>{{ app_obj.app.get_app_type_display }}</td>
                                 <td>{{ app_obj.app.title }}</td>
-                                <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                                <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                                 <td>{{ app_obj.app.get_status_display }}</td>
                                 <td>{{ app_obj.app.start_date|date:"d-M-Y" }}</td>
                                 <td>{{ app_obj.app.expiry_date|date:"d-M-Y" }}</td>

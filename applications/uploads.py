@@ -3,7 +3,6 @@ from django.template import Context
 from django.template.loader import render_to_string, get_template
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from ledger.accounts.models import EmailUser
 from applications.models import Referral
 from confy import env
 from .models import Record

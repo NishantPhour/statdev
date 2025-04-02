@@ -149,11 +149,11 @@
                             <td><a href="{% url 'application_detail' app_obj.app.pk %}">{{ app_obj.app.pk }}</a></td>
                             <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
-                            <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ app_obj.app.organisation }}</td>
                             <td>{{ app_obj.app.get_state_display }}</td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
                             <td></td>
                             <td>
                                 {% if app_obj.may_assign_to_person == "True" %}
@@ -193,15 +193,15 @@
                             <td><a href="{% url 'application_detail' app_obj.app.pk %}">{{ app_obj.app.pk }}</a></td>
                             <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
-                            <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ app_obj.app.organisation }}</td>
                             <td>{{ app_obj.app.get_state_display }}</td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
                             <td></td>
                             <td>
                                 {% if app_obj.may_assign_to_person == "True" %}
-                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'application_assign_person' app_obj.app.pk %}">{% if app_obj.app.assignee == None %}Assign{% else %}Re Assign {% endif %}</a>
+                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'application_assign_person' app_obj.app.pk %}">{% if app_obj.assignee == None %}Assign{% else %}Re Assign {% endif %}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -237,11 +237,11 @@
                             <td><a href="{% url 'application_detail' app_obj.app.pk %}">{{ app_obj.app.pk }}</a></td>
                             <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
-                            <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ app_obj.app.organisation }}</td>
                             <td>{{ app_obj.app.get_state_display }}</td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
                             <td></td>
                             <td>
                                 {% if app_obj.may_assign_to_person == "True" %}
@@ -281,11 +281,11 @@
                             <td><a href="{% url 'application_detail' app_obj.app.pk %}">{{ app_obj.app.pk }}</a></td>
                             <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
-                            <td>{{ app_obj.app.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ app_obj.app.organisation }}</td>
                             <td>{{ app_obj.app.get_state_display }}</td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
-                            <td>{{ app_obj.app.assignee.get_full_name }}</td>
+                            <td>{{ app_obj.assignee.legal_first_name }} {{ app_obj.assignee.legal_last_name }}</td>
                             <td>
                                 {% if app_obj.may_assign_to_person == "True" %}
                                 <a class="btn btn-primary btn-sm" role="button" href="{% url 'application_assign_person' app_obj.app.pk %}">{% if app_obj.app.assignee == None %}Assign{% else %}Re Assign {% endif %}</a>
@@ -323,7 +323,7 @@
                             <td><a href="{% url 'application_detail' obj.application.pk %}">{{ obj.application.pk }}</a></td>
                             <td>{{ obj.application.get_app_type_display }}</td>
                             <td>{{ obj.application.title }}</td>
-                            <td>{{ obj.application.applicant.get_full_name }}</td>
+                            <td>{{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}</td>
                             <td>{{ obj.application.organisation }}</td>
                             <td>{{ obj.application.submit_date|date:"d-M-Y" }}</td>
                             <td>{{ obj.expire_date|date:"d-M-Y" }}</td>

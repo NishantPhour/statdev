@@ -9,6 +9,12 @@ from .models import (
     Booking, DiscountReason, BookingInvoice)
 
 
+admin.site.index_template = "admin-index.html"
+admin.site.site_header = "Commercial Operator Admin"
+admin.autodiscover()
+
+
+
 @register(Record)
 class RecordAdmin(ModelAdmin):
     list_display = ('name', 'category', 'file_group','file_group_ref_id', 'upload')
@@ -21,11 +27,12 @@ class BookingInvoiceInline(admin.TabularInline):
 
 @register(Booking)
 class BookingAdmin(ModelAdmin):
-    list_display = ('customer', 'application', 'cost_total','created')
-    list_filter = ('customer',)
-    raw_id_fields = ('customer','application','overridden_by','canceled_by','created_by',)
-    search_fields = ('customer','application')
-    inlines = [BookingInvoiceInline,]
+    # list_display = ('customer', 'application', 'cost_total','created')
+    # list_filter = ('customer',)
+    # raw_id_fields = ('customer','application','overridden_by','canceled_by','created_by',)
+    # search_fields = ('customer','application')
+    # inlines = [BookingInvoiceInline,]
+    x='x'
 
 @register(DiscountReason)
 class DiscountReasonAdmin(ModelAdmin):
@@ -52,13 +59,14 @@ class ApplicationLicenceFeeAdmin(ModelAdmin):
     
 @register(Application)
 class ApplicationAdmin(ModelAdmin):
-    date_hierarchy = 'submit_date'
-    filter_horizontal = ('records',)
-    raw_id_fields = ('applicant','assignee','assigned_officer','approval_document','approval_document_signed','submitted_by','assessed_by','organisation','group','old_application',)
-    readonly_fields = ('records','location_route_access','cert_survey','cert_public_liability_insurance','risk_mgmt_plan','safety_mgmt_procedures','brochures_itineries_adverts','other_relevant_documents','vessels','land_owner_consent','deed','river_lease_scan_of_application','proposed_development_plans','document_draft','document_new_draft','document_new_draft_v3','document_draft_signed','swan_river_trust_board_feedback','document_memo','document_memo_2','document_briefing_note','document_determination_approved','supporting_info_demonstrate_compliance_trust_policies','document_final','document_final_signed','document_determination','document_completion',)
-    list_display = ('id', 'app_type', 'organisation', 'state', 'title', 'submit_date', 'expire_date')
-    list_filter = ('app_type', 'state')
-    search_fields = ('applicant__email', 'organisation__name', 'assignee__email', 'title')
+    # date_hierarchy = 'submit_date'
+    # filter_horizontal = ('records',)
+    # raw_id_fields = ('applicant','assignee','assigned_officer','approval_document','approval_document_signed','submitted_by','assessed_by','organisation','group','old_application',)
+    # readonly_fields = ('records','location_route_access','cert_survey','cert_public_liability_insurance','risk_mgmt_plan','safety_mgmt_procedures','brochures_itineries_adverts','other_relevant_documents','vessels','land_owner_consent','deed','river_lease_scan_of_application','proposed_development_plans','document_draft','document_new_draft','document_new_draft_v3','document_draft_signed','swan_river_trust_board_feedback','document_memo','document_memo_2','document_briefing_note','document_determination_approved','supporting_info_demonstrate_compliance_trust_policies','document_final','document_final_signed','document_determination','document_completion',)
+    # list_display = ('id', 'app_type', 'organisation', 'state', 'title', 'submit_date', 'expire_date')
+    # list_filter = ('app_type', 'state')
+    # search_fields = ('applicant__email', 'organisation__name', 'assignee__email', 'title')
+    x='x'
 
 
 @register(Location)
@@ -91,12 +99,13 @@ class ConditionAdmin(ModelAdmin):
 
 @register(Compliance)
 class ComplianceAdmin(ModelAdmin):
-    date_hierarchy = 'submit_date'
-    filter_horizontal = ('records',)
-    raw_id_fields = ('condition','assessed_by','applicant','assignee','assessed_by','submitted_by')
-    readonly_fields = ('external_documents',)
-    list_display = ('__str__', 'applicant', 'approval_id','assignee', 'status', 'submit_date', 'approve_date','due_date','compliance_group')
-    search_fields = ('applicant__email', 'assignee__email', 'compliance', 'comments')
+    # date_hierarchy = 'submit_date'
+    # filter_horizontal = ('records',)
+    # raw_id_fields = ('condition','assessed_by','applicant','assignee','assessed_by','submitted_by')
+    # readonly_fields = ('external_documents',)
+    # list_display = ('__str__', 'applicant', 'approval_id','assignee', 'status', 'submit_date', 'approve_date','due_date','compliance_group')
+    # search_fields = ('applicant__email', 'assignee__email', 'compliance', 'comments')
+    x='x'
 
 @register(ComplianceGroup)
 class ComplianceGroupAdmin(ModelAdmin):
@@ -111,12 +120,12 @@ class DelegateAdmin(ModelAdmin):
 class ApplicationInvoiceAdmin(ModelAdmin):
     pass
 
-@register(Communication)
-class CommunicationAdmin(ModelAdmin):
-    list_display = ('application', 'comms_to', 'comms_from','subject','comms_type','details','created')
-    search_fields = ('comms_to','comms_from','subject','details')
-    raw_id_fields = ('application',)
-    readonly_fields = ('records',)
+# @register(Communication)
+# class CommunicationAdmin(ModelAdmin):
+#     list_display = ('application', 'comms_to', 'comms_from','subject','comms_type','details','created')
+#     search_fields = ('comms_to','comms_from','subject','details')
+#     raw_id_fields = ('application',)
+#     readonly_fields = ('records',)
 
 
 @register(Craft)
@@ -155,10 +164,16 @@ class StakeholderComms(ModelAdmin):
     search_fields = ('application','email','name','sent_date','role')
     raw_id_fields = ('application',)
 
+# @register(UserAddress)
+# class UserAddress(admin.ModelAdmin):
+#     readonly_fields = (
+#         "num_orders_as_billing_address",
+#         "num_orders_as_shipping_address",
+#     )
 
-@register(ConditionPredefined)
-class ConditionPredefined(ModelAdmin):
-    list_display = ('title','condition','status')
-    search_fields = ('title','condition','status')
-
+# @register(Country)
+# class Country(admin.ModelAdmin):
+#     list_display = ["__str__", "display_order"]
+#     list_filter = ["is_shipping_country"]
+#     search_fields = ["name", "printable_name", "iso_3166_1_a2", "iso_3166_1_a3"]
 

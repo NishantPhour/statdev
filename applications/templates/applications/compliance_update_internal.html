@@ -30,12 +30,12 @@
                     <h4>Status:</h4>
                     <p>{{ object.get_status_display }}</p>
                     <h4>Assigned to:</h4>
-                    {% if object.assignee %}
+                    {% if assignee %}
                     <p>
-                    {% if object.assignee.first_name %}
-                        {{ object.assignee.first_name }} {{ object.assignee.last_name }}
+                    {% if assignee.legal_first_name %}
+                        {{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
                     {% else %}
-                        {{ object.assignee.email }}
+                        {{ assignee.email }}
                     {% endif %}
                     </p>
                     {% else %}
@@ -50,10 +50,10 @@
                 <div class="panel-body">
                     <h4>Submitted by:</h4>
                     <p>
-                    {% if object.submitted_by.first_name %}
-                        {{ object.submitted_by.first_name }} {{ object.applicant.last_name }}
+                    {% if submitted_by.legal_first_name %}
+                        {{ submitted_by.legal_first_name }} {{ submitted_by.legal_last_name }}
                     {% else %}
-                        {{ object.submitted_by.email }}
+                        {{ submitted_by.email }}
                     {% endif %}
                     </p>
                     <h4>Lodged on</h4>
@@ -195,7 +195,7 @@
                 </div>
             </div>
             </div>
-	    {% if object.assignee == request.user %}
+	    {% if assignee.ledger_id == request.user.id %}
            <div class="col-sm-12 col-md-12 col-lg-12">
            <div class="panel panel-default">
              <!-- Default panel contents -->
@@ -237,7 +237,7 @@
                                     <label>Assessed By</label>
                                 </div>
                                 <div class="col-sm-12 col-md-9 col-lg-9">
-				   {{ object.assessed_by.get_full_name }}
+				   {{ assessed_by.legal_first_name }} {{ assessed_by.legal_last_name }}
                                 </div>
                         </div>
 
