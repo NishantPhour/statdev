@@ -722,7 +722,7 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
                 pending_org.save()
             else:
                 user = SystemUser.objects.get(ledger_id=pk)
-                pending_org = OrganisationPending.objects.create(name=company_name,abn=abn,email_user=user)
+                pending_org = OrganisationPending.objects.create(name=company_name,abn=abn,email_user=user.ledger_id.id)
 
             action = Action(
                   content_object=pending_org, user=self.request.user.id, category=Action.ACTION_CATEGORY_CHOICES.create,
@@ -4972,7 +4972,7 @@ class ApplicationLodge(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         #return reverse('application_list')
-        return reverse('home')
+        return reverse('home_page')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
@@ -5117,7 +5117,7 @@ class ApplicationRefer(LoginRequiredMixin, CreateView):
         """
         #messages.success(self.request, 'Referral has been added! ')
         #TODO check this
-        return reverse('home')
+        return reverse('home_page')
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationRefer, self).get_context_data(**kwargs)
@@ -9873,7 +9873,7 @@ class PersonDetails(LoginRequiredMixin, DetailView):
              elif action == "companies":
                  context['nav_details_companies'] = "active"
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-                 context['organisations'] = Delegate.objects.filter(email_user=user)
+                 context['organisations'] = Delegate.objects.filter(email_user=user.ledger_id.id)
 
         return context
 
