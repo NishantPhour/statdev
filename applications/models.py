@@ -866,7 +866,8 @@ class Delegate(models.Model):
     organisation = models.ForeignKey(Organisation, blank=False, on_delete=models.PROTECT)
     
     def __str__(self):
-        return '{}: {}'. format(self.email_user.email, self.organisation.name)
+        email = SystemUser.objects.get(ledger_id = self.email_user)
+        return '{}: {}'. format(email, self.organisation.name)
 
     class Meta:
         unique_together = ('email_user', 'organisation')

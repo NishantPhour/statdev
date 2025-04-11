@@ -358,10 +358,10 @@
 
                                             <div class="col-sm-12 col-md-12 col-lg-12">
                                                 <div class="col-sm-12 col-md-3 col-lg-3">
-                                                    <label><img src='{% static "images/person.png" %}'> {{ co.email_user.first_name }} {{ co.email_user.last_name }}</label>
+                                                    <label><img src='{% static "images/person.png" %}'> {{ co.user.legal_first_name }} {{ co.user.legal_last_name }}</label>
                                                 </div>
                                                 <div class="col-sm-12 col-md-5 col-lg-5">
-							<A HREF='{% url 'unlink_delegate' co.organisation.id co.email_user.id %}'><IMG SRC='{% static "images/bin_blue.png" %}' title="Remove"></A>
+							<A HREF='{% url 'unlink_delegate' co.delegate.organisation.id co.delegate.email_user %}'><IMG SRC='{% static "images/bin_blue.png" %}' title="Remove"></A>
                                                 </div>
                                             </div>
                                             {% endfor %}

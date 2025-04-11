@@ -89,7 +89,7 @@ class ApplicationTest(StatDevTestCase):
         self.assertTrue(self.app1.get_absolute_url())
 
     #def test_home_page_get(self):
-    #    url = reverse('home_page')
+    #    url = reverse('home')
     #    resp = self.client.get(url)
     #    self.assertEquals(resp.status_code, 200)
 

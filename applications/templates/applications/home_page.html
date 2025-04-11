@@ -45,7 +45,7 @@
 
 <div class="col-sm-12 col-md-12 col-lg-12">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="{{ home_nav_other_applications }}"><a href="{% url "home_page" %}">Applications</a></li>
+        <li role="presentation" class="{{ home_nav_other_applications }}"><a href="{% url "home" %}">Applications</a></li>
         <li role="presentation" class="{{ home_nav_other_approvals }}" ><a href="{% url "home_page_tabs" "approvals" %}">Approvals</a></li>
         <li role="presentation" class="{{ home_nav_other_clearance }}" ><a href="{% url "home_page_tabs" "clearance" %}">Clearance of Conditions</a></li>
 	{% if referee == 'yes' %}

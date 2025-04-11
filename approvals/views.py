@@ -296,7 +296,7 @@ class ApprovalCommsCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ApprovalCommsCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
