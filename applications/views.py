@@ -5540,7 +5540,7 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             if app.submitted_by:
                 submitted_by = SystemUser.objects.get(ledger_id = app.submitted_by)
                 emailcontext['person'] = submitted_by
-            emailcontext['person'] = app.submitted_by
+            emailcontext['person'] = submitted_by
             emailcontext['EXTERNAL_URL'] = settings.EXTERNAL_URL
             sendHtmlEmail([submitted_by.email], 'Final Report - Part  - '+str(app.id), emailcontext, 'application-part5-final-report.html', None, None, None)
 
@@ -5676,20 +5676,20 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
         if app.app_type == 1:
            # Permit Proposal
            pdftool.generate_permit(approval)
-           emailcontext['person'] = app.submitted_by 
+           emailcontext['person'] = submitted_by 
            emailcontext['conditions_count'] = Condition.objects.filter(application=app).count()
            sendHtmlEmail([submitted_by.email], 'Permit - '+app.title, emailcontext, 'application-permit-proposal.html', None, None, None, approval_pdf)
 
         elif app.app_type == 2:
            # Licence Proposal
            pdftool.generate_licence(approval)
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['vessels'] = app.vessels.all()
            emailcontext['approval'] = approval
            sendHtmlEmail([submitted_by.email], 'Licence Permit - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
         elif app.app_type == 3:
 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['approval'] = approval
            approval_pdf = approval.approval_document.upload.path
            sendHtmlEmail([submitted_by.email], 'Part 5 - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
@@ -5703,14 +5703,14 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
 
         elif app.app_type == 6:            
 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['approval'] = approval
            approval_pdf = approval.approval_document.upload.path
            sendHtmlEmail([submitted_by.email], 'Section 84 - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
 
         elif app.app_type == 10 or app.app_type == 11:
            # Permit & Licence Renewal 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            sendHtmlEmail([submitted_by.email], 'Draft Report - Part 5 - '+str(app.id)+' - location - description of works - applicant', emailcontext, 'application-licence-permit-proposal.html', None, None, None)
 
         ####################
@@ -5917,7 +5917,7 @@ class ApplicationAssignPerson(LoginRequiredMixin, UpdateView):
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
         assignee = SystemUser.objects.get(ledger_id=app.assignee)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {'person': assignee}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.request.user.id != app.assignee:
             sendHtmlEmail([assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -6210,10 +6210,11 @@ class ApplicationAssignApplicantCompany(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList() 
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.object.assignee:
             assignee = SystemUser.objects.get(ledger_id=self.object.assignee)
+            emailcontext['person'] = assignee
             action = Action(
                 content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.assign, user=self.request.user.id,
                 action='Assigned application to {} {} (status: {})'.format(assignee.first_name, assignee.last_name, self.object.get_state_display()))
@@ -6283,7 +6284,7 @@ class ApplicationAssignApplicant(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
 #        if self.request.user.id != app.assignee:
 #            sendHtmlEmail([app.assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -6291,6 +6292,7 @@ class ApplicationAssignApplicant(LoginRequiredMixin, UpdateView):
         # Record an action on the application:
         if self.object.assignee:
             assignee = SystemUser.objects.get(ledger_id=self.object.assignee)
+            emailcontext['person'] = assignee
             action = Action(
                 content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.assign, user=self.request.user.id,
                 action='Assigned application to {} {} (status: {})'.format(assignee.first_name, assignee.last_name, self.object.get_state_display()))
@@ -6616,7 +6618,7 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
              
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition has been approved"
              sendHtmlEmail([submitted_by.email], 'Clearance of condition has been approved', emailcontext, 'clearance-approved.html', None, None, None)
 
@@ -6648,7 +6650,7 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition requires additional information."
              sendHtmlEmail([submitted_by.email], 'Your clearance of condition requires additional information please login and resubmit with additional information.', emailcontext, 'clearance-holder.html', None, None, None)
 
@@ -6795,7 +6797,7 @@ class OLDComplianceAssignPerson(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {'person': assignee}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.request.user.id != app.assignee:
             sendHtmlEmail([assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -7137,7 +7139,7 @@ class ReferralSend(LoginRequiredMixin, UpdateView):
         ref.save()
         referee = SystemUser.objects.get(ledger_id=ref.referee)
         emailcontext = {}
-        emailcontext['person'] = ref.referee
+        emailcontext['person'] = referee
         emailcontext['application_id'] = ref.application.id
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[ref.application.app_type]
         sendHtmlEmail([referee.email], 'Application for Feedback', emailcontext, 'application-assigned-to-referee.html', None, None, None)
@@ -7222,7 +7224,7 @@ class ReferralRemind(LoginRequiredMixin, UpdateView):
         ref = self.get_object()
         referee = SystemUser.objects.get(ledger_id=ref.referee)
         emailcontext = {}
-        emailcontext['person'] = ref.referee
+        emailcontext['person'] = referee
         emailcontext['application_id'] = ref.application.id
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[ref.application.app_type]
 
@@ -7570,7 +7572,7 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition has been approved"
              sendHtmlEmail([submitted_by.email], 'Clearance of condition has been approved', emailcontext, 'clearance-approved.html', None, None, None)
 
@@ -7636,7 +7638,7 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition requires additional information."
              sendHtmlEmail([submitted_by.email], 'Your clearance of condition requires additional information please login and resubmit with additional information.', emailcontext, 'clearance-holder.html', None, None, None)
 
@@ -10409,18 +10411,18 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
 
         return super(OrganisationOther, self).get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        qs = super(OrganisationOther, self).get_queryset()
-        # Did we pass in a search string? If so, filter the queryset and return it.
-        if 'q' in self.request.GET and self.request.GET['q']:
-            query_str = self.request.GET['q']
-            # Replace single-quotes with double-quotes
-            query_str = query_str.replace("'", r'"')
-            # Filter by name and ABN fields.
-            query = get_query(query_str, ['name', 'abn'])
-            qs = qs.filter(query).distinct()
-        #print self.template_name
-        return qs
+    # def get_queryset(self):
+    #     qs = super(OrganisationOther, self).get_queryset()
+    #     # Did we pass in a search string? If so, filter the queryset and return it.
+    #     if 'q' in self.request.GET and self.request.GET['q']:
+    #         query_str = self.request.GET['q']
+    #         # Replace single-quotes with double-quotes
+    #         query_str = query_str.replace("'", r'"')
+    #         # Filter by name and ABN fields.
+    #         query = get_query(query_str, ['name', 'abn'])
+    #         qs = qs.filter(query).distinct()
+    #     #print self.template_name
+    #     return qs
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationOther, self).get_context_data(**kwargs)
