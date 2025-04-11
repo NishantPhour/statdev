@@ -51,7 +51,7 @@
                         </td>
                         {% if user_is_delegate %}
                         <td>
-                            <a class="btn btn-danger btn-sm" role="button" href="{% url 'organisation_unlink_delegate' object.pk d.emailuser.pk %}">Unlink</a>
+                            <a class="btn btn-danger btn-sm" role="button" href="{% url 'organisation_unlink_delegate' object.pk d.emailuser %}">Unlink</a>
                         </td>
                         {% endif %}
                         <th></th>

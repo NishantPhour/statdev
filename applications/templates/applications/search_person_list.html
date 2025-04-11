@@ -50,7 +50,7 @@
 
                 {% for acc_obj in acc_list %}
                 <tr>
-                    <td><a href="{% url "person_details_actions" acc_obj.acc_row.pk "personal" %}">AC-{{ acc_obj.acc_row.pk }}</a></td>
+                    <td><a href="{% url "person_details_actions" acc_obj.acc_row.ledger_id.id "personal" %}">AC-{{ acc_obj.acc_row.pk }}</a></td>
                     <td>{{ acc_obj.acc_row.first_name }}</td>
                     <td>{{ acc_obj.acc_row.last_name }}</td>
                     <td>{{ acc_obj.acc_row.email }}</td>
@@ -61,7 +61,7 @@
                     </td>
                     <td>{{ acc_obj.acc_row.date_joined|date:"d-M-Y" }}</td>
                     <td>
-                        <a class="btn btn-primary btn-sm" role="button" href="{% url "person_details_actions" acc_obj.acc_row.pk "personal" %}">View Person</a>
+                        <a class="btn btn-primary btn-sm" role="button" href="{% url "person_details_actions" acc_obj.acc_row.ledger_id.id "personal" %}">View Person</a>
                     </td>
                 </tr>
                 {% endfor %}

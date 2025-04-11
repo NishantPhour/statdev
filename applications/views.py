@@ -498,7 +498,7 @@ class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
            else:
                messages.success(self.request, 'Registration is now complete.')
                if app_id is None:
-                   return HttpResponseRedirect(reverse('home_page'))
+                   return HttpResponseRedirect(reverse('home'))
                else:
                    if self.request.user.is_staff is True:
                        app = Application.objects.get(id=app_id)
@@ -721,7 +721,7 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
                 pending_org.abn = abn
                 pending_org.save()
             else:
-                user = SystemUser.objects.get(ledger_id=pk)
+                user = SystemUser.objects.get(id=pk)
                 pending_org = OrganisationPending.objects.create(name=company_name,abn=abn,email_user=user.ledger_id.id)
 
             action = Action(
@@ -910,7 +910,7 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
            usergroups = self.request.user.get_system_group_permission(self.request.user.id)
            if processor.id in usergroups:
                if app_id is None:
-                   return HttpResponseRedirect(reverse('home_page'))
+                   return HttpResponseRedirect(reverse('home'))
                else:
                    return HttpResponseRedirect(reverse('organisation_access_requests_change_applicant', args=(pending_org.id,'approve',app_id)))
         else:
@@ -926,7 +926,7 @@ class CreateLinkCompany(LoginRequiredMixin,CreateView):
               else:
                  return HttpResponseRedirect(reverse('company_create_link_application',args=(pk,nextstep,app_id)))
  
-        return HttpResponseRedirect(reverse('home_page'))
+        return HttpResponseRedirect(reverse('home'))
 
 
 class ApplicationApplicantChange(LoginRequiredMixin,DetailView):
@@ -1607,8 +1607,8 @@ class OrganisationAccessRequest(ListView):
         context = super(OrganisationAccessRequest, self).get_context_data(**kwargs)
         context['orgs_pending_status'] = OrganisationPending.STATUS_CHOICES
         pending_org = OrganisationPending.objects.all().distinct('email_user')
-        email_user_ids = pending_org.values_list('email_user', flat=True)
-        applicants = SystemUser.objects.filter(ledger_id__in=email_user_ids)
+        email_users = pending_org.values_list('email_user', flat=True)
+        applicants = SystemUser.objects.filter(ledger_id__in=email_users)
         context['orgs_pending_applicants'] = applicants
         query = Q()
         if 'q' in self.request.GET and self.request.GET['q']:
@@ -2216,7 +2216,7 @@ class ApplicationCreateEW(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ApplicationCreateEW, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -2254,7 +2254,7 @@ class ApplicationCreate(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ApplicationCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -2319,7 +2319,7 @@ class CreateAccount(LoginRequiredMixin, CreateView):
            return HttpResponseRedirect("/")
 
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(CreateAccount, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -2374,7 +2374,7 @@ class ApplicationApply(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ApplicationApply, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -2847,7 +2847,7 @@ class ApplicationCommsCreate(LoginRequiredMixin,CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-#            return HttpResponseRedirect(reverse('home_page'))
+#            return HttpResponseRedirect(reverse('home'))
             app = Application.objects.get(pk=self.kwargs['pk'])
             return HttpResponseRedirect(app.get_absolute_url())
         return super(ApplicationCommsCreate, self).post(request, *args, **kwargs)
@@ -2944,7 +2944,7 @@ class AccountCommsCreate(LoginRequiredMixin,CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(AccountCommsCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -3026,7 +3026,7 @@ class ComplianceCommsCreate(LoginRequiredMixin,CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ComplianceCommsCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -3289,7 +3289,7 @@ class OrganisationCommsCreate(LoginRequiredMixin,CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(OrganisationCommsCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -4972,7 +4972,7 @@ class ApplicationLodge(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         #return reverse('application_list')
-        return reverse('home_page')
+        return reverse('home')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
@@ -5117,7 +5117,7 @@ class ApplicationRefer(LoginRequiredMixin, CreateView):
         """
         #messages.success(self.request, 'Referral has been added! ')
         #TODO check this
-        return reverse('home_page')
+        return reverse('home')
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationRefer, self).get_context_data(**kwargs)
@@ -5540,7 +5540,7 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             if app.submitted_by:
                 submitted_by = SystemUser.objects.get(ledger_id = app.submitted_by)
                 emailcontext['person'] = submitted_by
-            emailcontext['person'] = app.submitted_by
+            emailcontext['person'] = submitted_by
             emailcontext['EXTERNAL_URL'] = settings.EXTERNAL_URL
             sendHtmlEmail([submitted_by.email], 'Final Report - Part  - '+str(app.id), emailcontext, 'application-part5-final-report.html', None, None, None)
 
@@ -5676,20 +5676,20 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
         if app.app_type == 1:
            # Permit Proposal
            pdftool.generate_permit(approval)
-           emailcontext['person'] = app.submitted_by 
+           emailcontext['person'] = submitted_by 
            emailcontext['conditions_count'] = Condition.objects.filter(application=app).count()
            sendHtmlEmail([submitted_by.email], 'Permit - '+app.title, emailcontext, 'application-permit-proposal.html', None, None, None, approval_pdf)
 
         elif app.app_type == 2:
            # Licence Proposal
            pdftool.generate_licence(approval)
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['vessels'] = app.vessels.all()
            emailcontext['approval'] = approval
            sendHtmlEmail([submitted_by.email], 'Licence Permit - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
         elif app.app_type == 3:
 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['approval'] = approval
            approval_pdf = approval.approval_document.upload.path
            sendHtmlEmail([submitted_by.email], 'Part 5 - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
@@ -5703,14 +5703,14 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
 
         elif app.app_type == 6:            
 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            emailcontext['approval'] = approval
            approval_pdf = approval.approval_document.upload.path
            sendHtmlEmail([submitted_by.email], 'Section 84 - '+app.title, emailcontext, 'application-licence-permit-proposal.html', None, None, None, approval_pdf)
 
         elif app.app_type == 10 or app.app_type == 11:
            # Permit & Licence Renewal 
-           emailcontext['person'] = app.submitted_by
+           emailcontext['person'] = submitted_by
            sendHtmlEmail([submitted_by.email], 'Draft Report - Part 5 - '+str(app.id)+' - location - description of works - applicant', emailcontext, 'application-licence-permit-proposal.html', None, None, None)
 
         ####################
@@ -5917,7 +5917,7 @@ class ApplicationAssignPerson(LoginRequiredMixin, UpdateView):
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
         assignee = SystemUser.objects.get(ledger_id=app.assignee)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {'person': assignee}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.request.user.id != app.assignee:
             sendHtmlEmail([assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -6210,10 +6210,11 @@ class ApplicationAssignApplicantCompany(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList() 
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.object.assignee:
             assignee = SystemUser.objects.get(ledger_id=self.object.assignee)
+            emailcontext['person'] = assignee
             action = Action(
                 content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.assign, user=self.request.user.id,
                 action='Assigned application to {} {} (status: {})'.format(assignee.first_name, assignee.last_name, self.object.get_state_display()))
@@ -6283,7 +6284,7 @@ class ApplicationAssignApplicant(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
 #        if self.request.user.id != app.assignee:
 #            sendHtmlEmail([app.assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -6291,6 +6292,7 @@ class ApplicationAssignApplicant(LoginRequiredMixin, UpdateView):
         # Record an action on the application:
         if self.object.assignee:
             assignee = SystemUser.objects.get(ledger_id=self.object.assignee)
+            emailcontext['person'] = assignee
             action = Action(
                 content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.assign, user=self.request.user.id,
                 action='Assigned application to {} {} (status: {})'.format(assignee.first_name, assignee.last_name, self.object.get_state_display()))
@@ -6455,7 +6457,7 @@ class ApplicationDiscard(LoginRequiredMixin, UpdateView):
         return apps_forms.ApplicationDiscardForm
 
     def get_success_url(self):
-        return reverse('home_page')
+        return reverse('home')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
@@ -6591,7 +6593,7 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
         return apps_forms.ComplianceStaffForm
 
     def get_success_url(self):
-        return reverse('home_page')
+        return reverse('home')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
@@ -6616,7 +6618,7 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
              
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition has been approved"
              sendHtmlEmail([submitted_by.email], 'Clearance of condition has been approved', emailcontext, 'clearance-approved.html', None, None, None)
 
@@ -6648,7 +6650,7 @@ class ComplianceStaff(LoginRequiredMixin, UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition requires additional information."
              sendHtmlEmail([submitted_by.email], 'Your clearance of condition requires additional information please login and resubmit with additional information.', emailcontext, 'clearance-holder.html', None, None, None)
 
@@ -6795,7 +6797,7 @@ class OLDComplianceAssignPerson(LoginRequiredMixin, UpdateView):
         workflowtype = flow.getWorkFlowTypeFromApp(app)
         DefaultGroups = flow.groupList()
         flow.get(workflowtype)
-        emailcontext = {'person': app.assignee}
+        emailcontext = {'person': assignee}
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[app.app_type]
         if self.request.user.id != app.assignee:
             sendHtmlEmail([assignee.email], emailcontext['application_name'] + ' application assigned to you ', emailcontext, 'application-assigned-to-person.html', None, None, None)
@@ -7137,7 +7139,7 @@ class ReferralSend(LoginRequiredMixin, UpdateView):
         ref.save()
         referee = SystemUser.objects.get(ledger_id=ref.referee)
         emailcontext = {}
-        emailcontext['person'] = ref.referee
+        emailcontext['person'] = referee
         emailcontext['application_id'] = ref.application.id
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[ref.application.app_type]
         sendHtmlEmail([referee.email], 'Application for Feedback', emailcontext, 'application-assigned-to-referee.html', None, None, None)
@@ -7222,7 +7224,7 @@ class ReferralRemind(LoginRequiredMixin, UpdateView):
         ref = self.get_object()
         referee = SystemUser.objects.get(ledger_id=ref.referee)
         emailcontext = {}
-        emailcontext['person'] = ref.referee
+        emailcontext['person'] = referee
         emailcontext['application_id'] = ref.application.id
         emailcontext['application_name'] = Application.APP_TYPE_CHOICES[ref.application.app_type]
 
@@ -7570,7 +7572,7 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition has been approved"
              sendHtmlEmail([submitted_by.email], 'Clearance of condition has been approved', emailcontext, 'clearance-approved.html', None, None, None)
 
@@ -7636,7 +7638,7 @@ class ComplianceApprovalInternal(LoginRequiredMixin,UpdateView):
 
              emailcontext = {}
              emailcontext['app'] = self.object
-             emailcontext['person'] = self.object.submitted_by
+             emailcontext['person'] = submitted_by
              emailcontext['body'] = "Your clearance of condition requires additional information."
              sendHtmlEmail([submitted_by.email], 'Your clearance of condition requires additional information please login and resubmit with additional information.', emailcontext, 'clearance-holder.html', None, None, None)
 
@@ -9201,7 +9203,7 @@ class VesselUpdate(LoginRequiredMixin, UpdateView):
 
 #    def post(self, request, *args, **kwargs):
 #        if request.POST.get('cancel'):
-#            return HttpResponseRedirect(reverse('home_page'))
+#            return HttpResponseRedirect(reverse('home'))
 #        return super(RecordCreate, self).post(request, *args, **kwargs)
 #
 #    def form_valid(self, form):
@@ -9306,14 +9308,14 @@ class UserAccountIdentificationUpdate(LoginRequiredMixin, UpdateView):
         admin_staff = context_processor['admin_staff']
         org = self.get_organisation()
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
            pass
         else:
            if admin_staff is True:
                return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised to view this organisation.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
 
@@ -9434,14 +9436,14 @@ class OrganisationCertificateUpdate(LoginRequiredMixin, UpdateView):
         org_extras = self.get_object()
         org =org_extras.organisation
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
             pass
         else:
            if admin_staff is True:
                return super(OrganisationCertificateUpdate, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationCertificateUpdate, self).get(request, *args, **kwargs)
 
@@ -9518,7 +9520,7 @@ class AddressCreate(LoginRequiredMixin, CreateView):
              return super(AddressCreate, self).get(request, *args, **kwargs)
         else:
              messages.error(self.request, 'You are not authorised to view.')
-        return HttpResponseRedirect(reverse('home_page'))
+        return HttpResponseRedirect(reverse('home'))
 #        return super(AddressCreate, self).get(request, *args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
@@ -9605,14 +9607,14 @@ class OrganisationAddressUpdate(LoginRequiredMixin, UpdateView):
         # Organisational addresses: find which org uses this address, and if
         # the user is a delegate for that org then they can change it.
         org_list = list(chain(address.org_postal_address.all(), address.org_billing_address.all()))
-        if Delegate.objects.filter(email_user=u, organisation__in=org_list).exists():
+        if Delegate.objects.filter(email_user=u.id, organisation__in=org_list).exists():
             return super(OrganisationAddressUpdate, self).get(request, *args, **kwargs)
 #        elif u.is_staff is True:
         elif admin_staff is True:
             return super(OrganisationAddressUpdate, self).get(request, *args, **kwargs)
         else:
             messages.error(self.request, 'You cannot update this address!')
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationAddressUpdate, self).get_context_data(**kwargs)
@@ -9689,14 +9691,14 @@ class AddressUpdate(LoginRequiredMixin, UpdateView):
         # Organisational addresses: find which org uses this address, and if
         # the user is a delegate for that org then they can change it.
         org_list = list(chain(address.org_postal_address.all(), address.org_billing_address.all()))
-        if Delegate.objects.filter(email_user=u, organisation__in=org_list).exists():
+        if Delegate.objects.filter(email_user=u.id, organisation__in=org_list).exists():
             return super(AddressUpdate, self).get(request, *args, **kwargs)
 #        elif u.is_staff is True: 
         elif admin_staff is True:
             return super(AddressUpdate, self).get(request, *args, **kwargs)
         else:
             messages.error(self.request, 'You cannot update this address!')
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
 
     def get_context_data(self, **kwargs):
         context = super(AddressUpdate, self).get_context_data(**kwargs)
@@ -9814,7 +9816,7 @@ class PersonDetails(LoginRequiredMixin, DetailView):
              return super(PersonDetails, self).get(request, *args, **kwargs)
         else:
                messages.error(self.request, 'You are not authorised to view.')
-        return HttpResponseRedirect(reverse('home_page'))
+        return HttpResponseRedirect(reverse('home'))
     
     def get_object(self, queryset=None):
         """
@@ -9852,6 +9854,9 @@ class PersonDetails(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PersonDetails, self).get_context_data(**kwargs)
+        print("this is the context")
+        print(context)
+        context['postal_address'] = SystemUserAddress.objects.get(system_user=context['systemuser'], address_type='postal_address')
         org = self.get_object()
 #        context['user_is_delegate'] = Delegate.objects.filter(email_user=self.request.user.id, organisation=org).exists()
         context['nav_details'] = 'active'
@@ -9908,6 +9913,28 @@ class PersonDetails(LoginRequiredMixin, DetailView):
 class PersonOther(LoginRequiredMixin, DetailView):
     model = SystemUser
     template_name = 'applications/person_details.html'
+    
+    def get_object(self, queryset=None):
+        """
+        Return the object the view is displaying.
+        """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        ledger_id = self.kwargs.get('pk')
+        if ledger_id is not None:
+            queryset = queryset.filter(ledger_id=ledger_id)
+        else:
+            raise AttributeError(
+                "Generic detail view %s must be called with an object "
+                "ledger_id in the URLconf." % self.__class__.__name__
+            )
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404("No matching object found")
+        return obj
 
     def get(self, request, *args, **kwargs):
         # Rule: request user must be a delegate (or superuser).
@@ -9921,7 +9948,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
         #     return super(PersonOther, self).get(request, *args, **kwargs)
         else:
                messages.error(self.request, 'You are not authorised')
-        return HttpResponseRedirect(reverse('home_page'))
+        return HttpResponseRedirect(reverse('home'))
 
 #    def get_queryset(self):
 #        qs = super(PersonOther, self).get_queryset()
@@ -9944,11 +9971,14 @@ class PersonOther(LoginRequiredMixin, DetailView):
         context['nav_other'] = 'active'
 
         if "action" in self.kwargs:
+             print("inside action")
              action=self.kwargs['action']
+             print(action)
              # Navbar
              if action == "applications":
+                 print("inside applications")
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-                 delegate = Delegate.objects.filter(email_user=user).values('organisation__id')
+                 delegate = Delegate.objects.filter(email_user=user.ledger_id.id).values('organisation__id')
 
                  context['nav_other_applications'] = "active"
                  context['app'] = ''
@@ -10048,7 +10078,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
              elif action == "approvals":
                  context['nav_other_approvals'] = "active"
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-                 delegate = Delegate.objects.filter(email_user=user).values('id')
+                 delegate = Delegate.objects.filter(email_user=user.ledger_id.id).values('id')
 
                  search_filter = Q(applicant=self.kwargs['pk'], status=1 ) | Q(organisation__in=delegate)
 
@@ -10068,7 +10098,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                     search_filter = Q(pk__contains=query_str) | Q(title__icontains=query_str)
                     user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
                     if user_ids:
-                        query_obj |= Q(applicant__in=user_ids)
+                        search_filter |= Q(applicant__in=user_ids)
                     if self.request.GET['apptype'] != '':
                         search_filter &= Q(app_type=int(self.request.GET['apptype']))
                     else:
@@ -10142,7 +10172,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
 
                  context['app_appstatus'] = list(Application.APP_STATE_CHOICES)
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-                 delegate = Delegate.objects.filter(email_user=user).values('id')
+                 delegate = Delegate.objects.filter(email_user=user.ledger_id.id).values('id')
 
                  search_filter = Q(applicant=self.kwargs['pk'], app_type=4) | Q(organisation__in=delegate)
 
@@ -10151,8 +10181,8 @@ class PersonOther(LoginRequiredMixin, DetailView):
                       query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(organisation__name__icontains=query_str)
                       user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
                       if user_ids:
-                            query_obj |= Q(applicant__in=user_ids)
-                            query_obj |= Q(assignee__in=user_ids)
+                            search_filter |= Q(applicant__in=user_ids)
+                            search_filter |= Q(assignee__in=user_ids)
                       context['query_string'] = self.request.GET['q']
 
                       if self.request.GET['appstatus'] != '':
@@ -10203,7 +10233,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                       context['query_string'] = self.request.GET['q']
 
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-                 delegate = Delegate.objects.filter(email_user=user).values('id')
+                 delegate = Delegate.objects.filter(email_user=user.ledger_id.id).values('id')
                  search_filter = Q(applicant=self.kwargs['pk']) | Q(organisation__in=delegate)
 
                  #items = Compliance.objects.filter(applicant=self.kwargs['pk']).order_by('due_date')
@@ -10289,14 +10319,14 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
         admin_staff = context_processor['admin_staff']
         org = self.get_organisation()
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
            donothing = ""
         else:
            if admin_staff is True:
                return super(OrganisationDetails, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised to view this organisation.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationDetails, self).get(request, *args, **kwargs)
 
@@ -10339,9 +10369,23 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
              elif action == "linkedperson":
                  context['nav_details_linkedperson'] = "active"
                  org = Organisation.objects.get(id=self.kwargs['pk'])
-                 context['linkedpersons'] = Delegate.objects.filter(organisation=org)
-                 if OrganisationExtras.objects.filter(organisation=org.id).exists():
-                    context['org_extras'] = OrganisationExtras.objects.get(organisation=org.id)
+                 linkedpersons = Delegate.objects.filter(organisation=org)
+
+                # Recreate the linkedpersons list with an additional 'user' key
+                 context['linkedpersons'] = []
+                 for lp in linkedpersons:
+                     if lp.email_user:
+                        try:
+                            user = SystemUser.objects.get(ledger_id=lp.email_user)
+                        except SystemUser.DoesNotExist:
+                            user = None  # Handle the case where no SystemUser is found
+                        context['linkedpersons'].append({
+                            'delegate': lp,
+                            'user': user
+                        })
+
+                 print('context check')
+                 print(context['linkedpersons'])
 
         return context
 
@@ -10356,29 +10400,29 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
         admin_staff = context_processor['admin_staff']
         org = self.get_object()
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
            donothing = ""
         else:
            if admin_staff is True:
                return super(OrganisationOther, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised to view this organisation.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationOther, self).get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        qs = super(OrganisationOther, self).get_queryset()
-        # Did we pass in a search string? If so, filter the queryset and return it.
-        if 'q' in self.request.GET and self.request.GET['q']:
-            query_str = self.request.GET['q']
-            # Replace single-quotes with double-quotes
-            query_str = query_str.replace("'", r'"')
-            # Filter by name and ABN fields.
-            query = get_query(query_str, ['name', 'abn'])
-            qs = qs.filter(query).distinct()
-        #print self.template_name
-        return qs
+    # def get_queryset(self):
+    #     qs = super(OrganisationOther, self).get_queryset()
+    #     # Did we pass in a search string? If so, filter the queryset and return it.
+    #     if 'q' in self.request.GET and self.request.GET['q']:
+    #         query_str = self.request.GET['q']
+    #         # Replace single-quotes with double-quotes
+    #         query_str = query_str.replace("'", r'"')
+    #         # Filter by name and ABN fields.
+    #         query = get_query(query_str, ['name', 'abn'])
+    #         qs = qs.filter(query).distinct()
+    #     #print self.template_name
+    #     return qs
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationOther, self).get_context_data(**kwargs)
@@ -10667,14 +10711,14 @@ class OrganisationUpdate(LoginRequiredMixin, UpdateView):
         admin_staff = context_processor['admin_staff']
         org = self.get_object()
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
             pass 
         else:
            if admin_staff is True:
                return super(OrganisationUpdate, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationUpdate, self).get(request, *args, **kwargs)
 
@@ -10712,14 +10756,14 @@ class OrganisationContactCreate(LoginRequiredMixin, CreateView):
         admin_staff = context_processor['admin_staff']
         org = Organisation.objects.get(id=self.kwargs['pk'])
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
             pass
         else:
            if admin_staff is True:
                return super(OrganisationContactCreate, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationContactCreate, self).get(request, *args, **kwargs)
 
@@ -10765,14 +10809,14 @@ class OrganisationContactUpdate(LoginRequiredMixin, UpdateView):
         admin_staff = context_processor['admin_staff']
         self.object = self.get_object()
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=self.object.organisation).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=self.object.organisation).exists():
             pass
         else:
            if admin_staff is True:
                return super(OrganisationContactUpdate, self).get(request, *args, **kwargs)
            else:
                messages.error(self.request, 'You are not authorised.')
-               return HttpResponseRedirect(reverse('home_page'))
+               return HttpResponseRedirect(reverse('home'))
 
         return super(OrganisationContactUpdate, self).get(request, *args, **kwargs)
 
@@ -10963,13 +11007,13 @@ class UnlinkDelegate(LoginRequiredMixin, FormView):
         admin_staff = context_processor['admin_staff']
 
         org = self.get_organisation()
-        if Delegate.objects.filter(email_user_id=self.kwargs['user_id'], organisation=org).exists():
+        if Delegate.objects.filter(email_user=self.kwargs['user_id'], organisation=org).exists():
            pass 
         else:
            messages.error(self.request, 'User not found')
            return HttpResponseRedirect(self.get_success_url())
 
-        if Delegate.objects.filter(email_user_id=request.user.id, organisation=org).exists():
+        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
            donothing = ""
         else:
            if admin_staff is True:
@@ -10997,7 +11041,7 @@ class UnlinkDelegate(LoginRequiredMixin, FormView):
         # Unlink the specified user from the organisation.
         org = self.get_organisation()
         user = SystemUser.objects.get(ledger_id=self.kwargs['user_id'])
-        delegateorguser = Delegate.objects.get(email_user=user, organisation=org)
+        delegateorguser = Delegate.objects.get(email_user=user.ledger_id.id, organisation=org)
         delegateorguser.delete()
 #        Delegate.objects.delete(email_user=user, organisation=org)
         messages.success(self.request, '{} has been removed as a delegate for {}.'.format(user, org.name))

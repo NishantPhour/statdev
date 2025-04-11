@@ -10,7 +10,6 @@ from .models import (
 
 
 admin.site.index_template = "admin-index.html"
-admin.site.site_header = "Commercial Operator Admin"
 admin.autodiscover()
 
 

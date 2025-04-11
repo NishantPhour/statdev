@@ -126,7 +126,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.email.EmailAuth',
 )
 
-LOGIN_REDIRECT_URL = 'home_page'
+LOGIN_REDIRECT_URL = 'home'
 STATIC_CONTEXT_VARS = {}
 APPLICATION_VERSION_NO = '0.3'
 ALLOWED_UPLOAD_TYPES = [
@@ -307,8 +307,17 @@ CACHES = {
 #}
 
 #OSCAR_REQUIRED_ADDRESS_FIELDS = []
-LEDGER_API_KEY = env('LEDGER_API_KEY','')
-LEDGER_API_URL = env('LEDGER_API_URL','')
+LEDGER_API_KEY='09OT2SUE27CW62NIPVI4D4JE6KQ6T09ZWSHJTMPMUOQUO289UADCGSACHFQ5IK1JK8Q7KI6EGVW43RZ5ER7W8I62EZZNBQENADW1'
+LEDGER_API_URL='http://10.17.0.10:7001'
+LEDGER_UI_ACCOUNTS_MANAGEMENT = [
+             {'first_name': {'options' : {'view': True, 'edit': True}}},
+             {'last_name': {'options' : {'view': True, 'edit': True}}},
+             {'residential_address': {'options' : {'view': True, 'edit': True}}},
+             {'phone_number' : {'options' : {'view': True, 'edit': True}}},
+             {'mobile_number' : {'options' : {'view': True, 'edit': True}}},
+ ]
+# LEDGER_API_KEY = env('LEDGER_API_KEY','')
+# LEDGER_API_URL = env('LEDGER_API_URL','')
 
 DEPT_DOMAINS = env('DEPT_DOMAINS', ['dpaw.wa.gov.au', 'dbca.wa.gov.au'])
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
