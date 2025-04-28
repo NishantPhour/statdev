@@ -4,7 +4,9 @@ from django.template.loader import render_to_string, get_template
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from ledger.accounts.models import EmailUser
+# from ledger.accounts.models import EmailUser
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser
+from ledger_api_client.managed_models import SystemUser, SystemGroup
 from applications.models import Referral
 from confy import env
 from applications import models
@@ -153,10 +155,11 @@ def sendHtmlEmail(to,subject,context,template,cc,bcc,from_email,attachment1=None
              comms.records.add(doc)
              comms.save()
     return True
-
+#TODO change to system users groups
 def emailGroup(subject,context,template,cc,bcc,from_email,group):
-
-    UsersInGroup = EmailUser.objects.filter(groups__name=group)
+    group_object = SystemGroup.objects.get(name=group)
+    users_in_group_ids = group_object.get_system_group_member_ids()
+    UsersInGroup = SystemUser.objects.filter(ledger_id__in=users_in_group_ids)
     for person in UsersInGroup:
         context['person'] = person
         sendHtmlEmail([person.email],subject,context,template,cc,bcc,from_email)
@@ -167,9 +170,10 @@ def emailApplicationReferrals(application_id,subject,context,template,cc,bcc,fro
     context['default_url'] = env('DEFAULT_URL', '')
     ApplicationReferrals = Referral.objects.filter(application=application_id)
     for Referee in ApplicationReferrals:
-        context['person'] = Referee.referee
+        referee = SystemUser.objects.get(ledger_id=Referee.referee)
+        context['person'] = referee
         context['application_id'] = application_id
-        sendHtmlEmail([Referee.referee.email],subject,context,template,cc,bcc,from_email)
+        sendHtmlEmail([referee.email],subject,context,template,cc,bcc,from_email)
         Referee.sent_date = date.today() 
         Referee.expire_date = Referee.sent_date + timedelta(days=Referee.period)
         Referee.save()

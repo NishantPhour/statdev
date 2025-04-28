@@ -1,5 +1,5 @@
 {% extends "webtemplate_dbca/base_internet.html" %}
-{% load static from staticfiles %}
+{% load static %}
 {% block base_style %}
 
 {% endblock %}
@@ -71,8 +71,8 @@
     <li class='hidden-lg hidden-md'><a href="{% url 'application_list' %}" title="Applications">Applications</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
-    <li class='hidden-lg hidden-md'><a href="#" title="Company Access"><strike>Company Access</strike></a></li>
-    <li class='hidden-lg hidden-md'><a href="#"><strike>Search</strike></a></li>
+    <li class='hidden-lg hidden-md'><a href="#" title="Company Access">Company Access</a></li>
+    <li class='hidden-lg hidden-md'><a href="#">Search</a></li>
 {% else %}
     <li class='hidden-lg hidden-md' ><a href="" title="Contact Us">Contact Us</a></li>
     <li class='hidden-lg hidden-md' ><a href="" title="Further Information">Further Information</a></li>
@@ -83,7 +83,9 @@
 <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{% firstof user.get_full_name user.email %} <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
+        <!-- TODO: change to system-accounts page -->
         <li><a href="{% url "person_details_actions" user.pk "personal" %}">My personal details</a></li>
+        <li><a class="dropdown-item" href="/ledger-ui/system-accounts">Manage Account</a></li>
         {% if staff == False %}
         <li><a href="{% url "person_details_actions" user.pk "companies" %}" title="My Companies">My Companies</a></li>
         {% endif %}

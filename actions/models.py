@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 from model_utils import Choices
 
 
@@ -33,7 +33,7 @@ class Action(models.Model):
     content_object = GenericForeignKey()
     action = models.CharField(max_length=512)
     timestamp = models.DateTimeField(auto_now_add=True, editable=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.IntegerField(blank=True, null=True)
     category = models.IntegerField(choices=ACTION_CATEGORY_CHOICES, null=True, blank=True)
 
     def __str__(self):

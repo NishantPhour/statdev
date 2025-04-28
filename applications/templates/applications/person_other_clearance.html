@@ -67,7 +67,7 @@
                     <td>{{ obj.get_app_type_display }}</td>
 		    <td>{% if obj.approval_id is None %}None{% else %}<a href='{% url 'approval_detail' obj.approval_id %}'>AP-{{ obj.approval_id }}</a>{% endif %}</td>
                     <td>{{ obj.title }}</td>
-                    <td>{{ obj.applicant.get_full_name }}</td>
+                    <td>{{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}</td>
                     <td>
                             {% if obj.status == 2 or obj.status == 3 or obj.status == 4 or obj.status == 8 or obj.status == 9 %}
                                    {{ obj.get_status_display }}

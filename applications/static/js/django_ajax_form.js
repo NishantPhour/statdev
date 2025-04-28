@@ -112,7 +112,7 @@ $('.ajax-close').on("click", function(event) {
     django_ajax_form.CloseForm();
 });
 $("#vesselModal").on("hidden.bs.modal", function () {
-    $('.modal-body').html('');
+    // $('.modal-body').html('');
     $('.modal-body').height('auto');
     // put your default event here
 });
@@ -234,7 +234,7 @@ $('.ajax-close').on("click", function(event) {
 
 });
 $("#vesselModal").on("hidden.bs.modal", function () {
-	    $('.modal-body').html('');
+	    // $('.modal-body').html('');
 	    $('.modal-body').height('auto');
 	    // put your default event here
 });

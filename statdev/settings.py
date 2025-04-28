@@ -10,7 +10,7 @@ os.environ.setdefault("BASE_DIR", BASE_DIR)
 
 from confy import env, database
 import os
-from ledger.settings_base import *
+from ledger_api_client.settings_base import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,13 +20,14 @@ SITE_ID = 1
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 BOOKING_TIMEOUT = 1200
-
+LEDGER_TEMPLATE = 'bootstrap5'
 JCAPTCHA_EXPIRY_MINUTES=15
 JCAPTCHA_CLEANUP_MINUTES=100
 
 # Define the following in the environment:
 DEBUG = env('DEBUG', False)
 SECRET_KEY = env('SECRET_KEY')
+ENABLE_DJANGO_LOGIN = True #TODO delete
 #if not DEBUG:
 #    ALLOWED_HOSTS = [env('ALLOWED_DOMAIN'), ]
 #else:
@@ -36,17 +37,23 @@ SECRET_KEY = env('SECRET_KEY')
 #AUTH_USER_MODEL = 'accounts.EmailUser'
 INSTALLED_APPS += [
 ###    'reversion',
+    'webtemplate_dbca',
     'crispy_forms',
     'bootstrap3',
-    'webtemplate_dbca',
     'django_q',
-    'applications',
-    'actions',
-    'approvals',
     'public',
     'rest_framework',
     'rest_framework_gis',
-    'django_crispy_jcaptcha'
+    'django_crispy_jcaptcha',
+    'ledger_api_client',
+    'django.contrib.flatpages',
+    'crispy_bootstrap5',
+    'haystack',
+    'treebeard',
+    'django_tables2',
+    'applications',
+    'actions',
+    'approvals',
 ##    'ajax_upload'
 ]
 REST_FRAMEWORK = {
@@ -54,12 +61,12 @@ REST_FRAMEWORK = {
         'statdev.perms.OfficerPermission',
     )
 }
+SITE_ID=1
 
 if not DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']=('rest_framework.renderers.JSONRenderer',)
 else:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']=('rest_framework.renderers.JSONRenderer','rest_framework_csv.renderers.CSVRenderer')
-
 MIDDLEWARE_CLASSES += [
 #    'django.middleware.security.SecurityMiddleware',
 #    'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,8 +77,12 @@ MIDDLEWARE_CLASSES += [
 #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 #    'reversion.middleware.RevisionMiddleware',
 #    'dpaw_utils.middleware.SSOLoginMiddleware',
-     'social_django.middleware.SocialAuthExceptionMiddleware'
+     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'applications.middleware.FirstTimeNagScreenMiddleware'
+    
 ]
+MIDDLEWARE = MIDDLEWARE_CLASSES
 
 #TEMPLATES += [
 #    {
@@ -100,17 +111,22 @@ TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'applications', 'templates'))
 TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'applications', 'templates', 'applications'))
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append('statdev.context_processors.template_context')
-
+TEMPLATES[0]['OPTIONS']['context_processors'].append('statdev.context_processors.payment_processor')
+#TODO: check this change to env
+PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE='0637'
+PAYMENT_INTERFACE_SYSTEM_ID='41'
 WSGI_APPLICATION = 'statdev.wsgi.application'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 #LOGIN_URL = 'login'
 
-#AUTHENTICATION_BACKENDS = (
-#     'social_core.backends.email.EmailAuth',
-#     'django.contrib.auth.backends.ModelBackend',
-#)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.email.EmailAuth',
+)
 
-LOGIN_REDIRECT_URL = 'home_page'
+LOGIN_REDIRECT_URL = 'home'
 STATIC_CONTEXT_VARS = {}
 APPLICATION_VERSION_NO = '0.3'
 ALLOWED_UPLOAD_TYPES = [
@@ -167,8 +183,7 @@ EMAIL_FROM = env('EMAIL_FROM', ADMINS[0])
 DEFAULT_FROM_EMAIL =env('EMAIL_FROM','DoNotReply@dpaw.wa.gov.au') 
 
 # Database configuration
-DATABASES = {'default': database.config()}
-
+# DATABASES += {'default': database.config()}
 
 # Password validation
 #AUTH_PASSWORD_VALIDATORS = [
@@ -261,7 +276,7 @@ if not os.path.exists(os.path.join(BASE_DIR, 'logs')):
 #}
 
 # django-crispy-forms
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+# CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Cache settings.
 #CACHES = {
@@ -292,14 +307,25 @@ CACHES = {
 #}
 
 #OSCAR_REQUIRED_ADDRESS_FIELDS = []
-LEDGER_API_KEY = env('LEDGER_API_KEY','')
-LEDGER_API_URL = env('LEDGER_API_URL','')
+LEDGER_API_KEY='09OT2SUE27CW62NIPVI4D4JE6KQ6T09ZWSHJTMPMUOQUO289UADCGSACHFQ5IK1JK8Q7KI6EGVW43RZ5ER7W8I62EZZNBQENADW1'
+LEDGER_API_URL='http://10.17.0.10:7001'
+LEDGER_UI_ACCOUNTS_MANAGEMENT = [
+             {'first_name': {'options' : {'view': True, 'edit': True}}},
+             {'last_name': {'options' : {'view': True, 'edit': True}}},
+             {'residential_address': {'options' : {'view': True, 'edit': True}}},
+             {'phone_number' : {'options' : {'view': True, 'edit': True}}},
+             {'mobile_number' : {'options' : {'view': True, 'edit': True}}},
+ ]
+# LEDGER_API_KEY = env('LEDGER_API_KEY','')
+# LEDGER_API_URL = env('LEDGER_API_URL','')
 
 DEPT_DOMAINS = env('DEPT_DOMAINS', ['dpaw.wa.gov.au', 'dbca.wa.gov.au'])
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 RAISE_EXCEPTIONS = True
 SYSTEM_NAME = env('SYSTEM_NAME', 'Statdev System')
 SYSTEM_NAME_SHORT = env('SYSTEM_NAME_SHORT', 'statdev')
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 # Use git commit hash for purging cache in browser for deployment changes
 GIT_COMMIT_HASH = ''

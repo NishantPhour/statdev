@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from mixer.backend.django import mixer
 import logging
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 
 logger = logging.getLogger('statdev')
 User = get_user_model()
@@ -12,14 +13,14 @@ class Command(BaseCommand):
     help = 'Create Test users accounts and assign groups'
 
     def handle(self, *args, **options):
-        processor = Group.objects.get(name='Processor')
-        assessor = Group.objects.get(name='Assessor')
-        approver = Group.objects.get(name='Approver')
-        referee = Group.objects.get(name='Referee')
-        emergency = Group.objects.get(name='Emergency')
-        director = Group.objects.get(name='Director')
-        executive = Group.objects.get(name='Executive')
-        referee = Group.objects.get(name='Referee')
+        processor = SystemGroup.objects.get(name='Processor')
+        assessor = SystemGroup.objects.get(name='Assessor')
+        approver = SystemGroup.objects.get(name='Approver')
+        referee = SystemGroup.objects.get(name='Referee')
+        emergency = SystemGroup.objects.get(name='Emergency')
+        director = SystemGroup.objects.get(name='Director')
+        executive = SystemGroup.objects.get(name='Executive')
+        referee = SystemGroup.objects.get(name='Referee')
 
         if not User.objects.filter(email="admin@dpaw.wa.gov.au").exists():
             self.user1 = mixer.blend(User, email="admin@dpaw.wa.gov.au", first_name="Admin", last_name="1", is_superuser=False, is_staff=False)

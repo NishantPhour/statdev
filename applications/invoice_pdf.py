@@ -2,7 +2,7 @@ import os
 
 from decimal import Decimal as D
 from io import BytesIO
-from oscar.templatetags.currency_filters import currency
+from ledger_api_client.utils import currency
 from reportlab.lib import enums
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle, ListFlowable, \
@@ -17,8 +17,10 @@ from reportlab.lib import colors
 from django.core.files import File
 from django.conf import settings
 
-from ledger.accounts.models import Document
-from ledger.checkout.utils import calculate_excl_gst
+# from ledger.accounts.models import Document
+# from ledger.checkout.utils import calculate_excl_gst
+from ledger_api_client.ledger_models import Document
+from ledger_api_client.utils import calculate_excl_gst
 
 DPAW_HEADER_LOGO = os.path.join(settings.BASE_DIR, 'staticfiles', 'payments', 'img','dbca_logo.jpg')
 DPAW_HEADER_LOGO_SM = os.path.join(settings.BASE_DIR, 'staticfiles', 'payments', 'img','dbca_logo_small.png')
@@ -204,6 +206,7 @@ def _create_header(canvas, doc, draw_page_number=True):
     canvas.drawCentredString(PAGE_WIDTH / 2, current_y - LARGE_FONTSIZE, 'ABN: 38 052 249 024')
 
     # Invoice address details
+    #TODO check this invoice.owner.get_full_name() needs to be changed
     invoice_details_offset = 37
     current_y -= 20
     invoice = doc.invoice

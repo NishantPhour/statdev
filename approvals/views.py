@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, DetailView, CreateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .models import Approval as ApprovalModel, CommunicationApproval 
 from django.db.models import Q
 from django.contrib.auth.models import Group
@@ -17,6 +17,7 @@ from django.contrib import messages
 from applications.views_pdf import PDFtool
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
 from datetime import datetime, date, timedelta
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 
 import os.path
 import os 
@@ -36,18 +37,18 @@ class ApprovalList(ListView):
 
     def get_queryset(self):
         qs = super(ApprovalList, self).get_queryset()
-
         # Did we pass in a search string? If so, filter the queryset and return
         # it.
         if 'q' in self.request.GET and self.request.GET['q']:
             query_str = self.request.GET['q']
             # Replace single-quotes with double-quotes
             query_str = query_str.replace("'", r'"')
-            # Filter by pk, title, applicant__email, organisation__name,
-            # assignee__email
+            # Filter by pk, title
             query = get_query(
-                query_str, ['pk', 'title', 'applicant__email'])
-            qs = qs.filter(query).distinct()
+                query_str, ['pk', 'title'])
+            system_user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            qs= qs.filter(query) | qs.filter(applicant__in=system_user_ids)
+            qs = qs.distinct()
         return qs
 
     def get_context_data(self, **kwargs):
@@ -66,19 +67,21 @@ class ApprovalList(ListView):
 
         if 'action' in self.request.GET and self.request.GET['action']:
             query_str = self.request.GET['q']
-            query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(applicant__email__icontains=query_str)
-
+            query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str)
+            user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            if user_ids:
+                query_obj |= Q(applicant__in=user_ids)
             if self.request.GET['apptype'] != '':
                 query_obj &= Q(app_type=int(self.request.GET['apptype']))
             else:
                 query_obj &= Q(app_type__in=APP_TYPE_CHOICES_IDS)
 
-            if self.request.GET['applicant'] != '':
-                query_obj &= Q(applicant=int(self.request.GET['applicant']))
+            # if self.request.GET['applicant'] != '':
+            #     query_obj &= Q(applicant=int(self.request.GET['applicant']))
             if self.request.GET['appstatus'] != '':
                 query_obj &= Q(status=int(self.request.GET['appstatus']))
 
-            objlist = ApprovalModel.objects.filter(query_obj).order_by('-id')
+            objlist = ApprovalModel.objects.filter(query_obj).distinct().order_by('-id')
             context['query_string'] = self.request.GET['q']
 
             if self.request.GET['apptype'] != '':
@@ -99,7 +102,6 @@ class ApprovalList(ListView):
                  if self.request.GET['to_date'] != '':
                      to_date_db = datetime.strptime(self.request.GET['to_date'], '%d/%m/%Y').date()
                      query_obj &= Q(issue_date__lte=to_date_db)
-
 #        if 'q' in self.request.GET and self.request.GET['q']:
  #           query_str = self.request.GET['q']
   #          objlist = ApprovalModel.objects.filter(Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(applicant__email__icontains=query_str))
@@ -109,7 +111,7 @@ class ApprovalList(ListView):
             context['from_date'] = from_date.strftime('%d/%m/%Y')
             context['to_date'] = to_date.strftime('%d/%m/%Y')
             objlist = ApprovalModel.objects.filter(issue_date__gte=from_date,issue_date__lte=to_date).order_by('-id')
-        usergroups = self.request.user.groups.all()
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
 
         context['app_list'] = []
         context['app_applicants'] = {}
@@ -120,6 +122,10 @@ class ApprovalList(ListView):
             row = {}
             row['app'] = app
             row['approval_url'] = app.approval_url
+            
+            if app.applicant is not None:
+                row['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+
         #    if app.group is not None:
 
             #if app.applicant:
@@ -136,10 +142,11 @@ class ApprovalList(ListView):
 #       context['app_list'] = context['app_list'].order_by('title')
 
         # TODO: any restrictions on who can create new applications?
-        processor = Group.objects.get(name='Statdev Processor')
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
 
         # Rule: admin officers may self-assign applications.
-        if processor in self.request.user.groups.all() or self.request.user.is_superuser:
+        if processor.id in usergroups or self.request.user.is_superuser:
             context['may_assign_processor'] = True
 
         return context
@@ -153,6 +160,12 @@ class ApprovalDetails(LoginRequiredMixin,DetailView):
         context_processor = template_context(self.request)
         context['admin_staff'] = context_processor['admin_staff']
         context['approval_history'] = self.get_approval_history(app, [])
+        if app.applicant is not None:
+            context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+            context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
+        
+        
+        
         return context
 
     def get_approval_history(self,app,approvals):
@@ -230,7 +243,7 @@ class ApprovalStatusChange(LoginRequiredMixin,UpdateView):
 
         action = Action(
             content_object=app, category=Action.ACTION_CATEGORY_CHOICES.change,
-            user=self.request.user, action='Approval Change')
+            user=self.request.user.id, action='Approval Change')
         action.save()
         if status == 'surrendered':
              emailcontext = {'approval_id': app.id, 'app': app}
@@ -283,7 +296,7 @@ class ApprovalCommsCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('home_page'))
+            return HttpResponseRedirect(reverse('home'))
         return super(ApprovalCommsCreate, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -334,7 +347,7 @@ def getPDF(request,approval_id):
       can_view = True
   elif app.applicant == request.user:
       can_view = True
-  elif Delegate.objects.filter(email_user=request.user,organisation=app.organisation).exists(): 
+  elif Delegate.objects.filter(email_user=request.user.id,organisation=app.organisation).exists(): 
       can_view = True
 
 

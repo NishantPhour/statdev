@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{ action.timestamp|date:"d-M-Y H:i" }}</td>
                     <td>{% if action.category %}{{ action.get_category_display }}{% endif %}</td>
-                    <td>{% if action.user %}{{ action.user.get_full_name }}{% else %}System{% endif %}</td>
+                    <td>{% if action.user %}{{ user.legal_first_name }} {{user.legal_last_name }}{% else %}System{% endif %}</td>
                     <td>{{ action.action }}</td>
                 </tr>
                 {% endfor %}

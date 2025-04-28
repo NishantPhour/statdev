@@ -3,8 +3,9 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from mixer.backend.django import mixer
 
-from ledger.accounts.models import Organisation, Address
-from .models import Delegate
+# from ledger.accounts.models import Organisation, Address
+from ledger_api_client.ledger_models import Address
+from .models import Delegate, Organisation
 from .tests import StatDevTestCase
 
 

@@ -28,10 +28,10 @@
                                 <select class="select form-control" id="id_applicant" name="applicant">
                                     <option value="" selected="selected">All</option>
                                     {% for person in orgs_pending_applicants %}
-					{% if applicant == person.email_user %}
-                                    <option selected="selected" value="{{ person.email_user }}">{{ person.email_user__first_name }} {{person.email_user__last_name }}</option>
+					{% if applicant == person.ledger_id %}
+                                    <option selected="selected" value="{{ person.ledger_id }}">{{ person.legal_first_name }} {{person.legal_last_name }}</option>
 					{% else %}
-						<option value="{{ person.email_user }}">{{ person.email_user__first_name }} {{person.email_user__last_name }} {{ applicant }} {{ person.email_user }}</option>
+						<option value="{{ person.ledger_id }}">{{ person.legal_first_name }} {{person.legal_last_name }}</option>
 					{% endif %}
                                     {% endfor %}
                                 </select>
@@ -99,10 +99,10 @@
                             <tr>
                                 <td><a href="{% url "organisation_access_requests_view" item_obj.pk %}">AR-{{ item_obj.pk }}</a></td>
                                 <td>{{ item_obj.name }}</td>
-                                <td>{{ item_obj.email_user.get_full_name }}</td>
+                                <td>{{ item_obj.email_user.legal_first_name }} {{ item_obj.email_user.legal_last_name }}</td>
                                 <td>{{ item_obj.get_status_display }} </td>
                                 <td>{{ item_obj.submit_date|date:"d-M-Y" }}</td>
-                                <td>{{ item_obj.app.assignee.get_full_name }}</td>
+                                <td>{{ item_obj.assignee.legal_first_name }} {{ item_obj.assignee.legal_last_name }}</td>
                                 <td>
 				    {% if item_obj.status == 1 %}
                                     	<a class="btn btn-info pull-right" role="button" href="{% url "organisation_access_requests_view" item_obj.pk %}">Process</a> 

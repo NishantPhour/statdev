@@ -6,7 +6,9 @@ from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from mixer.backend.django import mixer
-from ledger.accounts.models import EmailUser, EmailUserManager
+# from ledger.accounts.models import EmailUser, EmailUserManager
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, EmailUserROManager as EmailUserManager
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 
 from applications.utils import random_dpaw_email
 from .models import Application, Referral, Condition, Vessel
@@ -35,12 +37,12 @@ class StatDevTestCase(TestCase):
         self.user3.save()
 
         for i in ['Statdev Processor', 'Statdev Assessor', 'Statdev Approver', 'Statdev Referee', 'Statdev Emergency']:
-            Group.objects.create(name=i)
-        processor = Group.objects.get(name='Statdev Processor')
-        assessor = Group.objects.get(name='Statdev Assessor')
-        approver = Group.objects.get(name='Statdev Approver')
-        referee = Group.objects.get(name='Statdev Referee')
-        emergency = Group.objects.get(name='Statdev Emergency')
+            SystemGroup.objects.create(name=i)
+        processor = SystemGroup.objects.get(name='Statdev Processor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
+        approver = SystemGroup.objects.get(name='Statdev Approver')
+        referee = SystemGroup.objects.get(name='Statdev Referee')
+        emergency = SystemGroup.objects.get(name='Statdev Emergency')
         self.user1.groups.add(processor)
         self.user1.groups.add(assessor)
         self.user1.groups.add(approver)
@@ -87,7 +89,7 @@ class ApplicationTest(StatDevTestCase):
         self.assertTrue(self.app1.get_absolute_url())
 
     #def test_home_page_get(self):
-    #    url = reverse('home_page')
+    #    url = reverse('home')
     #    resp = self.client.get(url)
     #    self.assertEquals(resp.status_code, 200)
 
@@ -165,7 +167,7 @@ class ApplicationTest(StatDevTestCase):
         self.assertRedirects(resp, self.app1.get_absolute_url())
 
     def test_refer_application_post(self):
-        referee = Group.objects.get(name='Statdev Referee')
+        referee = SystemGroup.objects.get(name='Statdev Referee')
         self.user1.groups.add(referee)  # Make user1 a referee.
         count = Referral.objects.count()
         self.app1.state = Application.APP_STATE_CHOICES.with_admin
@@ -196,7 +198,7 @@ class ApplicationTest(StatDevTestCase):
         # Redirect on user permission (not an Assessor).
         self.app1.state = Application.APP_STATE_CHOICES.with_assessor
         self.app1.save()
-        assessor = Group.objects.get(name='Statdev Assessor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
         self.user1.groups.remove(assessor)
         resp = self.client.get(url)
         self.assertRedirects(resp, self.app1.get_absolute_url())
@@ -210,7 +212,7 @@ class ApplicationTest(StatDevTestCase):
         # Redirect on user permission (not an Assessor).
         self.app1.state = Application.APP_STATE_CHOICES.with_assessor
         self.app1.save()
-        assessor = Group.objects.get(name='Statdev Assessor')
+        assessor = SystemGroup.objects.get(name='Statdev Assessor')
         self.user1.groups.remove(assessor)
         resp = self.client.get(url)
         self.assertRedirects(resp, self.app1.get_absolute_url())

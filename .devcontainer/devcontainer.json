@@ -1,6 +1,6 @@
 {
 	"name": "Statdev Development",
-	"image": "dbcawa/docker_app_dev:statdev_dev_latest",
+	"image": "ghcr.io/dbca-wa/docker_app_dev:statdev_dev_latest",
 	"remoteUser": "container",
 	"workspaceFolder": "/data/data/projects/statdev",
 	"mounts": ["type=bind,source=/data/,target=/data/",
@@ -11,5 +11,5 @@
 		   "--hostname","statdev-dev"
 		   ],
 	"forwardPorts": [9216,9217,9218,9219,9220],
-	"initializeCommand" : "${localEnv:HOME}/docker-scripts-dev/windows_vbox/postgres_docker_load_2404.sh"
+    "initializeCommand" : "${localEnv:HOME}/docker-scripts-dev/windows_vbox/postgres_docker_load_2404_16.sh && ${localEnv:HOME}/docker-scripts-dev/windows_vbox/ledger_docker_load.sh "
 }

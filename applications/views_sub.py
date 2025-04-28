@@ -4,7 +4,9 @@ from .models import Location, Record, PublicationNewspaper, PublicationWebsite, 
 from django.utils.safestring import SafeText
 from django.contrib.auth.models import Group
 from applications.validationchecks import Attachment_Extension_Check
-from ledger.accounts.models import EmailUser, Address, Organisation, Document
+# from ledger.accounts.models import EmailUser, Address, Organisation, Document
+from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Document
+from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 from django.db.models import Q
 from approvals.models import Approval
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
@@ -236,11 +238,12 @@ class Application_Emergency():
         #context['workflow_actions'] = flow.getAllRouteActions(app.routeid,workflowtype)
         context['formcomponent'] = flow.getFormComponent(app.routeid,workflowtype)
         context['workflowoptions'] = flow.getWorkflowOptions()
+        applicant = SystemUser.objects.get(ledger_id=app.applicant)
 
         if app.organisation:
            context['address'] = app.organisation.postal_address
         elif app.applicant:
-           context['address'] = app.applicant.postal_address
+           context['address'] = SystemUserAddress.objects.get(system_user=applicant, address_type='postal_address')
 
         return context
 
@@ -305,7 +308,7 @@ class Referrals_Next_Action_Check():
         routes = flow.getAllRouteActions(app.routeid,workflowtype)
         action = routes[0]['routegroup']
         if action in DefaultGroups['grouplink']:
-            groupassignment = Group.objects.get(name=DefaultGroups['grouplink'][action])
+            groupassignment = SystemGroup.objects.get(name=DefaultGroups['grouplink'][action])
         else:
             groupassignment = None
         route = flow.getNextRouteObj(action,app.routeid,workflowtype)
@@ -339,8 +342,8 @@ class FormsList():
 
     def get_application(self,self_view,userid,context):
 
-        user = EmailUser.objects.get(id=userid)
-        delegate = Delegate.objects.filter(email_user=user).values('organisation__id')
+        user = SystemUser.objects.get(ledger_id=userid)
+        delegate = Delegate.objects.filter(email_user=user.id).values('organisation__id')
 
         context['nav_other_applications'] = "active"
         context['app'] = ''
@@ -398,7 +401,7 @@ class FormsList():
 
 #        applications = Application.objects.filter(Q(app_type__in=APP_TYPE_CHOICES_IDS) & Q(search_filter) ).exclude(state=17)[:200]
         applications = Application.objects.filter(Q(search_filter) ).exclude(exclude_search_filter).order_by('-id')[:200]
-        usergroups = self_view.request.user.groups.all()
+        usergroups = self_view.request.user.get_system_group_permission(self_view.request.user.id)
         context['app_list'] = []
         for app in applications:
              row = {}
@@ -406,15 +409,28 @@ class FormsList():
              row['app'] = app
 
              if app.group is not None:
-                 if app.group in usergroups:
+                 if app.group.id in usergroups:
                      row['may_assign_to_person'] = 'True'
+             
+             if app.assignee:
+                assignee = SystemUser.objects.get(ledger_id=app.assignee)
+                row['assignee'] = assignee
+
+             if app.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
+                row['submitted_by'] = submitted_by            
+
+             if app.assigned_officer:
+                assigned_officer = SystemUser.objects.get(ledger_id=app.assigned_officer)
+                row['assigned_officer'] = assigned_officer 
+
              context['app_list'].append(row)
 
         return context
 
     def get_approvals(self,self_view,userid,context):
 
-        user = EmailUser.objects.get(id=userid)
+        user = SystemUser.objects.get(ledger_id=userid)
         delegate = Delegate.objects.filter(email_user=user).values('id')
 
         search_filter = Q(applicant=userid, status=1 ) | Q(organisation__in=delegate)
@@ -465,11 +481,15 @@ class FormsList():
             row['app'] = app
             row['approval_url'] = app.approval_url
             if app.applicant:
-                if app.applicant.id in context['app_applicants']:
+                applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                row['applicant'] = applicant
+                if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][app.applicant.id] = app.applicant.first_name + ' ' + app.applicant.last_name
-                    context['app_applicants_list'].append({"id": app.applicant.id, "name": app.applicant.first_name + ' ' + app.applicant.last_name})
+                    #TODO check this
+                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
+
 
             context['app_list'].append(row)
 
@@ -480,7 +500,7 @@ class FormsList():
         if 'q' in self_view.request.GET and self_view.request.GET['q']:
             context['query_string'] = self_view.request.GET['q']
 
-        user = EmailUser.objects.get(id=userid)
+        user = SystemUser.objects.get(ledger_id=userid)
         delegate = Delegate.objects.filter(email_user=user).values('id')
         search_filter = Q(applicant=userid) | Q(organisation__in=delegate)
 
@@ -497,6 +517,8 @@ class FormsList():
 
         context['app_appstatus'] = list(APP_STATUS_CHOICES)
         context['compliance'] = items
+
+        #TODO check this: do we need to include applicant in context data
 
         return context
 
