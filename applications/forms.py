@@ -267,128 +267,128 @@ class CreateLinkCompanyForm(ModelForm):
                 self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
             self.helper.add_input(Submit('Next Step', 'Next Step', css_class='btn-lg'))
 #TODO remove this
-class FirstLoginInfoForm(ModelForm):
-    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
-    identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
-    line1 = CharField(required=False,max_length=255)
-    line2 = CharField(required=False, max_length=255)
-    line3 = CharField(required=False, max_length=255)
-    locality = CharField(required=False, max_length=255, label='Town/Suburb')
-    postcode = CharField(required=False, max_length=10)
-    state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
-    country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
-    manage_permits = ChoiceField(label='Do you manage licences, permits or Part 5 on behalf of a company?', required=False,choices=BOOL_CHOICES, widget=RadioSelect(attrs={'class':'radio-inline'}))
+# class FirstLoginInfoForm(ModelForm):
+#     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+#     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
+#     line1 = CharField(required=False,max_length=255)
+#     line2 = CharField(required=False, max_length=255)
+#     line3 = CharField(required=False, max_length=255)
+#     locality = CharField(required=False, max_length=255, label='Town/Suburb')
+#     postcode = CharField(required=False, max_length=10)
+#     state = ChoiceField(required=False, choices=Address.STATE_CHOICES)
+#     country = ChoiceField(choices=sorted(COUNTRIES.items()), required=False)
+#     manage_permits = ChoiceField(label='Do you manage licences, permits or Part 5 on behalf of a company?', required=False,choices=BOOL_CHOICES, widget=RadioSelect(attrs={'class':'radio-inline'}))
 
-    class Meta:
-        model = EmailUser 
-        fields = ['first_name','last_name','dob','phone_number','mobile_number','email']
+#     class Meta:
+#         model = EmailUser 
+#         fields = ['first_name','last_name','dob','phone_number','mobile_number','email']
 
-    def __init__(self, *args, **kwargs):
-        # User must be passed in as a kwarg.
-        # user = kwargs.pop('user')
-        super(FirstLoginInfoForm, self).__init__(*args, **kwargs)
-        self.helper = BaseFormHelper()
-        step = '1'
-        if 'step' in self.initial:
-            step = self.initial['step']
-        self.fields['country'].required = False
-        # delete internal option
-        crispy_boxes = crispy_empty_box()
-        #  self.helper.form_show_labels = False
+#     def __init__(self, *args, **kwargs):
+#         # User must be passed in as a kwarg.
+#         # user = kwargs.pop('user')
+#         super(FirstLoginInfoForm, self).__init__(*args, **kwargs)
+#         self.helper = BaseFormHelper()
+#         step = '1'
+#         if 'step' in self.initial:
+#             step = self.initial['step']
+#         self.fields['country'].required = False
+#         # delete internal option
+#         crispy_boxes = crispy_empty_box()
+#         #  self.helper.form_show_labels = False
 
-        if step == '1':
-            crispy_boxes.append(crispy_box('person_details_collapse','person_details','Personal Details','first_name','last_name','dob'))
-            self.fields['first_name'].required = True
-            self.fields['last_name'].required = True
-            self.fields['dob'].required = True
+#         if step == '1':
+#             crispy_boxes.append(crispy_box('person_details_collapse','person_details','Personal Details','first_name','last_name','dob'))
+#             self.fields['first_name'].required = True
+#             self.fields['last_name'].required = True
+#             self.fields['dob'].required = True
 
-            del self.fields['identification2']
-            del self.fields['phone_number']
-            del self.fields['mobile_number']
-            del self.fields['email']
+#             del self.fields['identification2']
+#             del self.fields['phone_number']
+#             del self.fields['mobile_number']
+#             del self.fields['email']
 
-        elif step == '2':
-            #self.initial['identification2'].initial_text = "JASON "
-            #self.initial['identification2'].attr.url = '/jason/test'
-            #print (self.fields['identification2'].widget.is_initial((self.fields['identification2'])))
-            #print (self.fields['identification2'].value = setUrl('JASON TEST URL', " DEFAULT VALUE"))
+#         elif step == '2':
+#             #self.initial['identification2'].initial_text = "JASON "
+#             #self.initial['identification2'].attr.url = '/jason/test'
+#             #print (self.fields['identification2'].widget.is_initial((self.fields['identification2'])))
+#             #print (self.fields['identification2'].value = setUrl('JASON TEST URL', " DEFAULT VALUE"))
         
 
-            #self.initial['identification2'].value = {'url' : '/jason/test'}
+#             #self.initial['identification2'].value = {'url' : '/jason/test'}
 
-            identification_img = None
-            if  'identification2' in self.initial:
-                 id_name = self.initial['identification2']
-                 att_ext = str(id_name)[-4:].lower()
-                 if att_ext in ['.png','.jpg']:
-                     identification_img = HTML("<label for='id_identification' class='control-label col-xs-12 col-sm-4 col-md-3 col-lg-2 requiredField'>Identification Image<span class='asteriskField'>*</span> </label><div class='controls col-xs-12 col-sm-8 col-md-6 col-lg-4'><img style='max-width: 400px;' src='/private-ledger/view/"+str(self.initial['identification2'])+"' ></div>")
+#             identification_img = None
+#             if  'identification2' in self.initial:
+#                  id_name = self.initial['identification2']
+#                  att_ext = str(id_name)[-4:].lower()
+#                  if att_ext in ['.png','.jpg']:
+#                      identification_img = HTML("<label for='id_identification' class='control-label col-xs-12 col-sm-4 col-md-3 col-lg-2 requiredField'>Identification Image<span class='asteriskField'>*</span> </label><div class='controls col-xs-12 col-sm-8 col-md-6 col-lg-4'><img style='max-width: 400px;' src='/private-ledger/view/"+str(self.initial['identification2'])+"' ></div>")
 
 
-            crispy_boxes.append(crispy_box('identification_collapse','identification_details','Identification','identification2',identification_img))
-            self.fields['identification2'].required = True
-            del self.fields['first_name']
-            del self.fields['last_name']
-            del self.fields['dob']
-            del self.fields['phone_number']
-            del self.fields['mobile_number']
-            del self.fields['email']
-        elif step == '3':
-            crispy_boxes.append(crispy_box('address_collapse','address_details','Address','line1','line2','line3','locality','postcode','state','country'))
-            self.fields['line1'].required = True
-            self.fields['line2'].required = False
-            self.fields['line3'].required = False 
-            self.fields['locality'].required = True
-            self.fields['postcode'].required = True
-            self.fields['state'].required = True
-            self.fields['country'].required = True
+#             crispy_boxes.append(crispy_box('identification_collapse','identification_details','Identification','identification2',identification_img))
+#             self.fields['identification2'].required = True
+#             del self.fields['first_name']
+#             del self.fields['last_name']
+#             del self.fields['dob']
+#             del self.fields['phone_number']
+#             del self.fields['mobile_number']
+#             del self.fields['email']
+#         elif step == '3':
+#             crispy_boxes.append(crispy_box('address_collapse','address_details','Address','line1','line2','line3','locality','postcode','state','country'))
+#             self.fields['line1'].required = True
+#             self.fields['line2'].required = False
+#             self.fields['line3'].required = False 
+#             self.fields['locality'].required = True
+#             self.fields['postcode'].required = True
+#             self.fields['state'].required = True
+#             self.fields['country'].required = True
 
-            del self.fields['first_name']
-            del self.fields['last_name']
-            del self.fields['dob']
-            del self.fields['identification2']
-            del self.fields['phone_number']
-            del self.fields['mobile_number']
-            del self.fields['email']
-        elif step == '4':
-            crispy_boxes.append(crispy_box('contact_details_collapse','contact_details','Contact Details','phone_number','mobile_number','email'))
-            self.fields['phone_number'].required = False 
-            self.fields['mobile_number'].required = False 
-            self.fields['email'].required = False
-            self.fields['email'].disabled = True
+#             del self.fields['first_name']
+#             del self.fields['last_name']
+#             del self.fields['dob']
+#             del self.fields['identification2']
+#             del self.fields['phone_number']
+#             del self.fields['mobile_number']
+#             del self.fields['email']
+#         elif step == '4':
+#             crispy_boxes.append(crispy_box('contact_details_collapse','contact_details','Contact Details','phone_number','mobile_number','email'))
+#             self.fields['phone_number'].required = False 
+#             self.fields['mobile_number'].required = False 
+#             self.fields['email'].required = False
+#             self.fields['email'].disabled = True
 
-            del self.fields['first_name']
-            del self.fields['last_name']
-            del self.fields['dob']
-            del self.fields['identification2']
-        elif step == '5':
-            crispy_boxes.append(crispy_box('company_details_collapse','company_details','Company Details','manage_permits'))
-            del self.fields['first_name']
-            del self.fields['last_name']
-            del self.fields['dob']
-            del self.fields['identification2']
-            del self.fields['phone_number']
-            del self.fields['mobile_number']
-            del self.fields['email']
-        else:
-            del self.fields['first_name'] 
-            del self.fields['last_name']
-            del self.fields['dob']
-            del self.fields['identification2']
-            del self.fields['phone_number']
-            del self.fields['mobile_number']
-            del self.fields['email']
+#             del self.fields['first_name']
+#             del self.fields['last_name']
+#             del self.fields['dob']
+#             del self.fields['identification2']
+#         elif step == '5':
+#             crispy_boxes.append(crispy_box('company_details_collapse','company_details','Company Details','manage_permits'))
+#             del self.fields['first_name']
+#             del self.fields['last_name']
+#             del self.fields['dob']
+#             del self.fields['identification2']
+#             del self.fields['phone_number']
+#             del self.fields['mobile_number']
+#             del self.fields['email']
+#         else:
+#             del self.fields['first_name'] 
+#             del self.fields['last_name']
+#             del self.fields['dob']
+#             del self.fields['identification2']
+#             del self.fields['phone_number']
+#             del self.fields['mobile_number']
+#             del self.fields['email']
 
-        self.helper.layout = Layout(crispy_boxes,)
+#         self.helper.layout = Layout(crispy_boxes,)
 
-        self.helper.form_id = 'id_form_apply_application'
-        self.helper.attrs = {'novalidate': ''}
-        if step == '5':
-            self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
-            self.helper.add_input(Submit('Complete', 'Complete', css_class='btn-lg'))
-        else:
-            if int(step) > 1:
-                self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
-            self.helper.add_input(Submit('Next Step', 'Next Step', css_class='btn-lg'))
+#         self.helper.form_id = 'id_form_apply_application'
+#         self.helper.attrs = {'novalidate': ''}
+#         if step == '5':
+#             self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
+#             self.helper.add_input(Submit('Complete', 'Complete', css_class='btn-lg'))
+#         else:
+#             if int(step) > 1:
+#                 self.helper.add_input(Submit('Prev Step', 'Prev Step', css_class='btn-lg'))
+#             self.helper.add_input(Submit('Next Step', 'Next Step', css_class='btn-lg'))
 
  
 
@@ -3035,28 +3035,28 @@ class OrganisationCertificateForm(ModelForm):
                 Submit('cancel', 'Cancel')
             )
         )
+#TODO remove this
+# class UserFormIdentificationUpdate(ModelForm):
+#     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
 
-class UserFormIdentificationUpdate(ModelForm):
-    identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
-
-    class Meta:
-        model = SystemUser
-        fields = ['id']
+#     class Meta:
+#         model = EmailUser
+#         fields = ['id']
         
 
-    def __init__(self, *args, **kwargs):
-        super(UserFormIdentificationUpdate, self).__init__(*args, **kwargs)
-        self.helper = BaseFormHelper(self)
-        self.helper.form_id = 'id_form_emailuser_account_update'
-        self.helper.attrs = {'novalidate': ''}
-        # Define the form layout.
-        self.helper.layout = Layout(
-            'identification2',
-            FormActions(
-                Submit('save', 'Save', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
-        )
+#     def __init__(self, *args, **kwargs):
+#         super(UserFormIdentificationUpdate, self).__init__(*args, **kwargs)
+#         self.helper = BaseFormHelper(self)
+#         self.helper.form_id = 'id_form_emailuser_account_update'
+#         self.helper.attrs = {'novalidate': ''}
+#         # Define the form layout.
+#         self.helper.layout = Layout(
+#             'identification2',
+#             FormActions(
+#                 Submit('save', 'Save', css_class='btn-lg'),
+#                 Submit('cancel', 'Cancel')
+#             )
+#         )
 
 class AddressForm(ModelForm):
 
