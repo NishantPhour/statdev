@@ -67,6 +67,7 @@ def payment_processor(request):
         'public_url': web_url,
         # 'template_group': 'ria',
         'LEDGER_API_URL': f'{settings.LEDGER_API_URL}',
+        'LEDGER_UI_URL': f'{settings.LEDGER_UI_URL}',
         # 'LEDGER_SYSTEM_ID': f'{settings.LEDGER_SYSTEM_ID}',
         'ledger_totals': lt,
         'checkouthash' : checkouthash,

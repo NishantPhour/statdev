@@ -89,21 +89,17 @@
 
                             <div class="panel-collapse collapse in" id="cert_incorp_collapse" role="tabpanel" aria-labelledby="cert_incorp_heading">
                                 <div class="panel-body">
-
-                                    {% if object.identification2 %}
+                                    
+                                    {% if object.ledger_id.identification2_id %}
                                     <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-12 col-md-4 col-lg-2">
-                                            <label>Current Identification</label>	
-                                        </div>
-                                        <div class="col-sm-12 col-md-4 col-lg-6">
-						<A HREF='/private-ledger/view/{{ object.identification2.id }}-{{ object.identification2.name }}.{{ object.identification2.extension }}' target="new_tab_{{ object.identification2.id }}">{{ object.identification2.name }}.{{ object.identification2.extension }}</A>
-                                        </div>
                                         <div class="col-sm-12 col-md-5 col-lg-4">
-                                            <A HREF='{% url "user_account_update_identification_admin" object.ledger_id.id %}'><img src='{% static "images/bin_blue.png" %}'>Remove & Provide New ID</A>
+                                            <a href="{{LEDGER_UI_URL}}/ledger/account-management/{{object.ledger_id.id}}/change/" target="_blank" id="accounts-management-change">Remove & Provide New ID<i class="fa fa-external-link" aria-hidden="true"></i>
                                         </div>
                                     </div>
                                     {% else %}
-                                    <A HREF='{% url "user_account_update_identification_admin" object.ledger_id.id %}'>Add Identification</A>
+                                    <a href="{{LEDGER_UI_URL}}/ledger/account-management/{{object.ledger_id.id}}/change/" target="_blank" id="accounts-management-change">Add Identification<i class="fa fa-external-link" aria-hidden="true"></i>
+                                    </a>
+                                    
                                     {% endif %}
 
                                 </div>
@@ -164,9 +160,9 @@
                                             <div class="col-sm-12 col-md-1 col-lg-1">
 
                                                 {% if postal_address %}
-                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}">Edit</a>
+                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}" target="_blank">Edit</a>
                                                 {% else %}
-                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}">Add</a>
+                                                <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}" target="_blank">Add</a>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -225,7 +221,7 @@
                                         &nbsp;
                                     </div>
                                     <div class="col-sm-12 col-md-1 col-lg-1">
-                                        <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}">Edit</a>
+                                        <a class="btn btn-primary btn-sm" role="button" href="{% url 'accounts-management-change' object.pk %}" target="_blank">Edit</a>
                                     </div>
                                 </div>
                             </div>
