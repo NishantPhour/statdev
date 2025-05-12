@@ -22,8 +22,9 @@ GRANT ALL ON SCHEMA public TO statdev_dev;
 ## Step 3: Create ENV file (create ledger api key from ledger admin database (System ID: 0637))
 ```
 
-ALLOWED_DOMAINS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au']
-ALLOWED_HOSTS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au']
+ALLOWED_DOMAINS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au','statdev-dev-internal-oim03.dbca.wa.gov.au']
+ALLOWED_HOSTS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au','statdev-dev-internal-oim03.dbca.wa.gov.au']
+CSRF_TRUSTED_ORIGINS=["https://statdev-dev-internal-oim03.dbca.wa.gov.au"]
 DATABASE_URL=postgis://statdev_dev:statdev_dev@172.17.0.1:25432/statdev_dev?sslmode=require
 LEDGER_DATABASE_URL=postgis://ledger_dev:ledger_dev@172.17.0.1:25432/ledger_dev?sslmode=require
 LEDGER_API_KEY=<LEDGER_API_KEY>
