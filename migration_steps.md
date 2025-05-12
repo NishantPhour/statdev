@@ -22,22 +22,22 @@ GRANT ALL ON SCHEMA public TO statdev_dev;
 ## Step 3: Create ENV file (create ledger api key from ledger admin database (System ID: 0637))
 ```
 
-ALLOWED_DOMAINS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au','statdev-dev-internal-oim03.dbca.wa.gov.au']
-ALLOWED_HOSTS=['statdev-uat.dbca.wa.gov.au','statdev-uat-internal.dbca.wa.gov.au','statdev-dev-internal-oim03.dbca.wa.gov.au']
-CSRF_TRUSTED_ORIGINS=["https://statdev-dev-internal-oim03.dbca.wa.gov.au"]
+ALLOWED_DOMAINS=['localhost:9216']
+ALLOWED_HOSTS=['localhost:9216']
+CSRF_TRUSTED_ORIGINS=["localhost:9216"]
 DATABASE_URL=postgis://statdev_dev:statdev_dev@172.17.0.1:25432/statdev_dev?sslmode=require
 LEDGER_DATABASE_URL=postgis://ledger_dev:ledger_dev@172.17.0.1:25432/ledger_dev?sslmode=require
 LEDGER_API_KEY=<LEDGER_API_KEY>
 LEDGER_API_URL=http://10.17.0.10:7001
 LEDGER_UI_URL=http://10.17.0.10:7001
 DEBUG=True
-DEFAULT_URL_INTERNAL=https://statdev-uat-internal.dbca.wa.gov.au/
+DEFAULT_URL_INTERNAL=<INTERNAL_URL>
 EMAIL_DELIVERY=on
-EMAIL_FROM=no-reply@dbca.wa.gov.au
+EMAIL_FROM=<NOREPLY_EMAIL>
 EMAIL_HOST=smtp.lan.fyi
 EMAIL_INSTANCE=UAT
 EMAIL_PORT=25
-EXTERNAL_URL=https://statdev-uat.dbca.wa.gov.au/
+EXTERNAL_URL=<EXTERNAL_URL>
 NON_PROD_EMAIL=email
 NOTIFICATION_EMAIL=email
 OVERRIDE_EMAIL=email
