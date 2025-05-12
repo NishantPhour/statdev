@@ -27,7 +27,7 @@ JCAPTCHA_CLEANUP_MINUTES=100
 # Define the following in the environment:
 DEBUG = env('DEBUG', False)
 SECRET_KEY = env('SECRET_KEY')
-ENABLE_DJANGO_LOGIN = True #TODO delete
+ENABLE_DJANGO_LOGIN = env('ENABLE_DJANGO_LOGIN', False)
 #if not DEBUG:
 #    ALLOWED_HOSTS = [env('ALLOWED_DOMAIN'), ]
 #else:

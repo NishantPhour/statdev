@@ -1,4 +1,4 @@
-## Step 1: Create new database.
+## Step 1: Use Segregated Branch of Statdev.
 ```
 
 Statdev Segregated branch: https://github.com/dbca-wa/statdev/tree/seg_statdev
