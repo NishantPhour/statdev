@@ -80,3 +80,17 @@ Go to http://<site-domain>/admin and use the DBCA login details
 Go to http://<site-domain>/admin/ledger_api_client/systemgroup/
 
 Add the email user account in the required group (Note: For now, user can only be added using user_id)
+
+## Step 9: Ledger payment setup
+
+
+Go to http://<ledger-url>/admin/payments/oracleinterfacesystem
+
+Add Statdev in the Oracle Interface System
+
+Add these variable in the ENV
+
+```
+PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE=<SYSTEM CODE>
+PAYMENT_INTERFACE_SYSTEM_ID=<SYSTEM ID>
+```
