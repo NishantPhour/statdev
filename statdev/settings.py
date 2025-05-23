@@ -27,7 +27,9 @@ JCAPTCHA_CLEANUP_MINUTES=100
 # Define the following in the environment:
 DEBUG = env('DEBUG', False)
 SECRET_KEY = env('SECRET_KEY')
-ENABLE_DJANGO_LOGIN = True #TODO delete
+ENABLE_DJANGO_LOGIN = env('ENABLE_DJANGO_LOGIN', False)
+CSRF_TRUSTED_ORIGINS_STRING = decouple.config("CSRF_TRUSTED_ORIGINS", default='[]')
+CSRF_TRUSTED_ORIGINS = json.loads(str(CSRF_TRUSTED_ORIGINS_STRING))
 #if not DEBUG:
 #    ALLOWED_HOSTS = [env('ALLOWED_DOMAIN'), ]
 #else:
@@ -306,18 +308,17 @@ CACHES = {
 #    'orm': 'default',
 #}
 
-#OSCAR_REQUIRED_ADDRESS_FIELDS = []
-LEDGER_API_KEY='09OT2SUE27CW62NIPVI4D4JE6KQ6T09ZWSHJTMPMUOQUO289UADCGSACHFQ5IK1JK8Q7KI6EGVW43RZ5ER7W8I62EZZNBQENADW1'
-LEDGER_API_URL='http://10.17.0.10:7001'
 LEDGER_UI_ACCOUNTS_MANAGEMENT = [
-             {'first_name': {'options' : {'view': True, 'edit': True}}},
-             {'last_name': {'options' : {'view': True, 'edit': True}}},
-             {'residential_address': {'options' : {'view': True, 'edit': True}}},
-             {'phone_number' : {'options' : {'view': True, 'edit': True}}},
-             {'mobile_number' : {'options' : {'view': True, 'edit': True}}},
- ]
-# LEDGER_API_KEY = env('LEDGER_API_KEY','')
-# LEDGER_API_URL = env('LEDGER_API_URL','')
+    {"email": {"options": {"view": True, "edit": False}}},
+    {"first_name": {"options": {"view": True, "edit": True}}},
+    {"last_name": {"options": {"view": True, "edit": True}}},
+    {"title": {"options": {"view": True, "edit": True}}},
+    {"dob": {"options": {"view": True, "edit": True}}},
+    {"phone_number": {"options": {"view": True, "edit": True}}},
+    {"mobile_number": {"options": {"view": True, "edit": True}}},
+    {"fax_number": {"options": {"view": True, "edit": True}}},
+    {"identification": {"options": {"view": True, "edit": True}}},
+]
 
 DEPT_DOMAINS = env('DEPT_DOMAINS', ['dpaw.wa.gov.au', 'dbca.wa.gov.au'])
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True

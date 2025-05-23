@@ -248,35 +248,35 @@ class NotificationInsidePopup(TemplateView):
         return super(NotificationInsidePopup, self).get(request, *args, **kwargs)
 
 #TODO remove
-class FirstLoginInfo(LoginRequiredMixin,CreateView):
+# class FirstLoginInfo(LoginRequiredMixin,CreateView):
 
-    template_name = 'applications/firstlogin.html'
-    model = EmailUser
-    form_class = apps_forms.FirstLoginInfoForm
+#     template_name = 'applications/firstlogin.html'
+#     model = EmailUser
+#     form_class = apps_forms.FirstLoginInfoForm
 
-    def get(self, request, *args, **kwargs):
-        return super(FirstLoginInfo, self).get(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return super(FirstLoginInfo, self).get(request, *args, **kwargs)
 
-    def get_initial(self):
-        initial = super(FirstLoginInfo, self).get_initial()
-        #initial['action'] = self.kwargs['action']
-        return initial
+#     def get_initial(self):
+#         initial = super(FirstLoginInfo, self).get_initial()
+#         #initial['action'] = self.kwargs['action']
+#         return initial
 
-    def post(self, request, *args, **kwargs):
-        if request.POST.get('cancel'):
-            app = self.get_object().application_set.first()
-            return HttpResponseRedirect(app.get_absolute_url())
-        return super(FirstLoginInfo, self).post(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         if request.POST.get('cancel'):
+#             app = self.get_object().application_set.first()
+#             return HttpResponseRedirect(app.get_absolute_url())
+#         return super(FirstLoginInfo, self).post(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        self.object = form.save()
-        forms_data = form.cleaned_data
-        action = self.kwargs['action']
-        nextstep = ''
-        apply_on_behalf_of = 0
-        app = Application.objects.get(pk=self.object.pk)
+#     def form_valid(self, form):
+#         self.object = form.save()
+#         forms_data = form.cleaned_data
+#         action = self.kwargs['action']
+#         nextstep = ''
+#         apply_on_behalf_of = 0
+#         app = Application.objects.get(pk=self.object.pk)
 
-        return HttpResponseRedirect(success_url)
+#         return HttpResponseRedirect(success_url)
 
 class setUrl():
     value = ''
@@ -285,233 +285,233 @@ class setUrl():
     def __repr__(self):
          return self.value
 #TODO remove
-class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
+# class FirstLoginInfoSteps(LoginRequiredMixin,UpdateView):
 
-    template_name = 'applications/firstlogin.html'
-    model = EmailUser
-    form_class = apps_forms.FirstLoginInfoForm
+#     template_name = 'applications/firstlogin.html'
+#     model = EmailUser
+#     form_class = apps_forms.FirstLoginInfoForm
 
-    def get(self, request, *args, **kwargs):
-        pk = int(kwargs['pk'])
-        if request.user.is_staff == True or request.user.is_superuser == True or request.user.id == pk:
-           donothing =""
-        else:
-           messages.error(self.request, 'Forbidden from viewing this page.')
-           return HttpResponseRedirect("/")
+#     def get(self, request, *args, **kwargs):
+#         pk = int(kwargs['pk'])
+#         if request.user.is_staff == True or request.user.is_superuser == True or request.user.id == pk:
+#            donothing =""
+#         else:
+#            messages.error(self.request, 'Forbidden from viewing this page.')
+#            return HttpResponseRedirect("/")
 
-        return super(FirstLoginInfoSteps, self).get(request, *args, **kwargs)
+#         return super(FirstLoginInfoSteps, self).get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(FirstLoginInfoSteps, self).get_context_data(**kwargs)
-        step = self.kwargs['step']
+#     def get_context_data(self, **kwargs):
+#         context = super(FirstLoginInfoSteps, self).get_context_data(**kwargs)
+#         step = self.kwargs['step']
 
-        if step == '1':
-            context['step1'] = 'active'
-            context['step2'] = 'disabled'
-            context['step3'] = 'disabled'
-            context['step4'] = 'disabled'
-            context['step5'] = 'disabled'
-        elif step == '2':
-            context['step2'] = 'active'
-            context['step3'] = 'disabled'
-            context['step4'] = 'disabled'
-            context['step5'] = 'disabled'
-        elif step == '3':
-            context['step3'] = 'active'
-            context['step4'] = 'disabled'
-            context['step5'] = 'disabled'
-        elif step == '4':
-            context['step4'] = 'active'
-            context['step5'] = 'disabled'
-        elif step == '5':
-            context['step5'] = 'active'
-        return context
+#         if step == '1':
+#             context['step1'] = 'active'
+#             context['step2'] = 'disabled'
+#             context['step3'] = 'disabled'
+#             context['step4'] = 'disabled'
+#             context['step5'] = 'disabled'
+#         elif step == '2':
+#             context['step2'] = 'active'
+#             context['step3'] = 'disabled'
+#             context['step4'] = 'disabled'
+#             context['step5'] = 'disabled'
+#         elif step == '3':
+#             context['step3'] = 'active'
+#             context['step4'] = 'disabled'
+#             context['step5'] = 'disabled'
+#         elif step == '4':
+#             context['step4'] = 'active'
+#             context['step5'] = 'disabled'
+#         elif step == '5':
+#             context['step5'] = 'active'
+#         return context
     
-    def get_initial(self):
-        initial = super(FirstLoginInfoSteps, self).get_initial()
-        person = self.get_object()
-        # initial['action'] = self.kwargs['action']
-        # print self.kwargs['step']
-        step = self.kwargs['step']
-        if person.identification2:
-            #person.identification2.upload.url = '/jason/jhaso'
+#     def get_initial(self):
+#         initial = super(FirstLoginInfoSteps, self).get_initial()
+#         person = self.get_object()
+#         # initial['action'] = self.kwargs['action']
+#         # print self.kwargs['step']
+#         step = self.kwargs['step']
+#         if person.identification2:
+#             #person.identification2.upload.url = '/jason/jhaso'
    
-            url_data = setUrl()
-            url_data.url = "/private-ledger/view/"+str(person.identification2.id)+'-'+person.identification2.name+'.'+person.identification2.extension 
-            url_data.value = str(person.identification2.id)+'-'+person.identification2.name+'.'+person.identification2.extension
-            initial['identification2'] =  url_data
-            #initial['identification2'] = person.identification2.upload
-        if step == '3':
-            if self.object.postal_address is None:
-                initial['country'] = 'AU'
-                initial['state'] = 'WA'
-            else: 
-                postal_address = Address.objects.get(id=self.object.postal_address.id)
-                initial['line1'] = postal_address.line1
-                initial['line2'] = postal_address.line2
-                initial['line3'] = postal_address.line3
-                initial['locality'] = postal_address.locality
-                initial['state'] = postal_address.state
-                initial['country'] = postal_address.country
-                initial['postcode'] = postal_address.postcode
+#             url_data = setUrl()
+#             url_data.url = "/private-ledger/view/"+str(person.identification2.id)+'-'+person.identification2.name+'.'+person.identification2.extension 
+#             url_data.value = str(person.identification2.id)+'-'+person.identification2.name+'.'+person.identification2.extension
+#             initial['identification2'] =  url_data
+#             #initial['identification2'] = person.identification2.upload
+#         if step == '3':
+#             if self.object.postal_address is None:
+#                 initial['country'] = 'AU'
+#                 initial['state'] = 'WA'
+#             else: 
+#                 postal_address = Address.objects.get(id=self.object.postal_address.id)
+#                 initial['line1'] = postal_address.line1
+#                 initial['line2'] = postal_address.line2
+#                 initial['line3'] = postal_address.line3
+#                 initial['locality'] = postal_address.locality
+#                 initial['state'] = postal_address.state
+#                 initial['country'] = postal_address.country
+#                 initial['postcode'] = postal_address.postcode
 
-        initial['step'] = self.kwargs['step']
-        return initial
+#         initial['step'] = self.kwargs['step']
+#         return initial
 
-    def post(self, request, *args, **kwargs):
-        if request.POST.get('cancel'):
-            app = self.get_object().application_set.first()
-            return HttpResponseRedirect(app.get_absolute_url())
-        return super(FirstLoginInfoSteps, self).post(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         if request.POST.get('cancel'):
+#             app = self.get_object().application_set.first()
+#             return HttpResponseRedirect(app.get_absolute_url())
+#         return super(FirstLoginInfoSteps, self).post(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        forms_data = form.cleaned_data
-        step = self.kwargs['step']
-        app_id = None
+#     def form_valid(self, form):
+#         self.object = form.save(commit=False)
+#         forms_data = form.cleaned_data
+#         step = self.kwargs['step']
+#         app_id = None
 
-        if 'application_id' in self.kwargs:
-            app_id = self.kwargs['application_id']
+#         if 'application_id' in self.kwargs:
+#             app_id = self.kwargs['application_id']
 
-        if step == '3':
-            if self.object.postal_address is None:
-               postal_address = Address.objects.create(line1=forms_data['line1'],
-                                        line2=forms_data['line2'],
-                                        line3=forms_data['line3'],
-                                        locality=forms_data['locality'],
-                                        state=forms_data['state'],
-                                        country=forms_data['country'],
-                                        postcode=forms_data['postcode'],
-                                        user=self.object
-                                       )
-               self.object.postal_address = postal_address
-            else:
-               postal_address = Address.objects.get(id=self.object.postal_address.id)
-               postal_address.line1 = forms_data['line1']
-               postal_address.line2 = forms_data['line2']
-               postal_address.line3 = forms_data['line3']
-               postal_address.locality = forms_data['locality']
-               postal_address.state = forms_data['state']
-               postal_address.country = forms_data['country']
-               postal_address.postcode = forms_data['postcode']
-               postal_address.save()
+#         if step == '3':
+#             if self.object.postal_address is None:
+#                postal_address = Address.objects.create(line1=forms_data['line1'],
+#                                         line2=forms_data['line2'],
+#                                         line3=forms_data['line3'],
+#                                         locality=forms_data['locality'],
+#                                         state=forms_data['state'],
+#                                         country=forms_data['country'],
+#                                         postcode=forms_data['postcode'],
+#                                         user=self.object
+#                                        )
+#                self.object.postal_address = postal_address
+#             else:
+#                postal_address = Address.objects.get(id=self.object.postal_address.id)
+#                postal_address.line1 = forms_data['line1']
+#                postal_address.line2 = forms_data['line2']
+#                postal_address.line3 = forms_data['line3']
+#                postal_address.locality = forms_data['locality']
+#                postal_address.state = forms_data['state']
+#                postal_address.country = forms_data['country']
+#                postal_address.postcode = forms_data['postcode']
+#                postal_address.save()
 
-        if step == '4':
-            if self.object.mobile_number is None:
-                 self.object.mobile_number = ""
-            if self.object.phone_number is None: 
-                 self.object.phone_number = ""
+#         if step == '4':
+#             if self.object.mobile_number is None:
+#                  self.object.mobile_number = ""
+#             if self.object.phone_number is None: 
+#                  self.object.phone_number = ""
 
-            if len(self.object.mobile_number) == 0 and len(self.object.phone_number) == 0:
-                messages.error(self.request,"Please complete at least one phone number")
-                if app_id is None:
-                #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
-                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
-                else:
-                #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
-                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime') 
+#             if len(self.object.mobile_number) == 0 and len(self.object.phone_number) == 0:
+#                 messages.error(self.request,"Please complete at least one phone number")
+#                 if app_id is None:
+#                 #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+#                     return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
+#                 else:
+#                 #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
+#                     return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime') 
 
-        # Upload New Files
-        if self.request.FILES.get('identification2'):  # Uploaded new file.
-            doc = Document()
-            if Attachment_Extension_Check('single', forms_data['identification2'], ['.jpg','.png','.pdf']) is False:
-                raise ValidationError('Identification contains and unallowed attachment extension.')
-            identification2_file = self.request.FILES['identification2']
-            data = base64.b64encode(identification2_file.read())
+#         # Upload New Files
+#         if self.request.FILES.get('identification2'):  # Uploaded new file.
+#             doc = Document()
+#             if Attachment_Extension_Check('single', forms_data['identification2'], ['.jpg','.png','.pdf']) is False:
+#                 raise ValidationError('Identification contains and unallowed attachment extension.')
+#             identification2_file = self.request.FILES['identification2']
+#             data = base64.b64encode(identification2_file.read())
 
-            filename=forms_data['identification2'].name
-            api_key = settings.LEDGER_API_KEY
-            url = settings.LEDGER_API_URL+'/ledgergw/remote/documents/update/'+api_key+'/'
+#             filename=forms_data['identification2'].name
+#             api_key = settings.LEDGER_API_KEY
+#             url = settings.LEDGER_API_URL+'/ledgergw/remote/documents/update/'+api_key+'/'
             
-            extension =''
-            if filename[-4:][:-3] == '.':
-                extension = filename[-3:]
-            if filename[-5:][:-4] == '.':
-                extension = filename[-4:]
+#             extension =''
+#             if filename[-4:][:-3] == '.':
+#                 extension = filename[-3:]
+#             if filename[-5:][:-4] == '.':
+#                 extension = filename[-4:]
             
-            base64_url = "data:"+mimetypes.types_map['.'+str(extension)]+";base64,"+data.decode()
-            myobj = {'emailuser_id' :self.object.pk,'filebase64': base64_url, 'extension': extension, 'file_group_id': 1}
+#             base64_url = "data:"+mimetypes.types_map['.'+str(extension)]+";base64,"+data.decode()
+#             myobj = {'emailuser_id' :self.object.pk,'filebase64': base64_url, 'extension': extension, 'file_group_id': 1}
 
 
-            try:
-                resp = requests.post(url, data = myobj)
-                # temporary until all EmailUser Updates go via api.
-                eu_obj = EmailUser.objects.get(id=self.object.pk)
-                self.object.identification2=eu_obj.identification2
-            except:
-                messages.error(self.request, 'Error Saving Identification File')
-                if app_id is None:
-                #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
-                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
-                else:
-                #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
-                    return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
+#             try:
+#                 resp = requests.post(url, data = myobj)
+#                 # temporary until all EmailUser Updates go via api.
+#                 eu_obj = EmailUser.objects.get(id=self.object.pk)
+#                 self.object.identification2=eu_obj.identification2
+#             except:
+#                 messages.error(self.request, 'Error Saving Identification File')
+#                 if app_id is None:
+#                 #    return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, step)))
+#                     return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
+#                 else:
+#                 #    return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, step, app_id)))
+#                     return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
 
-            # temporary until all EmailUser Updates go via api.
-            eu_obj = EmailUser.objects.get(id=self.object.pk)
-            self.object.identification2=eu_obj.identification2
+#             # temporary until all EmailUser Updates go via api.
+#             eu_obj = EmailUser.objects.get(id=self.object.pk)
+#             self.object.identification2=eu_obj.identification2
 
-            #print (image_string)
-            #doc.file = forms_data['identification2']
-            #doc.name = forms_data['identification2'].name
-            #doc.save()
-            #self.object.identification2 = doc
+#             #print (image_string)
+#             #doc.file = forms_data['identification2']
+#             #doc.name = forms_data['identification2'].name
+#             #doc.save()
+#             #self.object.identification2 = doc
             
-        self.object.save()
-        nextstep = 1
+#         self.object.save()
+#         nextstep = 1
 
-#        action = self.kwargs['action']
-        if self.request.POST.get('prev-step'):
-            if step == '1':
-               nextstep = 1
-            elif step == '2':
-               nextstep = 1
-            elif step == '3':
-               nextstep = 2
-            elif step == '4':
-               nextstep = 3
-            elif step == '5':
-               nextstep = 4
-        else:
-            if step == '1':
-               nextstep = 2
-            elif step == '2':
-               nextstep = 3
-            elif step == '3':
-               nextstep = 4
-            elif step == '4':
-               nextstep = 5
-            else:
-               nextstep = 6
+# #        action = self.kwargs['action']
+#         if self.request.POST.get('prev-step'):
+#             if step == '1':
+#                nextstep = 1
+#             elif step == '2':
+#                nextstep = 1
+#             elif step == '3':
+#                nextstep = 2
+#             elif step == '4':
+#                nextstep = 3
+#             elif step == '5':
+#                nextstep = 4
+#         else:
+#             if step == '1':
+#                nextstep = 2
+#             elif step == '2':
+#                nextstep = 3
+#             elif step == '3':
+#                nextstep = 4
+#             elif step == '4':
+#                nextstep = 5
+#             else:
+#                nextstep = 6
 
      
  
-        if nextstep == 6:
-            #print forms_data['manage_permits']
-           if forms_data['manage_permits'] == 'True':
-               messages.success(self.request, 'Registration is now complete. Please now complete the company form.')
-               #return HttpResponseRedirect(reverse('company_create_link', args=(self.request.user.id,'1')))
-               if app_id is None:
-                   return HttpResponseRedirect(reverse('company_create_link', args=(self.object.pk,'1')))
-               else:
-                   return HttpResponseRedirect(reverse('company_create_link_application', args=(self.object.pk,'1',app_id))) 
-           else:
-               messages.success(self.request, 'Registration is now complete.')
-               if app_id is None:
-                   return HttpResponseRedirect(reverse('home'))
-               else:
-                   if self.request.user.is_staff is True:
-                       app = Application.objects.get(id=app_id)
-                       app.applicant = self.object
-                       app.save() 
-                   return HttpResponseRedirect(reverse('application_update', args=(app_id,)))
-        else:
-           if app_id is None:
-            #   return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, nextstep)))
-                return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
-           else:
-            #   return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, nextstep, app_id)))
-                return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
+#         if nextstep == 6:
+#             #print forms_data['manage_permits']
+#            if forms_data['manage_permits'] == 'True':
+#                messages.success(self.request, 'Registration is now complete. Please now complete the company form.')
+#                #return HttpResponseRedirect(reverse('company_create_link', args=(self.request.user.id,'1')))
+#                if app_id is None:
+#                    return HttpResponseRedirect(reverse('company_create_link', args=(self.object.pk,'1')))
+#                else:
+#                    return HttpResponseRedirect(reverse('company_create_link_application', args=(self.object.pk,'1',app_id))) 
+#            else:
+#                messages.success(self.request, 'Registration is now complete.')
+#                if app_id is None:
+#                    return HttpResponseRedirect(reverse('home'))
+#                else:
+#                    if self.request.user.is_staff is True:
+#                        app = Application.objects.get(id=app_id)
+#                        app.applicant = self.object
+#                        app.save() 
+#                    return HttpResponseRedirect(reverse('application_update', args=(app_id,)))
+#         else:
+#            if app_id is None:
+#             #   return HttpResponseRedirect(reverse('first_login_info_steps',args=(self.object.pk, nextstep)))
+#                 return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
+#            else:
+#             #   return HttpResponseRedirect(reverse('first_login_info_steps_application',args=(self.object.pk, nextstep, app_id)))
+#                 return HttpResponseRedirect('/ledger-ui/system-accounts-firsttime')
 
 class CreateLinkCompany(LoginRequiredMixin,CreateView):
 
@@ -9295,134 +9295,141 @@ class UserAccountUpdate(LoginRequiredMixin, UpdateView):
             action='Updated Personal Details')
         action.save()
         return HttpResponseRedirect(reverse('person_details_actions', args=(self.obj.pk,'personal')))
-#TODO check if we are keeping this, if yes change line 9172 and ahead
-class UserAccountIdentificationUpdate(LoginRequiredMixin, UpdateView):
-    form_class = apps_forms.UserFormIdentificationUpdate
-    model = SystemUser
+    
+#TODO remove this
+# class UserAccountIdentificationUpdate(LoginRequiredMixin, UpdateView):
+#     form_class = apps_forms.UserFormIdentificationUpdate
+#     model = EmailUser
 
-    #form_class = apps_forms.OrganisationCertificateForm
+#     #form_class = apps_forms.OrganisationCertificateForm
 
-    def get(self, request, *args, **kwargs):
-        # Rule: request user must be a delegate (or superuser).
-        context_processor = template_context(self.request)
-        admin_staff = context_processor['admin_staff']
-        org = self.get_organisation()
+#     def get(self, request, *args, **kwargs):
+#         # Rule: request user must be a delegate (or superuser).
+#         context_processor = template_context(self.request)
+#         admin_staff = context_processor['admin_staff']
+#         org = self.get_organisation()
 
-        if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
-           pass
-        else:
-           if admin_staff is True:
-               return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
-           else:
-               messages.error(self.request, 'You are not authorised to view this organisation.')
-               return HttpResponseRedirect(reverse('home'))
+#         if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
+#            pass
+#         else:
+#            if admin_staff is True:
+#                return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
+#            else:
+#                messages.error(self.request, 'You are not authorised to view this organisation.')
+#                return HttpResponseRedirect(reverse('home'))
 
-        return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
+#         return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        context_processor = template_context(self.request)
-        admin_staff = context_processor['admin_staff']
-        if admin_staff == True:
-           return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
-        elif self.request.user.id == int(self.kwargs['pk']):
-           return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs) 
-        else:
-           messages.error(self.request, 'Forbidden Access.')
-        return HttpResponseRedirect("/")
+#     def get(self, request, *args, **kwargs):
+#         context_processor = template_context(self.request)
+#         admin_staff = context_processor['admin_staff']
+#         if admin_staff == True:
+#            return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
+#         elif self.request.user.id == int(self.kwargs['pk']):
+#            return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs) 
+#         else:
+#            messages.error(self.request, 'Forbidden Access.')
+#         return HttpResponseRedirect("/")
  
-    def get_object(self, queryset=None):
-        if 'pk' in self.kwargs:
-            pk = self.kwargs['pk']
-            processor = SystemGroup.objects.get(name='Statdev Processor')
-            usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+#     def get_object(self, queryset=None):
+#         if 'pk' in self.kwargs:
+#             pk = self.kwargs['pk']
+#             processor = SystemGroup.objects.get(name='Statdev Processor')
+#             usergroups = self.request.user.get_system_group_permission(self.request.user.id)
             
-            if processor.id in usergroups:
-               user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-               return user
-            elif self.request.user.id == int(pk):
-               user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
-               return user
-            else:
-                print ("Forbidden Access")
-                messages.error(
-                  self.request, "Forbidden Access")
-                return HttpResponseRedirect("/")
-        else:
-            return self.request.user
+#             if processor.id in usergroups:
+#                user = EmailUser.objects.get(id=self.kwargs['pk'])
+#                return user
+#             elif self.request.user.id == int(pk):
+#                user = EmailUser.objects.get(id=self.kwargs['pk'])
+#                return user
+#             else:
+#                 print ("Forbidden Access")
+#                 messages.error(
+#                   self.request, "Forbidden Access")
+#                 return HttpResponseRedirect("/")
+#         else:
+#             return self.request.user
 
-    def post(self, request, *args, **kwargs):
-        if request.POST.get('cancel'):
-            return HttpResponseRedirect(reverse('user_account'))
-        return super(UserAccountIdentificationUpdate, self).post(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         if request.POST.get('cancel'):
+#             return HttpResponseRedirect(reverse('user_account'))
+#         return super(UserAccountIdentificationUpdate, self).post(request, *args, **kwargs)
 
-    def get_initial(self):
-        initial = super(UserAccountIdentificationUpdate, self).get_initial()
-        emailuser = self.get_object()
+#     def get_initial(self):
+#         initial = super(UserAccountIdentificationUpdate, self).get_initial()
+#         emailuser = self.get_object()
+#         print("this is email user")
+#         print(emailuser)
+#         # print all the feilds of email user
+#         print(emailuser.__dict__)
+#         print(emailuser.identification2_id.upload)
+#         doc = PrivateDocument.objects.get(id = emailuser.identification2_id)
+#         print(doc)
+#         if emailuser.identification2:
+#            url_data = setUrl()
+#            url_data.url = "/private-ledger/view/"+str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
+#            url_data.value = str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
+#            initial['identification2'] = url_data 
+#         return initial
 
-        if emailuser.identification2:
-           url_data = setUrl()
-           url_data.url = "/private-ledger/view/"+str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
-           url_data.value = str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
-           initial['identification2'] = url_data 
-        return initial
+#     def form_valid(self, form):
+#         """Override to set first_name and last_name on the EmailUser object.
+#         """
+#         self.obj = form.save(commit=False)
+#         forms_data = form.cleaned_data
+#         id_success = "None"
+#         # If identification has been uploaded, then set the id_verified field to None.
+#         # if 'identification' in data and data['identification']:
+#         #    self.obj.id_verified = None
+#         if self.request.POST.get('identification2-clear'):
+#             self.obj.identification2 = None
+#             id_success = "Removed"
 
-    def form_valid(self, form):
-        """Override to set first_name and last_name on the EmailUser object.
-        """
-        self.obj = form.save(commit=False)
-        forms_data = form.cleaned_data
-        id_success = "None"
-        # If identification has been uploaded, then set the id_verified field to None.
-        # if 'identification' in data and data['identification']:
-        #    self.obj.id_verified = None
-        if self.request.POST.get('identification2-clear'):
-            self.obj.identification2 = None
-            id_success = "Removed"
+#         if self.request.FILES.get('identification2'):
+#             if Attachment_Extension_Check('single', forms_data['identification2'], None) is False:
+#                 raise ValidationError('Identification contains and unallowed attachment extension.')
+#             identification2_file = self.request.FILES['identification2']
+#             data = base64.b64encode(identification2_file.read())
 
-        if self.request.FILES.get('identification2'):
-            if Attachment_Extension_Check('single', forms_data['identification2'], None) is False:
-                raise ValidationError('Identification contains and unallowed attachment extension.')
-            identification2_file = self.request.FILES['identification2']
-            data = base64.b64encode(identification2_file.read())
+#             filename=forms_data['identification2'].name
+#             api_key = settings.LEDGER_API_KEY
+#             url = settings.LEDGER_API_URL+'/ledgergw/remote/documents/update/'+api_key+'/'
 
-            filename=forms_data['identification2'].name
-            api_key = settings.LEDGER_API_KEY
-            url = settings.LEDGER_API_URL+'/ledgergw/remote/documents/update/'+api_key+'/'
+#             extension =''
+#             if filename[-4:][:-3] == '.':
+#                 extension = filename[-3:]
+#             if filename[-5:][:-4] == '.':
+#                 extension = filename[-4:]
 
-            extension =''
-            if filename[-4:][:-3] == '.':
-                extension = filename[-3:]
-            if filename[-5:][:-4] == '.':
-                extension = filename[-4:]
+#             base64_url = "data:"+mimetypes.types_map['.'+str(extension)]+";base64,"+data.decode()
+#             myobj = {'emailuser_id' :self.object.pk,'filebase64': base64_url, 'extension': extension, 'file_group_id': 1}
 
-            base64_url = "data:"+mimetypes.types_map['.'+str(extension)]+";base64,"+data.decode()
-            myobj = {'emailuser_id' :self.object.pk,'filebase64': base64_url, 'extension': extension, 'file_group_id': 1}
+#             try:
+#                 resp = requests.post(url, data = myobj)
+#                 id_success = "Uploaded new "
+#             except:
+#                 messages.error(self.request, 'Error Saving Indentifcation')
+#                 id_success = "Error uploading"
 
-            try:
-                resp = requests.post(url, data = myobj)
-                id_success = "Uploaded new "
-            except:
-                messages.error(self.request, 'Error Saving Indentifcation')
-                id_success = "Error uploading"
-
-            # temporary until all EmailUser Updates go via api.
-            eu_obj = EmailUser.objects.get(id=self.object.pk)
-            self.object.identification2=eu_obj.identification2
+#             # temporary until all EmailUser Updates go via api.
+#             # eu_obj = EmailUser.objects.get(id=self.object.pk)
+#             # self.object.identification2=eu_obj.identification2
 
 
-            #new_doc = Document()
-            #new_doc.file = self.request.FILES['identification']
-            #new_doc.save()
-            #self.obj.identification = new_doc
+#             #new_doc = Document()
+#             #new_doc.file = self.request.FILES['identification']
+#             #new_doc.save()
+#             #self.obj.identification = new_doc
 
-        self.obj.save()
+#         self.obj.save()
 
-        action = Action(
-            content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.change, user=self.request.user.id,
-            action= id_success+' identification')
-        action.save()
+#         action = Action(
+#             content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.change, user=self.request.user.id,
+#             action= id_success+' identification')
+#         action.save()
 
-        return HttpResponseRedirect(reverse('person_details_actions', args=(self.obj.pk,'identification')))
+#         return HttpResponseRedirect(reverse('person_details_actions', args=(self.obj.pk,'identification')))
 
 
 class OrganisationCertificateUpdate(LoginRequiredMixin, UpdateView):
