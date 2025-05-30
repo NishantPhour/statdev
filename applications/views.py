@@ -2906,7 +2906,7 @@ class AccountComms(LoginRequiredMixin,DetailView):
         context = super(AccountComms, self).get_context_data(**kwargs)
         u = self.get_object()
         # TODO: define a GenericRelation field on the Application model.
-        context['communications'] = CommunicationAccount.objects.filter(user=u.ledger_id).order_by('-created')
+        context['communications'] = CommunicationAccount.objects.filter(user=u.ledger_id.id).order_by('-created')
         return context
 
 
@@ -2952,9 +2952,9 @@ class AccountCommsCreate(LoginRequiredMixin,CreateView):
         """
         self.object = form.save(commit=False)
         user_id = self.kwargs['pk']
-
-        user = SystemUser.objects.get(ledger_id=user_id)
-        self.object.user = user
+        print("user_id", user_id)
+        user = SystemUser.objects.get(id=user_id)
+        self.object.user = user.ledger_id.id
         self.object.save()
 
         if self.request.FILES.get('records'):
@@ -10080,7 +10080,19 @@ class PersonOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                        row['applicant'] = applicant            
+                
+                      if app.assignee:
+                        assignee = SystemUser.objects.get(ledger_id=app.assignee)
+                        row['assignee'] = assignee
+
+                      if app.submitted_by:
+                        submitted_by = SystemUser.objects.get(ledger_id=app.submitted_by)
+                        row['submitted_by'] = submitted_by 
                       context['app_list'].append(row)
+      
 
              elif action == "approvals":
                  context['nav_other_approvals'] = "active"
@@ -10155,7 +10167,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                          else:
                              context['app_applicants'][app.applicant] = applicant.legal_first_name + ' ' + applicant.legal_last_name
                              context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
-
+                         row['applicant'] = applicant            
                      context['app_list'].append(row)
 
              elif action == "emergency":
@@ -10232,6 +10244,9 @@ class PersonOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                        row['applicant'] = applicant 
                       context['app_list'].append(row)
 
              elif action == "clearance":
@@ -10278,7 +10293,14 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  
 
                  items = Compliance.objects.filter(search_filter).order_by('due_date')[:100]
-                 context['compliance'] = items
+                 context['compliance'] = []
+                 for compliance in items:
+                      row = {}
+                      row['compliance'] = compliance
+                      if app.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                        row['applicant'] = applicant
+                      context['compliance'].append(row)
 
 
                  #     query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(applicant__email__icontains=query_str) | Q(assignee__email__icontains=query_str)

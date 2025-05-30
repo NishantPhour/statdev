@@ -63,26 +63,26 @@
 
                 {% for obj in compliance|dictsort:"due_date" %}
                 <tr>
-                    <td><a HREF='{% url 'compliance_approval_view_external' obj.pk %}'>CO-{{ obj.pk }}</A></td>
-                    <td>{{ obj.get_app_type_display }}</td>
-		    <td>{% if obj.approval_id is None %}None{% else %}<a href='{% url 'approval_detail' obj.approval_id %}'>AP-{{ obj.approval_id }}</a>{% endif %}</td>
-                    <td>{{ obj.title }}</td>
+                    <td><a HREF='{% url 'compliance_approval_view_external' obj.compliance.pk %}'>CO-{{ obj.compliance.pk }}</A></td>
+                    <td>{{ obj.compliance.get_app_type_display }}</td>
+		    <td>{% if obj.compliance.approval_id is None %}None{% else %}<a href='{% url 'approval_detail' obj.compliance.approval_id %}'>AP-{{ obj.compliance.approval_id }}</a>{% endif %}</td>
+                    <td>{{ obj.compliance.title }}</td>
                     <td>{{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}</td>
                     <td>
-                            {% if obj.status == 2 or obj.status == 3 or obj.status == 4 or obj.status == 8 or obj.status == 9 %}
-                                   {{ obj.get_status_display }}
+                            {% if obj.compliance.status == 2 or obj.compliance.status == 3 or obj.compliance.status == 4 or obj.compliance.status == 8 or obj.compliance.status == 9 %}
+                                   {{ obj.compliance.get_status_display }}
 		            {% elif obj.status == 7 %}
                                    Waiting Feedback
                             {% else %}
                                 Submitted
                             {% endif %}
 		    </td>
-                    <td>{{ obj.due_date|date:"d-M-Y" }}</td>
+                    <td>{{ obj.compliance.due_date|date:"d-M-Y" }}</td>
 		    <td>
-                           {% if obj.status != 2 and obj.status != 8 and obj.status != 7 %}
-			           <a HREF='{% url 'compliance_approval_view_external' obj.pk %}'>View</A>
+                           {% if obj.compliance.status != 2 and obj.compliance.status != 8 and obj.compliance.status != 7 %}
+			           <a HREF='{% url 'compliance_approval_view_external' obj.compliance.pk %}'>View</A>
 			   {% else %}
-    			           <a HREF='{% url 'compliance_approval_update_external' obj.pk %}'>Submit</A>
+    			           <a HREF='{% url 'compliance_approval_update_external' obj.compliance.pk %}'>Submit</A>
 			   {% endif %}
 		    </td>
                 </tr>
