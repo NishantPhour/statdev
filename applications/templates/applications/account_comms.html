@@ -7,8 +7,8 @@
 
 <div class="container-fluid">
     <div class="row">
-        <h1>Communication for {{ object.application.get_app_type_display }} - {{ object.pk }}</h1>
-        <p><a href="{% url "person_details_actions" object.pk "personal" %}">Return to account details</a></p>
+        <h1>Communication for {{ object.application }} - {{ object.pk }}</h1>
+        <p><a href="{% url "person_details_actions" object.ledger_id.id "personal" %}">Return to account details</a></p>
         <h2>communication log</h2>
         <table class="table table-bordered table-striped">
             <thead>
@@ -44,7 +44,7 @@
                 {% endfor %}
          {% endif %}
         </table>
-        <p><a href="{% url "person_details_actions" object.pk "personal" %}">Return to account details</a></p>
+        <p><a href="{% url "person_details_actions" object.ledger_id.id "personal" %}">Return to account details</a></p>
     </div>
 </div>
 {% endblock page_content_inner %}
