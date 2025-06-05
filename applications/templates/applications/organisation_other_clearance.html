@@ -28,13 +28,13 @@
     <tbody>
         {% for obj in compliance|dictsort:"due_date" %}
         <tr>
-            <td>{{ obj.pk }}</td>
-            <td>{{ obj.get_app_type_display }}</td>
-            <td>{% if obj.approval_id is None %}None{% else %}<a HREF='{% url 'compliance_approval_detail' obj.approval_id %}'>{{ obj.approval_id }}{% endif %}</a></td>
-            <td>{{ obj.title }}</td>
+            <td>{{ obj.compliance.pk }}</td>
+            <td>{{ obj.compliance.get_app_type_display }}</td>
+            <td>{% if obj.compliance.approval_id is None %}None{% else %}<a HREF='{% url 'compliance_approval_detail' obj.compliance.approval_id %}'>{{ obj.compliance.approval_id }}{% endif %}</a></td>
+            <td>{{ obj.compliance.title }}</td>
             <td>{{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}</td>
-            <td>{{ obj.get_status_display }}</td>
-            <td>{{ obj.due_date|date:"d-M-Y" }}</td>
+            <td>{{ obj.compliance.get_status_display }}</td>
+            <td>{{ obj.compliance.due_date|date:"d-M-Y" }}</td>
             <td>{{ obj.assignee }}</td>
         </tr>
         {% endfor %}
