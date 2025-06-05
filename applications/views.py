@@ -10297,8 +10297,8 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  for compliance in items:
                       row = {}
                       row['compliance'] = compliance
-                      if app.applicant:
-                        applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                      if compliance.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=compliance.applicant)
                         row['applicant'] = applicant
                       context['compliance'].append(row)
 
@@ -10413,9 +10413,6 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
                             'user': user
                         })
 
-                 print('context check')
-                 print(context['linkedpersons'])
-
         return context
 
 
@@ -10523,7 +10520,13 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant is not None:
+                        context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+                      if app.assignee is not None:
+                        context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+
                       context['app_list'].append(row)
+                      
 
              elif action == "approvals":
                  context['nav_other_approvals'] = "active"
@@ -10586,8 +10589,8 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                         else:
                             context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
                             context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
-                    # end of creation
-
+                            context['applicant'] = applicant
+                     # end of creation
                      context['app_list'].append(row)
 
              elif action == "emergency":
@@ -10642,6 +10645,11 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant is not None:
+                        context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+                      if app.assignee is not None:
+                        context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+                      
                       context['app_list'].append(row)
 
              elif action == "clearance":
@@ -10665,7 +10673,17 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                          APP_STATUS_CHOICES.append(i)
 
                  context['app_appstatus'] = list(APP_STATUS_CHOICES)
-                 context['compliance'] = items
+                 context['compliance'] = []
+                 for compliance in items:
+                      row = {}
+                      row['compliance'] = compliance
+                      if compliance.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=compliance.applicant)
+                        row['applicant'] = applicant
+                      if compliance.assignee:
+                        assignee = SystemUser.objects.get(ledger_id=compliance.assignee)
+                        row['assignee'] = assignee
+                      context['compliance'].append(row)
 
 
         return context
