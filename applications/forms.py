@@ -3035,28 +3035,7 @@ class OrganisationCertificateForm(ModelForm):
                 Submit('cancel', 'Cancel')
             )
         )
-#TODO remove this
-# class UserFormIdentificationUpdate(ModelForm):
-#     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
 
-#     class Meta:
-#         model = EmailUser
-#         fields = ['id']
-        
-
-#     def __init__(self, *args, **kwargs):
-#         super(UserFormIdentificationUpdate, self).__init__(*args, **kwargs)
-#         self.helper = BaseFormHelper(self)
-#         self.helper.form_id = 'id_form_emailuser_account_update'
-#         self.helper.attrs = {'novalidate': ''}
-#         # Define the form layout.
-#         self.helper.layout = Layout(
-#             'identification2',
-#             FormActions(
-#                 Submit('save', 'Save', css_class='btn-lg'),
-#                 Submit('cancel', 'Cancel')
-#             )
-#         )
 
 class AddressForm(ModelForm):
 

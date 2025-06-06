@@ -1150,8 +1150,6 @@ class ApplicationFlowDiagrams(LoginRequiredMixin,TemplateView):
                  if i == "options":
                      pass
                  else:
-                     #print (i)
-                     #print(workflow_steps[i]["title"])
                      
                      workflow_steps[i]['step_id'] = str(i).replace(".","_")
                      #print (workflow_steps[i]['step_id']) 
@@ -2952,7 +2950,6 @@ class AccountCommsCreate(LoginRequiredMixin,CreateView):
         """
         self.object = form.save(commit=False)
         user_id = self.kwargs['pk']
-        print("user_id", user_id)
         user = SystemUser.objects.get(id=user_id)
         self.object.user = user.ledger_id.id
         self.object.save()
@@ -9295,142 +9292,7 @@ class UserAccountUpdate(LoginRequiredMixin, UpdateView):
             action='Updated Personal Details')
         action.save()
         return HttpResponseRedirect(reverse('person_details_actions', args=(self.obj.pk,'personal')))
-    
-#TODO remove this
-# class UserAccountIdentificationUpdate(LoginRequiredMixin, UpdateView):
-#     form_class = apps_forms.UserFormIdentificationUpdate
-#     model = EmailUser
-
-#     #form_class = apps_forms.OrganisationCertificateForm
-
-#     def get(self, request, *args, **kwargs):
-#         # Rule: request user must be a delegate (or superuser).
-#         context_processor = template_context(self.request)
-#         admin_staff = context_processor['admin_staff']
-#         org = self.get_organisation()
-
-#         if Delegate.objects.filter(email_user=request.user.id, organisation=org).exists():
-#            pass
-#         else:
-#            if admin_staff is True:
-#                return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
-#            else:
-#                messages.error(self.request, 'You are not authorised to view this organisation.')
-#                return HttpResponseRedirect(reverse('home'))
-
-#         return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
-
-#     def get(self, request, *args, **kwargs):
-#         context_processor = template_context(self.request)
-#         admin_staff = context_processor['admin_staff']
-#         if admin_staff == True:
-#            return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs)
-#         elif self.request.user.id == int(self.kwargs['pk']):
-#            return super(UserAccountIdentificationUpdate, self).get(request, *args, **kwargs) 
-#         else:
-#            messages.error(self.request, 'Forbidden Access.')
-#         return HttpResponseRedirect("/")
- 
-#     def get_object(self, queryset=None):
-#         if 'pk' in self.kwargs:
-#             pk = self.kwargs['pk']
-#             processor = SystemGroup.objects.get(name='Statdev Processor')
-#             usergroups = self.request.user.get_system_group_permission(self.request.user.id)
-            
-#             if processor.id in usergroups:
-#                user = EmailUser.objects.get(id=self.kwargs['pk'])
-#                return user
-#             elif self.request.user.id == int(pk):
-#                user = EmailUser.objects.get(id=self.kwargs['pk'])
-#                return user
-#             else:
-#                 print ("Forbidden Access")
-#                 messages.error(
-#                   self.request, "Forbidden Access")
-#                 return HttpResponseRedirect("/")
-#         else:
-#             return self.request.user
-
-#     def post(self, request, *args, **kwargs):
-#         if request.POST.get('cancel'):
-#             return HttpResponseRedirect(reverse('user_account'))
-#         return super(UserAccountIdentificationUpdate, self).post(request, *args, **kwargs)
-
-#     def get_initial(self):
-#         initial = super(UserAccountIdentificationUpdate, self).get_initial()
-#         emailuser = self.get_object()
-#         print("this is email user")
-#         print(emailuser)
-#         # print all the feilds of email user
-#         print(emailuser.__dict__)
-#         print(emailuser.identification2_id.upload)
-#         doc = PrivateDocument.objects.get(id = emailuser.identification2_id)
-#         print(doc)
-#         if emailuser.identification2:
-#            url_data = setUrl()
-#            url_data.url = "/private-ledger/view/"+str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
-#            url_data.value = str(emailuser.identification2.id)+'-'+emailuser.identification2.name+'.'+emailuser.identification2.extension
-#            initial['identification2'] = url_data 
-#         return initial
-
-#     def form_valid(self, form):
-#         """Override to set first_name and last_name on the EmailUser object.
-#         """
-#         self.obj = form.save(commit=False)
-#         forms_data = form.cleaned_data
-#         id_success = "None"
-#         # If identification has been uploaded, then set the id_verified field to None.
-#         # if 'identification' in data and data['identification']:
-#         #    self.obj.id_verified = None
-#         if self.request.POST.get('identification2-clear'):
-#             self.obj.identification2 = None
-#             id_success = "Removed"
-
-#         if self.request.FILES.get('identification2'):
-#             if Attachment_Extension_Check('single', forms_data['identification2'], None) is False:
-#                 raise ValidationError('Identification contains and unallowed attachment extension.')
-#             identification2_file = self.request.FILES['identification2']
-#             data = base64.b64encode(identification2_file.read())
-
-#             filename=forms_data['identification2'].name
-#             api_key = settings.LEDGER_API_KEY
-#             url = settings.LEDGER_API_URL+'/ledgergw/remote/documents/update/'+api_key+'/'
-
-#             extension =''
-#             if filename[-4:][:-3] == '.':
-#                 extension = filename[-3:]
-#             if filename[-5:][:-4] == '.':
-#                 extension = filename[-4:]
-
-#             base64_url = "data:"+mimetypes.types_map['.'+str(extension)]+";base64,"+data.decode()
-#             myobj = {'emailuser_id' :self.object.pk,'filebase64': base64_url, 'extension': extension, 'file_group_id': 1}
-
-#             try:
-#                 resp = requests.post(url, data = myobj)
-#                 id_success = "Uploaded new "
-#             except:
-#                 messages.error(self.request, 'Error Saving Indentifcation')
-#                 id_success = "Error uploading"
-
-#             # temporary until all EmailUser Updates go via api.
-#             # eu_obj = EmailUser.objects.get(id=self.object.pk)
-#             # self.object.identification2=eu_obj.identification2
-
-
-#             #new_doc = Document()
-#             #new_doc.file = self.request.FILES['identification']
-#             #new_doc.save()
-#             #self.obj.identification = new_doc
-
-#         self.obj.save()
-
-#         action = Action(
-#             content_object=self.object, category=Action.ACTION_CATEGORY_CHOICES.change, user=self.request.user.id,
-#             action= id_success+' identification')
-#         action.save()
-
-#         return HttpResponseRedirect(reverse('person_details_actions', args=(self.obj.pk,'identification')))
-
+from django.db.models.fields.files import FieldFile
 
 class OrganisationCertificateUpdate(LoginRequiredMixin, UpdateView):
     model = OrganisationExtras
@@ -9501,10 +9363,23 @@ class OrganisationCertificateUpdate(LoginRequiredMixin, UpdateView):
         if self.request.FILES.get('identification'):
             if Attachment_Extension_Check('single', forms_data['identification'], ['.pdf','.png','.jpg']) is False:
                 raise ValidationError('Identification contains and unallowed attachment extension.')
-            new_doc = Record()
-            new_doc.upload = self.request.FILES['identification']
-            new_doc.save()
-            self.obj.identification = new_doc
+        new_doc = Record()
+        if(self.request.FILES.get('identification')):  
+            extension = self.request.FILES.get('identification').name.split('.')
+            att_ext = str("."+extension[1]).lower()
+            new_doc.name = self.request.FILES['identification'].name
+            new_doc.file_group = 2002
+            new_doc.file_group_ref_id = self.obj.organisation.pk
+            new_doc.extension = att_ext   
+        if forms_data['identification']:
+            if isinstance(forms_data['identification'], FieldFile):
+                return HttpResponseRedirect(reverse('organisation_details_actions', args=(self.obj.organisation.pk,'certofincorp')))
+            else:
+                new_doc.upload = self.request.FILES['identification']
+        else:
+            new_doc.upload = None
+        new_doc.save()
+        self.obj.identification = new_doc
 
         self.obj.save()
         return HttpResponseRedirect(reverse('organisation_details_actions', args=(self.obj.organisation.pk,'certofincorp')))
@@ -9861,8 +9736,6 @@ class PersonDetails(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PersonDetails, self).get_context_data(**kwargs)
-        print("this is the context")
-        print(context)
         context['postal_address'] = SystemUserAddress.objects.get(system_user=context['systemuser'], address_type='postal_address')
         org = self.get_object()
 #        context['user_is_delegate'] = Delegate.objects.filter(email_user=self.request.user.id, organisation=org).exists()
@@ -9978,12 +9851,9 @@ class PersonOther(LoginRequiredMixin, DetailView):
         context['nav_other'] = 'active'
 
         if "action" in self.kwargs:
-             print("inside action")
              action=self.kwargs['action']
-             print(action)
              # Navbar
              if action == "applications":
-                 print("inside applications")
                  user = SystemUser.objects.get(ledger_id=self.kwargs['pk'])
                  delegate = Delegate.objects.filter(email_user=user.ledger_id.id).values('organisation__id')
 
@@ -10297,8 +10167,8 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  for compliance in items:
                       row = {}
                       row['compliance'] = compliance
-                      if app.applicant:
-                        applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                      if compliance.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=compliance.applicant)
                         row['applicant'] = applicant
                       context['compliance'].append(row)
 
@@ -10413,9 +10283,6 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
                             'user': user
                         })
 
-                 print('context check')
-                 print(context['linkedpersons'])
-
         return context
 
 
@@ -10523,7 +10390,13 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant is not None:
+                        context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+                      if app.assignee is not None:
+                        context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+
                       context['app_list'].append(row)
+                      
 
              elif action == "approvals":
                  context['nav_other_approvals'] = "active"
@@ -10586,8 +10459,8 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                         else:
                             context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
                             context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
-                    # end of creation
-
+                            context['applicant'] = applicant
+                     # end of creation
                      context['app_list'].append(row)
 
              elif action == "emergency":
@@ -10642,6 +10515,11 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                       if app.group is not None:
                           if app.group.id in usergroups:
                               row['may_assign_to_person'] = 'True'
+                      if app.applicant is not None:
+                        context['applicant'] = SystemUser.objects.get(ledger_id=app.applicant)
+                      if app.assignee is not None:
+                        context['assignee'] = SystemUser.objects.get(ledger_id=app.assignee)
+                      
                       context['app_list'].append(row)
 
              elif action == "clearance":
@@ -10665,7 +10543,17 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                          APP_STATUS_CHOICES.append(i)
 
                  context['app_appstatus'] = list(APP_STATUS_CHOICES)
-                 context['compliance'] = items
+                 context['compliance'] = []
+                 for compliance in items:
+                      row = {}
+                      row['compliance'] = compliance
+                      if compliance.applicant:
+                        applicant = SystemUser.objects.get(ledger_id=compliance.applicant)
+                        row['applicant'] = applicant
+                      if compliance.assignee:
+                        assignee = SystemUser.objects.get(ledger_id=compliance.assignee)
+                        row['assignee'] = assignee
+                      context['compliance'].append(row)
 
 
         return context
@@ -11426,7 +11314,6 @@ def getAppFile(request,file_id,extension):
   file_record = Record.objects.get(id=file_id)
   app_id = file_record.file_group_ref_id 
   app_group = file_record.file_group
-
   if (file_record.file_group > 0 and file_record.file_group < 12) or (file_record.file_group == 2003):
       app = Application.objects.get(id=app_id)
       if app.id == file_record.file_group_ref_id:
@@ -11465,7 +11352,12 @@ def getAppFile(request,file_id,extension):
                    #       allow_access = True
 
             
- 
+  if file_record.file_group == 2002:
+      org = OrganisationContact.objects.get(organisation__id=file_record.file_group_ref_id)
+      if org.email:
+           user_email = SystemUser.objects.get(ledger_id=request.user.id)
+           if org.email == user_email.email or request.user.is_staff is True:
+                  allow_access = True
 
   if file_record.file_group == 2005:
       app = Approval.objects.get(id=app_id)

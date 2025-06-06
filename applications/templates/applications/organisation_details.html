@@ -96,8 +96,10 @@
                                                 <label>Current Certificate</label>
                                         </div>
                                         <div class="col-sm-12 col-md-4 col-lg-6">
-                                                 <A HREF='/media/{{ org_extras.identification.upload }}'>{{ org_extras.identification.upload }}</A>
-                                        </div>
+                                            <a href="{% url 'view_private_file' file_id=org_extras.identification.id extension=org_extras.identification.extension|slice:'1:' %}">
+                                                {{ org_extras.identification.upload }}
+                                            </a>
+                                        </div>                                        
                                         <div class="col-sm-12 col-md-5 col-lg-4">
                                             <A HREF='{% url "organisation_update_identification_admin" org_extras.id %}'><img src='{% static "images/bin_blue.png" %}'>Remove & Provide New ID</A>
                                         </div>
