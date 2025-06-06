@@ -949,9 +949,9 @@ class ApplicationApplicantChange(LoginRequiredMixin,DetailView):
             query_str_split = query_str.split()
             search_filter = Q()
             search_filter = Q(first_name__icontains=query_str) | Q(last_name__icontains=query_str) | Q(email__icontains=query_str)
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)[:100]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True).exclude(ledger_id__isnull=True)[:100]
         else:
-            listusers =  SystemUser.objects.all().exclude(is_staff=True)[:100]
+            listusers =  SystemUser.objects.all().exclude(is_staff=True).exclude(ledger_id__isnull=True)[:100]
 
         context['acc_list'] = []
         for lu in listusers:
@@ -1476,7 +1476,7 @@ class ComplianceList(TemplateView):
             if 'q' in self.request.GET and self.request.GET['q']:
                query_str = self.request.GET['q']
                query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str)
-               user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+               user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                if user_ids:
                     query_obj |= Q(applicant__in=user_ids)
                     query_obj |= Q(assignee__in=user_ids)
@@ -1606,7 +1606,7 @@ class OrganisationAccessRequest(ListView):
         context['orgs_pending_status'] = OrganisationPending.STATUS_CHOICES
         pending_org = OrganisationPending.objects.all().distinct('email_user')
         email_users = pending_org.values_list('email_user', flat=True)
-        applicants = SystemUser.objects.filter(ledger_id__in=email_users)
+        applicants = SystemUser.objects.filter(ledger_id__in=email_users).exclude(ledger_id__isnull=True)
         context['orgs_pending_applicants'] = applicants
         query = Q()
         if 'q' in self.request.GET and self.request.GET['q']:
@@ -1813,9 +1813,9 @@ class SearchPersonList(ListView):
             # Add Organsations Results , Will also filter out duplicates
             search_filter |= Q(pk__in=orgs)
             # Get all applicants
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)[:200]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True).exclude(ledger_id__isnull=True)[:200]
         else:
-            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id')[:200]       
+            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id').exclude(ledger_id__isnull=True)[:200]       
 
         context['acc_list'] = []
         for lu in listusers:
@@ -2325,6 +2325,7 @@ class CreateAccount(LoginRequiredMixin, CreateView):
         """
         self.object = form.save(commit=False)
         forms_data = form.cleaned_data
+        account_email = forms_data['email']
         self.object.save()
         # If this is not an Emergency Works set the applicant as current user
 #        success_url = reverse('first_login_info', args=(self.object.pk,1))
@@ -9876,7 +9877,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  if 'searchaction' in self.request.GET and self.request.GET['searchaction']:
                       query_str = self.request.GET['q']
                       query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(organisation__name__icontains=query_str)
-                      user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                      user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                       if user_ids:
                           query_obj |= Q(applicant__in=user_ids)
                           query_obj |= Q(assignee__in=user_ids)
@@ -9985,7 +9986,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  if 'action' in self.request.GET and self.request.GET['action']:
                     query_str = self.request.GET['q']
                     search_filter = Q(pk__contains=query_str) | Q(title__icontains=query_str)
-                    user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                    user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                     if user_ids:
                         search_filter |= Q(applicant__in=user_ids)
                     if self.request.GET['apptype'] != '':
@@ -10068,7 +10069,7 @@ class PersonOther(LoginRequiredMixin, DetailView):
                  if 'searchaction' in self.request.GET and self.request.GET['searchaction']:
                       query_str = self.request.GET['q']
                       query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(organisation__name__icontains=query_str)
-                      user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                      user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                       if user_ids:
                             search_filter |= Q(applicant__in=user_ids)
                             search_filter |= Q(assignee__in=user_ids)
@@ -10350,7 +10351,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                  if 'searchaction' in self.request.GET and self.request.GET['searchaction']:
                       query_str = self.request.GET['q']
                       query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(organisation__name__icontains=query_str)
-                      user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                      user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                       if user_ids:
                             query_obj |= Q(applicant__in=user_ids)
                             query_obj |= Q(assignee__in=user_ids)
@@ -10416,7 +10417,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                  if 'action' in self.request.GET and self.request.GET['action']:
                     query_str = self.request.GET['q']
                     search_filter = Q(pk__contains=query_str) | Q(title__icontains=query_str)
-                    user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                    user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                     if user_ids:
                         query_obj |= Q(applicant__in=user_ids)
                     if self.request.GET['apptype'] != '':
@@ -10481,7 +10482,7 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                  if 'searchaction' in self.request.GET and self.request.GET['searchaction']:
                       query_str = self.request.GET['q']
                       query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str) | Q(organisation__name__icontains=query_str)
-                      user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+                      user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
                       if user_ids:
                             query_obj |= Q(applicant__in=user_ids)
                             query_obj |= Q(assignee__in=user_ids)

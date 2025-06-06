@@ -1901,7 +1901,7 @@ class ApplicationReferralConditionsPart5(ModelForm):
 
 class ReferralForm(ModelForm):
     referee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2277,7 +2277,7 @@ class AssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assignee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2341,7 +2341,7 @@ class AssignOfficerForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assigned_officer = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2384,7 +2384,7 @@ class ComplianceAssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assignee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2425,7 +2425,7 @@ class AssignApplicantForm(ModelForm):
     """A form for assigning or change the applicant on application.
     """
     applicant = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
