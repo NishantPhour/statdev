@@ -96,7 +96,7 @@
                                                 <label>Current Certificate</label>
                                         </div>
                                         <div class="col-sm-12 col-md-4 col-lg-6">
-                                            <a href="{% url 'view_private_file' file_id=org_extras.identification.id extension='pdf' %}">
+                                            <a href="{% url 'view_private_file' file_id=org_extras.identification.id extension=org_extras.identification.extension|slice:'1:' %}">
                                                 {{ org_extras.identification.upload }}
                                             </a>
                                         </div>                                        
