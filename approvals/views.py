@@ -46,7 +46,7 @@ class ApprovalList(ListView):
             # Filter by pk, title
             query = get_query(
                 query_str, ['pk', 'title'])
-            system_user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            system_user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
             qs= qs.filter(query) | qs.filter(applicant__in=system_user_ids)
             qs = qs.distinct()
         return qs
@@ -68,7 +68,7 @@ class ApprovalList(ListView):
         if 'action' in self.request.GET and self.request.GET['action']:
             query_str = self.request.GET['q']
             query_obj = Q(pk__contains=query_str) | Q(title__icontains=query_str)
-            user_ids = SystemUser.objects.filter(email__icontains=query_str).values_list('ledger_id', flat=True)
+            user_ids = SystemUser.objects.filter(email__icontains=query_str).exclude(ledger_id__isnull=True).values_list('ledger_id', flat=True)
             if user_ids:
                 query_obj |= Q(applicant__in=user_ids)
             if self.request.GET['apptype'] != '':
