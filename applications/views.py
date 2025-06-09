@@ -30,6 +30,7 @@ from applications.models import (
     PublicationWebsite, PublicationFeedback, Communication, Delegate, Organisation, OrganisationAddress, OrganisationContact, OrganisationPending, OrganisationExtras, CommunicationAccount,CommunicationOrganisation, ComplianceGroup,CommunicationCompliance, StakeholderComms, ApplicationLicenceFee, Booking, DiscountReason,BookingInvoice)
 from applications.workflow import Flow
 from applications.views_sub import Application_Part5, Application_Emergency, Application_Permit, Application_Licence, Referrals_Next_Action_Check, FormsList
+from ledger_api_client.utils import get_or_create
 from applications.email import sendHtmlEmail, emailGroup, emailApplicationReferrals
 from applications.validationchecks import Attachment_Extension_Check, is_json
 from applications.utils import get_query, random_generator
@@ -2309,6 +2310,7 @@ class CreateAccount(LoginRequiredMixin, CreateView):
 
         context_processor = template_context(self.request)
         admin_staff = context_processor['admin_staff']
+        print("first this")
 
         if admin_staff == True:
            donothing =""
@@ -2325,18 +2327,17 @@ class CreateAccount(LoginRequiredMixin, CreateView):
         """
         self.object = form.save(commit=False)
         forms_data = form.cleaned_data
-        account_email = forms_data['email']
+        ledger_user = get_or_create(forms_data['email'])
+        
+        email_user = EmailUser.objects.get(pk=ledger_user["data"]["emailuser_id"])
+        self.object.ledger_id = email_user
         self.object.save()
         # If this is not an Emergency Works set the applicant as current user
 #        success_url = reverse('first_login_info', args=(self.object.pk,1))
         app_id = None
         if 'application_id'  in self.kwargs:
             app_id = self.kwargs['application_id']
-        path_first_time = '/ledger-ui/system-accounts-firsttime'
-        if app_id is None:
-            success_url = "/first-login/"+str(self.object.pk)+"/1/"
-        else:
-            success_url = "/first-login/"+str(self.object.pk)+"/1/"+str(app_id)+"/"
+        path_first_time = '/ledger-ui/accounts-management/'+str(self.object.pk)+'/change'
         return HttpResponseRedirect(path_first_time)
 
 class ApplicationApply(LoginRequiredMixin, CreateView):
