@@ -75,82 +75,53 @@ class HomePage(TemplateView):
     # preperation to replace old homepage with screen designs..
 
     template_name = 'applications/home_page.html'
+
     def render_to_response(self, context):
-        path_logout = reverse('logout')
-        path_first_time = '/ledger-ui/system-accounts-firsttime'
-        if self.request.user.is_authenticated:     
-            template = get_template(self.template_name)
-            #context = RequestContext(self.request, context)
-            context['csrf_token_value'] = get_token(self.request)
-            return HttpResponse(template.render(context))
+        context['csrf_token_value'] = get_token(self.request)
+        template = get_template(self.template_name)
+        return HttpResponse(template.render(context))
 
     def get_context_data(self, **kwargs):
-        context = super(HomePage, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context = template_context(self.request)
-        APP_TYPE_CHOICES = []
-        APP_TYPE_CHOICES_IDS = []
- 
-
-        # mypdf = MyPDF()
-        # mypdf.get_li()
-
-        #pdftool = PDFtool()
-        #pdftool.generate_part5()
-        #pdftool.generate_permit()
-        #pdftool.generate_section_84()
-        #pdftool.generate_licence()
 
         context['referee'] = 'no'
-        
-        referee = SystemGroup.objects.get(name='Statdev Referee')
-        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
-        if referee.id in usergroups:
-            context['referee'] = 'yes'
-
-        # Have to manually populate when using render_to_response()
         context['messages'] = messages.get_messages(self.request)
         context['request'] = self.request
         context['user'] = self.request.user
 
-        fl = FormsList()
-        if 'action' in self.kwargs:
-           action = self.kwargs['action']
-        else:
-           action = ''
-  
-        if self.request.user.is_authenticated: 
-            if action == '':
-               context = fl.get_application(self,self.request.user.id,context)
-               context['home_nav_other_applications'] = 'active'
-            elif action == 'approvals':
-               context = fl.get_approvals(self,self.request.user.id,context)
-               context['home_nav_other_approvals'] = 'active'
-            elif action == 'clearance': 
-               context = fl.get_clearance(self,self.request.user.id,context)
-               context['home_nav_other_clearance'] = 'active'
-            elif action == 'referrals':
-               context['home_nav_other_referral'] = 'active'
+        action = self.kwargs.get('action', '')
+        if self.request.user.is_authenticated:
+            try:
+                referee_group = SystemGroup.objects.get(name='Statdev Referee')
+                usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+                if referee_group.id in usergroups:
+                    context['referee'] = 'yes'
+            except SystemGroup.DoesNotExist:
+                pass  # Group doesn't exist, skip
 
-               if 'q' in self.request.GET and self.request.GET['q']:
+            fl = FormsList()
+
+            if action == '':
+                context = fl.get_application(self, self.request.user.id, context)
+                context['home_nav_other_applications'] = 'active'
+            elif action == 'approvals':
+                context = fl.get_approvals(self, self.request.user.id, context)
+                context['home_nav_other_approvals'] = 'active'
+            elif action == 'clearance':
+                context = fl.get_clearance(self, self.request.user.id, context)
+                context['home_nav_other_clearance'] = 'active'
+            elif action == 'referrals':
+                context['home_nav_other_referral'] = 'active'
+                if 'q' in self.request.GET and self.request.GET['q']:
                     query_str = self.request.GET['q']
                     query_str_split = query_str.split()
                     search_filter = Q()
                     for se_wo in query_str_split:
-                         search_filter &= Q(pk__contains=se_wo) | Q(title__contains=se_wo)
+                        search_filter &= Q(pk__contains=se_wo) | Q(title__contains=se_wo)
+                    # You might want to use this filter in the query below
+                context['items'] = Referral.objects.filter(referee=self.request.user.id).exclude(status=5).order_by('-id')
 
-               context['items'] = Referral.objects.filter(referee=self.request.user.id).exclude(status=5).order_by('-id')
-
-            else:
-               donothing ='' 
-        #for i in Application.APP_TYPE_CHOICES:
-        #    if i[0] in [4,5,6,7,8,9,10,11]:
-        #       skip = 'yes'
-        #    else:
-        #       APP_TYPE_CHOICES.append(i)
-        #       APP_TYPE_CHOICES_IDS.append(i[0])
-        #context['app_apptypes']= APP_TYPE_CHOICES
-        #applications = Application.objects.filter(app_type__in=APP_TYPE_CHOICES_IDS)
-        #print applications
         return context
 
 

@@ -1,4 +1,5 @@
 from django.urls import include, path, re_path
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import login, logout
@@ -17,6 +18,11 @@ urlpatterns = [
     # url(r'^ledger/', include('social_django.urls', namespace='social')),
     #url(r'^', include('approvals.urls'))
 ] + ledger_patterns
+
+if settings.ENABLE_DJANGO_LOGIN:
+    urlpatterns.append(
+        re_path(r"^ssologin/", auth_views.LoginView.as_view(), name="ssologin")
+    )
 
 if settings.DEBUG:
     from django.views.static import serve
