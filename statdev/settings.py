@@ -86,6 +86,14 @@ MIDDLEWARE_CLASSES += [
 ]
 MIDDLEWARE = MIDDLEWARE_CLASSES
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
 #TEMPLATES += [
 #    {
 #        'BACKEND': 'django.template.backends.django.DjangoTemplates',
