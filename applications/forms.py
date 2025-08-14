@@ -93,13 +93,23 @@ class ApplicationApplyForm(ModelForm):
         super(ApplicationApplyForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper()
         # delete internal option
-        del self.fields['apply_on_behalf_of'].choices[4]
+        # print("Original choices:", self.fields['apply_on_behalf_of'].choices)
+        # del self.fields['apply_on_behalf_of'].choices[4]
 
+        # # Delete on behalf of indivdual or company (Future development)
+        # # These two lines delete option id 3 and 4 from models.Application.APP_APPLY_ON 
+        # # The lines below are duplicated for purpose :)
+        # del self.fields['apply_on_behalf_of'].choices[2]
+        # del self.fields['apply_on_behalf_of'].choices[2]
+        # print("After deleting:", self.fields['apply_on_behalf_of'].choices)
+        
+        
+        # delete internal option
         # Delete on behalf of indivdual or company (Future development)
-        # These two lines delete option id 3 and 4 from models.Application.APP_APPLY_ON 
-        # The lines below are duplicated for purpose :)
-        del self.fields['apply_on_behalf_of'].choices[2]
-        del self.fields['apply_on_behalf_of'].choices[2]
+        self.fields['apply_on_behalf_of'].choices = [
+            choice for choice in self.fields['apply_on_behalf_of'].choices
+            if choice[0] not in [3,4,5]
+        ]
 
         crispy_boxes = crispy_empty_box()
         self.helper.form_show_labels = False
