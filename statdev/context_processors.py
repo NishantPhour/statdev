@@ -1,40 +1,48 @@
 from django.conf import settings
-from django.contrib.auth.models import Group
+from ledger_api_client.managed_models import SystemGroup, SystemUser
 from ledger_api_client import utils as ledger_api_utils
 import hashlib 
 
 def has_group(user):
+    if(user.is_anonymous):
+        return False
     staff_groups = ['Statdev Approver','Statdev Assessor','Statdev Director','Statdev Emergency','Statdev Executive','Statdev Processor']
-    # user_groups = user.groups.all()
-    # for sg in user_groups:
-    #     group = SystemGroup.objects.get(name=sg)
-    #     if group in user.groups.all():
-    #         return True
-    return True
+    for sg in staff_groups:
+        group = SystemGroup.objects.get(name=sg)
+        usergroups = user.get_system_group_permission(user.id)
+        if group.id in usergroups:
+            return True
+    return False
 
 def has_staff(user):
+    if(user.is_anonymous):
+        return False
     if user.is_staff is True:
         return True
     else:
         return False
 
 def has_admin_assessor(user):
+    if(user.is_anonymous):
+        return False
     staff_groups = ['Statdev Processor','Statdev Assessor']
-    # user_groups = user.groups.all()
-    # for sg in staff_groups:
-    #     group = SystemGroup.objects.get(name=sg)
-    #     if group in user.groups.all():
-    #         return True
-    return True
+    for sg in staff_groups:
+        group = SystemGroup.objects.get(name=sg)
+        usergroups = user.get_system_group_permission(user.id)
+        if group.id in usergroups:
+            return True
+    return False
 
 def has_admin(user):
+    if(user.is_anonymous):
+        return False
     staff_groups = ['Statdev Processor']
-    # user_groups = user.groups.all()
-    # for sg in staff_groups:
-    #     group = SystemGroup.objects.get(name=sg)
-    #     if group in user.groups.all():
-    #         return True
-    return True
+    for sg in staff_groups:
+        group = SystemGroup.objects.get(name=sg)
+        usergroups = user.get_system_group_permission(user.id)
+        if group.id in usergroups:
+            return True
+    return False
 
 def template_context(request):
     """Pass extra context variables to every template.
