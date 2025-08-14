@@ -68,7 +68,7 @@ vi venv/lib/python3.8/site-packages/django/contrib/admin/migrations/0001_initial
 
 ## Step 7: Generate system groups
 ```
-python manage.py generate_groups.py
+python manage.py generate_groups
 ```
 
 
