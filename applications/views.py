@@ -5282,11 +5282,12 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             assignee = None
             assessed_by = self.request.user.id 
             groupassignment = SystemGroup.objects.get(name=DefaultGroups['grouplink'][action])
-            #TODO check this
             if app.assigned_officer:
-               assigned_officer = EmailUser.objects.get(ledger_id=app.assigned_officer)
-               if assigned_officer.groups().filter(group__in=[groupassignment.name]).exists():
+                assigned_officer = EmailUser.objects.get(id=app.assigned_officer)
+                usergroups = assigned_officer.get_system_group_permission(assigned_officer.id)
+                if groupassignment.id in usergroups:
                     assignee = app.assigned_officer
+
 
         #route = flow.getNextRouteObj(action, app.routeid, workflowtype)
         route = flow.getNextRouteObjViaId(int(actionid), app.routeid, workflowtype)   
