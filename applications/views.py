@@ -2567,10 +2567,8 @@ class ApplicationDetail(DetailView):
             if context['may_update'] == "True":
                 if app.assignee != self.request.user.id:
                     context['may_update'] = "False"
-                    del context['workflow_actions']
                     context['workflow_actions'] = []
             if app.assignee != self.request.user.id:
-                del context['workflow_actions']
                 context['workflow_actions'] = []
 
         context['may_update_vessels_list'] = "False"
