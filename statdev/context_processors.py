@@ -53,7 +53,7 @@ def template_context(request):
         'staff': has_staff(request.user),
         'admin_staff': has_admin(request.user),
         'admin_assessor_staff':  has_admin_assessor(request.user),
-        'TEMPLATE_GROUP': "rivers",
+        'template_group': settings.TEMPLATE_GROUP,
         'GIT_COMMIT_DATE' : settings.GIT_COMMIT_DATE,
         'GIT_COMMIT_HASH' : settings.GIT_COMMIT_HASH,
         'EXTERNAL_URL' : settings.EXTERNAL_URL
