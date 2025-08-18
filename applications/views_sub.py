@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from datetime import datetime
 from applications.workflow import Flow
 from .models import Location, Record, PublicationNewspaper, PublicationWebsite, PublicationFeedback,Referral,Application, Delegate, Compliance
 from django.utils.safestring import SafeText
@@ -392,6 +393,16 @@ class FormsList():
                          #search_filter &= Q(state__ne=14) 
                     if context['appstatus_limited'] == 'completed':
                          search_filter &= Q(state=14)
+            
+            if  self_view.request.GET['from_date'] != '':
+                parsed_date = datetime.strptime(self_view.request.GET['from_date'], '%d/%m/%Y').date()
+                search_filter &= Q(submit_date__gte=parsed_date)
+
+            if  self_view.request.GET['to_date'] != '':
+                parsed_date = datetime.strptime(self_view.request.GET['to_date'], '%d/%m/%Y').date()
+                search_filter &= Q(submit_date__lte=parsed_date)
+
+
 
             if 'q' in self_view.request.GET and self_view.request.GET['q']:
                 query_str = self_view.request.GET['q']
@@ -430,8 +441,8 @@ class FormsList():
 
     def get_approvals(self,self_view,userid,context):
 
-        user = SystemUser.objects.get(ledger_id=userid)
-        delegate = Delegate.objects.filter(email_user=user).values('id')
+        # user = SystemUser.objects.get(ledger_id=userid)
+        delegate = Delegate.objects.filter(email_user=userid).values('id')
 
         search_filter = Q(applicant=userid, status=1 ) | Q(organisation__in=delegate)
 
@@ -500,8 +511,8 @@ class FormsList():
         if 'q' in self_view.request.GET and self_view.request.GET['q']:
             context['query_string'] = self_view.request.GET['q']
 
-        user = SystemUser.objects.get(ledger_id=userid)
-        delegate = Delegate.objects.filter(email_user=user).values('id')
+        # user = SystemUser.objects.get(ledger_id=userid)
+        delegate = Delegate.objects.filter(email_user=userid).values('id')
         search_filter = Q(applicant=userid) | Q(organisation__in=delegate)
 
         items = Compliance.objects.filter(applicant=userid).order_by('due_date')
