@@ -52,27 +52,28 @@
 {% endblock %}
 
 {% block menu_items_left_brand %}
-
 {% endblock%}
 
 {% block menu_items_left %}
 
-<a class="navbar-brand" href="/">Dashboard</a>
-<ul class='nav navbar-nav hidden-xs'>
+<ul class='nav navbar-nav'>
+    <li class="nav-item" ><a class="nav-link" href="/">Dashboard</a></li>
     {% if staff == True %}
-        <li class='hidden-sm' ><a href="{% url 'application_list' %}" title="Applications">Applications</a></li>
-        <li class='hidden-sm' ><a href="{% url 'approval_list' %}" title="Approvals">Approvals</a></li>
-        <li class='hidden-sm' ><a href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
-        <li class='hidden-sm' ><a href="{% url 'organisation_access_requests' %}" title="Company Access">Company Access</a></li>
-        <li class='hidden-sm' ><a href="{% url 'search_list' %}">Search</a></li>
+        <li class="nav-item" ><a class="nav-link" href="{% url 'application_list' %}" title="Applications">Applications</a></li>
+        <li class="nav-item" ><a class="nav-link" href="{% url 'approval_list' %}" title="Approvals">Approvals</a></li>
+        <li class="nav-item" ><a class="nav-link" href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
+        <li class='nav-item' ><a class="nav-link" href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
+        <li class="nav-item" ><a class="nav-link" href="{% url 'organisation_access_requests' %}" title="Company Access">Company Access</a></li>
+        <li class="nav-item" ><a class="nav-link" href="{% url 'search_list' %}">Search</a></li>
     {% else %}
-        <li class='hidden-sm' ><a href="" title="Contact Us">Contact Us</a></li> 
-        <li class='hidden-sm' ><a href="" title="Further Information">Further Information</a></li>
+        <li class="nav-item" ><a class="nav-link" href="" title="Contact Us">Contact Us</a></li> 
+        <li class="nav-item" ><a class="nav-link" href="" title="Further Information">Further Information</a></li>
     {% endif %}
 </ul>
 
 {% endblock %}
-{% if staff == True %}
+
+<!-- {% if staff == True %}
     <li class='hidden-lg hidden-md'><a href="{% url 'approval_list' %}" title="Applications">Approvals</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'application_list' %}" title="Applications">Applications</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
@@ -82,7 +83,7 @@
 {% else %}
     <li class='hidden-lg hidden-md' ><a href="" title="Contact Us">Contact Us</a></li>
     <li class='hidden-lg hidden-md' ><a href="" title="Further Information">Further Information</a></li>
-{% endif %}
+{% endif %} -->
 {% block menu_dropdown %}
 {% if request.user.is_authenticated %}
         <!-- TODO: change to system-accounts page -->
@@ -177,6 +178,21 @@ select.form-control {
 }
 .navbar{
     margin-bottom: 0px;
+}
+
+.nav-item {
+    background-color: transparent !important;
+}
+
+.nav-link {
+    color: #6c757d !important; /* Bootstrap's text-secondary (dark gray) */
+    background-color: transparent !important;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: #495057 !important; /* Slightly darker gray on hover */
+    background-color: transparent !important;
 }
 
 
