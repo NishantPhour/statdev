@@ -86,11 +86,11 @@ MIDDLEWARE_CLASSES += [
 MIDDLEWARE = MIDDLEWARE_CLASSES
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
+    messages.DEBUG: 'info',
+    messages.INFO: 'info',
     messages.SUCCESS: 'success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
 }
 
 #TEMPLATES += [
