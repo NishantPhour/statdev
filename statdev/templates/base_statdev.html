@@ -105,46 +105,52 @@
 {% block messages %}
 <!-- Messages  -->
 {% if messages %}
-<div class="row">
-    <div class="col-xs-12">
-        {% for message in messages %}
-	{% if message.tags == 'error' %}
-		<div class="alert alert-danger">
-			{{ message|safe }}
-		</div>
-	{% else %}
-        <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
-            {{ message|safe }}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                {{ message|safe }}
+            </div>
+        {% else %}
+            <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
+                {{ message|safe }}
+            </div>
+        {% endif %}
+            {% endfor %}
         </div>
-	{% endif %}
-        {% endfor %}
     </div>
 </div>
 {% endif %}
 {% endblock messages %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-12">
-        {% block page_content_inner %}{% endblock %}
-        <iframe src="/blank.html" name="file_load_frame" height="300px" width="100%" title="File Load Frame" style='display:none'></iframe>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            {% block page_content_inner %}{% endblock %}
+            <iframe src="/blank.html" name="file_load_frame" height="300px" width="100%" title="File Load Frame" style='display:none'></iframe>
 
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block footer %}
-<div id="footer">
-    <div class="container-fluid">
-        <hr>
-        <div class="row">
-            <div class="col-xs-9 text-muted">
-                <small>v{{ project_version }}, Commit: {{ project_last_commit_date }} &copy; Department of Parks and Wildlife</small>
-            </div>
-            <div class="col-xs-3 text-muted text-right">
-                {% if object.routeid %}
-                <small> Form Step: {{ object.routeid }} </small>
-                {% endif %}
+<div class="container">
+    <div id="footer">
+        <div class="container-fluid">
+            <hr>
+            <div class="row">
+                <div class="col-xs-9 text-muted">
+                    <small>v{{ project_version }}, Commit: {{ project_last_commit_date }} &copy; Department of Parks and Wildlife</small>
+                </div>
+                <div class="col-xs-3 text-muted text-right">
+                    {% if object.routeid %}
+                    <small> Form Step: {{ object.routeid }} </small>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
