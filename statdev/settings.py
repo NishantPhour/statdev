@@ -340,6 +340,7 @@ RAISE_EXCEPTIONS = True
 SYSTEM_NAME = env('SYSTEM_NAME', 'Statdev System')
 SYSTEM_NAME_SHORT = env('SYSTEM_NAME_SHORT', 'statdev')
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+TEMPLATE_GROUP = env('TEMPLATE_GROUP', 'parkswildlife')
 
 # Use git commit hash for purging cache in browser for deployment changes
 GIT_COMMIT_HASH = ''

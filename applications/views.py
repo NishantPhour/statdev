@@ -72,6 +72,17 @@ from urllib.parse import quote_plus
 
 logger = logging.getLogger(__name__)
 
+class LoginSuccess(TemplateView):
+    template_name = 'login_success.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context = {'LEDGER_UI_URL' : settings.LEDGER_UI_URL}
+        response = render(request, self.template_name, context)
+        return response
+
+
+
 class HomePage(TemplateView):
     # preperation to replace old homepage with screen designs..
 
