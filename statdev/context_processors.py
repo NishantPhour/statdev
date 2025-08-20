@@ -56,7 +56,8 @@ def template_context(request):
         'template_group': settings.TEMPLATE_GROUP,
         'GIT_COMMIT_DATE' : settings.GIT_COMMIT_DATE,
         'GIT_COMMIT_HASH' : settings.GIT_COMMIT_HASH,
-        'EXTERNAL_URL' : settings.EXTERNAL_URL
+        'EXTERNAL_URL' : settings.EXTERNAL_URL,
+        'EMAIL_INSTANCE': settings.EMAIL_INSTANCE,
 
         #['Approver','Assessor','Director','Emergency','Executive','Processor']
     }
