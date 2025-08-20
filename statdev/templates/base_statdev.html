@@ -162,6 +162,32 @@
     -webkit-overflow-scrolling: touch;
     outline: 0;
 }
+
+select.form-control {
+  appearance: auto !important;
+}
+.modal-backdrop.fade {
+    opacity: 0.5 !important;
+}
+
+
+.modal.fade .modal-dialog {
+  transform: translateY(-100px);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.modal.fade.show .modal-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.form-select.is-invalid {
+  background-image: var(--bs-form-select-bg-image) !important;
+}
+
+
+
 </style>
 <div class='overtop-modal' id='overtop' style='background-color: rgba(39, 39, 39, 0.5);'>
 

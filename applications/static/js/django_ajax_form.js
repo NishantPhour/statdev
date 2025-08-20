@@ -19,20 +19,25 @@ var django_ajax_form = {
             htmlvalue += '       </div>';
             htmlvalue += '   </div>';
             htmlvalue += '</div>';
+   
+          if ($('#PLvesselModal').length != 0) {
+            $('html').prepend(htmlvalue);
+          }
 
-        $('html').prepend(htmlvalue);
         $('#PLvesselModal').modal({
-             show: 'false',
+             show: true,
              backdrop: 'static',
              keyboard: false
 
         });
+       
        $('#modal-dialog').width('300px');
 
 
 
 
         $('.modal-body').height('auto');
+        $('#PLvesselModal').modal("show").addClass("in");
 	django_ajax_form.var.url = url;
 	django_ajax_form.var.title = title;
 
@@ -48,7 +53,8 @@ var django_ajax_form = {
 	    success: function(data) {
         	  django_ajax_form.var.form_html = data;
 		  //  $('#vesselModal').remove();
-                  $('#PLvesselModal').modal('hide');
+      
+$('#PLvesselModal').hide();
 		  $('#PLvesselModal').remove();
 		  $('.modal-backdrop').remove();
                   django_ajax_form.CloseForm();
@@ -61,8 +67,8 @@ var django_ajax_form = {
             htmlvalue += '<div class="modal-dialog modal-lg" id="modal-dialog">';
             htmlvalue += '    <div class="modal-content" id="modal-content">';
             htmlvalue += '      <div class="modal-header">';
-            htmlvalue += '        <button type="button" class="close" data-dismiss="modal">&times;</button>';
             htmlvalue += '        <h4 class="modal-title" id="modal-popup-title">'+title+'</h4>';
+            htmlvalue += '        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
             htmlvalue += '      </div>';
             htmlvalue += '      <div class="modal-body" style="overflow: auto;" id="modal-body">';
             htmlvalue += django_ajax_form.var.form_html;
@@ -73,7 +79,7 @@ var django_ajax_form = {
             htmlvalue += '<BR><BR>';
             htmlvalue += '</div>';
             htmlvalue += '<div class="modal-footer">';
-            htmlvalue += '<BR><BR><button name="close" type="button" class="btn btn-primary" value="Close" class="close" data-dismiss="modal" value="Close">Close</button>';
+            htmlvalue += '<BR><BR><button name="close" type="button" class="btn btn-primary" value="Close" class="close" data-bs-dismiss="modal"  value="Close">Close</button>';
             htmlvalue += '</div>';
             htmlvalue += '</div>';
             htmlvalue += '</div>';
@@ -97,7 +103,7 @@ var django_ajax_form = {
 
 
  // $('#vesselModal').modal('show');
-$('#vesselModal').show();
+ $('#vesselModal').modal("show").addClass("in");
 
 $('#id_form_modals').submit(function(event) {
 event.preventDefault();
@@ -142,7 +148,7 @@ $('#modal-dialog').width('300px');
 //	     $('#modal-content').width('300px') 	     
 
 // django_ajax_form.CloseForm()	   
-$('#popup_loader').show();	      
+$('#popup_loader').modal("show").addClass("in");
 $.ajax({
 url : django_ajax_form.var.url,
 type: "POST",
@@ -179,8 +185,8 @@ if (res.indexOf('alert-danger') >= 0 || res.indexOf('id="error') >= 0) {
             htmlvalue += '<div class="modal-dialog modal-lg" id="modal-dialog">';
             htmlvalue += '    <div class="modal-content" id="modal-content">';
             htmlvalue += '      <div class="modal-header">';
-            htmlvalue += '        <button type="button" class="close" data-dismiss="modal">&times;</button>';
-            htmlvalue += '        <h4 class="modal-title">'+django_ajax_form.var.title+'</h4>';
+            htmlvalue += '        <h4 class="modal-title" id="modal-popup-title">'+django_ajax_form.var.title+'</h4>';
+            htmlvalue += '        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
             htmlvalue += '      </div>';
             htmlvalue += '      <div class="modal-body" style="overflow: auto;" id="modal-body">';
             htmlvalue += res;
@@ -188,17 +194,15 @@ if (res.indexOf('alert-danger') >= 0 || res.indexOf('id="error') >= 0) {
             htmlvalue += '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrfmiddlewaretoken+'" />';
             htmlvalue += '</form>';
             htmlvalue += '<BR><BR>';
-
             htmlvalue += '<BR><BR>';
             htmlvalue += '</div>';
-
             htmlvalue += '<div class="modal-footer">';
-            htmlvalue += '<BR><BR><button name="close" type="button" class="btn btn-primary" value="Close" class="close" data-dismiss="modal" value="Close">Close</button>';
+            htmlvalue += '<BR><BR><button name="close" type="button" class="btn btn-primary" value="Close" class="close" data-bs-dismiss="modal"  value="Close">Close</button>';
             htmlvalue += '</div>';
             htmlvalue += '</div>';
             htmlvalue += '</div>';
             htmlvalue += '</div>';
-            console.log(htmlvalue);
+            htmlvalue += '</div>';
             $('html').prepend(htmlvalue);
 
             $('#vesselModal').modal({
@@ -276,7 +280,8 @@ $("#vesselModal").on("hidden.bs.modal", function () {
 // $('#vesselModal').modal('hide');
 // $('#vesselModal').modal('hide');
 // $('#vesselModal').hide();
-$('#vesselModal').show();
+$('#vesselModal').modal("show").addClass("in");
+
 }
 
 if (typeof loadForm == 'function') {
@@ -298,7 +303,8 @@ if (typeof loadForm == 'function') {
         $(progress_bar_id + " .status-text").text("error");
         //submit_btn.val("Upload").prop( "disabled", false);
         });
-$('#vesselModal').show();
+$('#vesselModal').modal("show").addClass("in");
+
 
 //	$('#vesselModal').modal({
 //                   show: 'true'
