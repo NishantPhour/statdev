@@ -50,7 +50,6 @@
 
 {% block development_header %}
     {% if EMAIL_INSTANCE == 'DEV' or EMAIL_INSTANCE == 'UAT' or EMAIL_INSTANCE == 'TEST'  %}
-    inside
     <div class="col-lg-12 p-3 {% if request.session.user_obj.is_staff is True %}bg-warning{% else %}bg-danger{% endif %} text-white text-center fs-6" >
         DEVELOPMENT: FOR TESTING ONLY DO NOT USE
     </div>
