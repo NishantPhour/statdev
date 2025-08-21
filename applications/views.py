@@ -2139,7 +2139,7 @@ class SearchReference(ListView):
         #context['messages'] = self.messages
         template = get_template(self.template_name)
         #context = RequestContext(self.request, context)
-        return HttpResponse(template.render(context))
+        return HttpResponse(template.render(context, request=self.request))
 
     def get_context_data(self, **kwargs):
         # def get(self, request, *args, **kwargs):
