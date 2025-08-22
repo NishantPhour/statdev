@@ -10358,6 +10358,8 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
                  context['nav_details_linkedperson'] = "active"
                  org = Organisation.objects.get(id=self.kwargs['pk'])
                  linkedpersons = Delegate.objects.filter(organisation=org)
+                 if OrganisationExtras.objects.filter(organisation=org.id).exists():
+                    context['org_extras'] = OrganisationExtras.objects.get(organisation=org.id)
 
                 # Recreate the linkedpersons list with an additional 'user' key
                  context['linkedpersons'] = []
