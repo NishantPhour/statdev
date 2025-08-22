@@ -58,6 +58,11 @@ class BookingAdmin(ModelAdmin):
 class DiscountReasonAdmin(ModelAdmin):
     list_display = ('text', 'detailRequired', 'editable',)
 
+@register(ConditionPredefined)
+class ConditionPredefinedAdmin(ModelAdmin):
+    list_display = ('title','condition', 'status')   
+
+
 @register(Vessel)
 class VesselAdmin(ModelAdmin):
     filter_horizontal = ('registration',)
