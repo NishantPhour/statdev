@@ -8,8 +8,8 @@ from ledger_api_client.urls import urlpatterns as ledger_patterns
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^login/$', login, name='login', kwargs={'template_name': 'login.html'}),
-    re_path(r'^logout/$', logout, name='logout' ),
+    # re_path(r'^login/$', login, name='login', kwargs={'template_name': 'login.html'}),
+    # re_path(r'^logout/$', logout, name='logout' ),
     re_path(r'^', include('applications.urls')),
     re_path(r'^', include('approvals.urls')),
     re_path(r'^', include('public.urls')),
