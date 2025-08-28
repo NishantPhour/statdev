@@ -7,7 +7,7 @@ from .models import (
     Condition, Compliance, Delegate, ApplicationInvoice, Communication, Craft, 
     OrganisationContact, OrganisationPending, OrganisationExtras,PublicationFeedback, 
     PublicationWebsite,ComplianceGroup, StakeholderComms, ConditionPredefined, ApplicationLicenceFee, 
-    Booking, DiscountReason, BookingInvoice)
+    Booking, DiscountReason, BookingInvoice, Organisation,OrganisationAddress)
 
 
 admin.site.index_template = "admin-index.html"
@@ -57,6 +57,14 @@ class BookingAdmin(ModelAdmin):
 @register(DiscountReason)
 class DiscountReasonAdmin(ModelAdmin):
     list_display = ('text', 'detailRequired', 'editable',)
+    
+@register(Organisation)
+class OrganisationAdmin(ModelAdmin):
+    list_display = ('name','abn',)
+    
+@register(OrganisationAddress)
+class OrganisationAddressAdmin(ModelAdmin):
+    list_display = ('organisation',)
 
 @register(ConditionPredefined)
 class ConditionPredefinedAdmin(ModelAdmin):
