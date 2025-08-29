@@ -4,56 +4,59 @@
 
 {% if request.user.is_authenticated %}
 {% if admin_staff == True %}
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8">
-                <div class="col-lg-12">
-                    <h1>Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
-                </div>
-		<div class="col-lg-12">
-                    <p>Please select and area:</p>
-                </div>
-            </div>
+<div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="h3">Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
+          <p class="mt-3">Please select an area:</p>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<ul class="nav nav-pills nav-stacked">
-  <li><a href="{% url "application_list" %}">Applications</a></li>
-  <li><a href="{% url "approval_list" %}">Approvals</a></li>
-  <li><a href="{% url "compliance_list" %}">Clearance of Conditions</a></li>
-  <li><a href="{% url "search_list" %}">Search</a></li>
-</ul>
+  <div class="list-group">
+    <a href="{% url 'application_list' %}" class="list-group-item list-group-item-action">Applications</a>
+    <a href="{% url 'approval_list' %}" class="list-group-item list-group-item-action">Approvals</a>
+    <a href="{% url 'compliance_list' %}" class="list-group-item list-group-item-action">Clearance of Conditions</a>
+    <a href="{% url 'search_list' %}" class="list-group-item list-group-item-action">Search</a>
+  </div>
 
 {% else %}
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8">
-                <div class="col-lg-12">
-                    <h1>Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
-                </div>
-                <div class="col-lg-12">
-                    <p>Here you can access your existing approvals, view any applications in progress, lodge new applications or submit information required to clear conditions of your approvals.</p>
-                </div>
-            </div>
+<div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="h3">Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
+          <p class="mt-3">
+            Here you can access your existing approvals, view any applications in progress, lodge new applications or submit information required to clear conditions of your approvals.
+          </p>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="col-sm-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="{{ home_nav_other_applications }}"><a href="{% url "home" %}">Applications</a></li>
-        <li role="presentation" class="{{ home_nav_other_approvals }}" ><a href="{% url "home_page_tabs" "approvals" %}">Approvals</a></li>
-        <li role="presentation" class="{{ home_nav_other_clearance }}" ><a href="{% url "home_page_tabs" "clearance" %}">Clearance of Conditions</a></li>
-	{% if referee == 'yes' %}
-	<li role="presentation" class="{{ home_nav_other_referral }}" ><a href="{% url "home_page_tabs" "referrals" %}">Referrals</a></li>
-	{% endif %}
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_applications }}" href="{% url 'home' %}">Applications</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_approvals }}" href="{% url 'home_page_tabs' 'approvals' %}">Approvals</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_clearance }}" href="{% url 'home_page_tabs' 'clearance' %}">Clearance of Conditions</a>
+      </li>
+      {% if referee == 'yes' %}
+        <li class="nav-item">
+          <a class="nav-link {{ home_nav_other_referral }}" href="{% url 'home_page_tabs' 'referrals' %}">Referrals</a>
+        </li>
+      {% endif %}
     </ul>
     <br>
-</div>
+  </div>
+  
 
 <div class="col-sm-12 col-md-12 col-lg-12" >
     {% if home_nav_other_applications == 'active' %}
@@ -85,11 +88,11 @@
                     {% endcomment %}
                 </div>
                 <div class="col-md-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card">
+                        <div class="card-header">
                             <strong>Access Swan Canning Riverpark online application system</strong>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <p>
                                 At the Department of Biodiversity, Conservation and Attractions, we employ a password-less authentication system, meaning you never need to remember
                                 a password. When you need to login to a site, such as Swan Canning Riverpark online application system, simply enter your email and an

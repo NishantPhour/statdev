@@ -1,89 +1,73 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#certificate_commerical_acts_and_activities_collapse" aria-expanded="false" aria-controls="certificate_commerical_acts_and_activities_collapse">
-                            Certificate of Title Information
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse {{ collapse.certificate_commerical_acts_and_activities }}" id="certificate_commerical_acts_and_activities_collapse" role="tabpanel" aria-labelledby="certificate_commerical_acts_and_activities_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Certificate of Title Volume</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ certificate_of_title_volume }}
-                            </div>
+        <div class="card">
+            <div class="card-header fw-bold h4" style="padding:30px;">
+            <div class="row">
+                    <div class="col-6">
+                    Certificate of Title Information
+                    </div>
+                    <div class="col-6 text-end">
+                    <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box22-card-body" onclick=""></i>
+                    </div>
+            </div> 
+            </div>
+            
+            <div class="collapse show {{ collapse.certificate_commerical_acts_and_activities }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                <div class="card-body" id="box22-card-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                            <label class="fw-bold">Certificate of Title Volume</label>
+                            <div>{{ certificate_of_title_volume }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Folio</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ folio }}
-                            </div>
+                        <div class="col-lg-4">
+                            <label class="fw-bold">Folio</label>
+                            <div>{{ folio }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Diagram / Plan / Deposit Number</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ diagram_plan_deposit_number }}
-                            </div>
+                        <div class="col-lg-4">
+                            <label class="fw-bold">Diagram / Plan / Deposit Number</label>
+                            <div>{{ diagram_plan_deposit_number }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Subject Lot Lot Number</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ lot }}
-                            </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                            <label class="fw-bold">Subject Lot Lot Number</label>
+                            <div>{{ lot }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-8">
-                            <div class="col-lg-12">
-                                <label>Location</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ location }}
-                            </div>
+                        <div class="col-lg-8">
+                            <label class="fw-bold">Location</label>
+                            <div>{{ location }}</div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Reserve Number</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ reserve_number }}
-                            </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <label class="fw-bold">Reserve Number</label>
+                            <div class="col-lg-4">{{ reserve_number }}</div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Street Number & Name</Label>
-                            </div>
-                            <div class="col-lg-8">
-                                {{ street_number_and_name }}
-                            </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <label class="fw-bold">Street Number &amp; Name</label>
+                            <div class="col-lg-8">{{ street_number_and_name }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Town / Suburb</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ town_suburb }}
-                            </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <label class="fw-bold">Town / Suburb</label>
+                            <div class="col-lg-4">{{ town_suburb }}</div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Nearest road intersection</Label>
-                            </div>
-                            <div class="col-lg-8">
-                                {{ nearest_road_intersection }}
-                            </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <label class="fw-bold">Nearest road intersection</label>
+                            <div class="col-lg-8">{{ nearest_road_intersection }}</div>
                         </div>
                     </div>
                 </div>
+                
+                </div>
             </div>
+            <br>
 

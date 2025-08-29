@@ -3,394 +3,449 @@
 
 {% block page_content_inner %}
 
-<div class="panel panel-default">
-
-    <div class="panel-collapse collapse in" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
-        <div class="panel-body">
+<div class="card">
+    <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body">
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="col-12">
                         <h1>{{ object.name }} - {{ object.abn }}</h1>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <ul class="nav nav-tabs">
-                            <li role="presentation" class="{{ nav_details }}"><a href="{% url "organisation_details_actions" object.pk "company" %}">Details</a></li>
-                            <li role="presentation" class="{{ nav_other }}"><a href="{% url "organisation_other_actions" object.pk "applications" %}">Other</a></li>
+                          <li class="nav-item">
+                            <a class="nav-link {{ nav_details }}" href="{% url 'organisation_details_actions' object.pk 'company' %}">Details</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link {{ nav_other }}" href="{% url 'organisation_other_actions' object.pk 'applications' %}">Other</a>
+                          </li>
                         </ul>
-                        <BR>
-                    </div>
+                        <br>
+                      </div>
+                      
 
                     {% if nav_details == "active" %}
                  	{% include "applications/organisation_side_menu.html" %}
 		    <div class="col-sm-12 col-md-10 col-lg-10">
 
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <ul class="nav nav-pills">
-                            <li role="presentation" class="{{ nav_details_company }}"><a href="{% url "organisation_details_actions" object.pk "company" %}">Company Details</a></li>
-                            <li role="presentation" class="{{ nav_details_certofincorp }}" ><a href="{% url "organisation_details_actions" object.pk "certofincorp" %}">Certificate of Incorportion</a></li>
-                            <li role="presentation" class="{{ nav_details_address }}" ><a href="{% url "organisation_details_actions" object.pk "address" %}">Address Details</a></li>
-                            <li role="presentation" class="{{ nav_details_contactdetails }}" ><a href="{% url "organisation_details_actions" object.pk "contactdetails" %}">Contact Details</a></li>
-                            <li role="presentation" class="{{ nav_details_linkedperson }}" ><a href="{% url "organisation_details_actions" object.pk "linkedperson" %}">Linked Person's</a></li>
-                        </ul>
-                        <br>
-                    </div>
+                <div class="col-12">
+                    <ul class="nav nav-pills">
+                      <li class="nav-item">
+                        <a class="nav-link {{ nav_details_company }}" href="{% url 'organisation_details_actions' object.pk 'company' %}">
+                          Company Details
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link {{ nav_details_certofincorp }}" href="{% url 'organisation_details_actions' object.pk 'certofincorp' %}">
+                          Certificate of Incorporation
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link {{ nav_details_address }}" href="{% url 'organisation_details_actions' object.pk 'address' %}">
+                          Address Details
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link {{ nav_details_contactdetails }}" href="{% url 'organisation_details_actions' object.pk 'contactdetails' %}">
+                          Contact Details
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link {{ nav_details_linkedperson }}" href="{% url 'organisation_details_actions' object.pk 'linkedperson' %}">
+                          Linked Person's
+                        </a>
+                      </li>
+                    </ul>
+                    <br>
+                  </div>
+                  
 
                     <div class="col-sm-12 col-md-12 col-lg-12">
                         {% if nav_details_company == "active" %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="title_heading">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" href="#company_details_collapse" aria-expanded="false" aria-controls="company_details_collapse">
+                        <div class="card">
+                            <div class="card-header fw-bold h4" style="padding:30px;">
+                                <div class="row">
+                                    <div class="col-6">
                                         Company Details
-                                        <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                                    </a>
-                                </h3>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                          <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                                    </div>
+                              </div> 
                             </div>
 
-                            <div class="panel-collapse collapse in" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
-                                <div class="panel-body">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-12 col-md-3 col-lg-3">
-                                            <label>Name</label>
+                            <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+                                <div class="card-body" id="box1-card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                          <label class="form-label fw-bold">Name</label>
                                         </div>
-                                        <div class="col-sm-12 col-md-9 col-lg-9">
-                                            {{ object.name }}
+                                        <div class="col-md-9">
+                                          {{ object.name }}
                                         </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-12 col-md-3 col-lg-3">
-                                            <label>ABN</label>
+                                      </div>
+                                      
+                                      <div class="row mb-3">
+                                        <div class="col-md-3">
+                                          <label class="form-label fw-bold">ABN</label>
                                         </div>
-                                        <div class="col-sm-12 col-md-9 col-lg-9">
-                                            {{ object.abn }}
+                                        <div class="col-md-9">
+                                          {{ object.abn }}
                                         </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-12 col-md-11 col-lg-11">
-                                            &nbsp;
+                                      </div>
+                                      
+                                      <!-- Edit Button aligned bottom-right -->
+                                      <div class="row">
+                                        <div class="col-12 d-flex justify-content-end">
+                                          <a class="btn btn-primary btn-sm" href="{% url 'organisation_update' object.pk %}">Edit</a>
                                         </div>
-                                        <div class="col-sm-12 col-md-1 col-lg-1">
-                                            <a class="btn btn-primary btn-sm" role="button" href="{% url "organisation_update" object.pk %}">Edit</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                      </div>                                                                     
                             </div>
                         </div>
                         {% elif nav_details_certofincorp == "active" %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="title_heading">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" href="#cert_incorp_collapse" aria-expanded="false" aria-controls="cert_incorp_collapse">
+                        <div class="card">
+                            <div class="card-header fw-bold h4" style="padding:30px;">
+                                <div class="row">
+                                    <div class="col-6">
                                         Certifcate of Incorportion
-                                        <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                                    </a>
-                                </h3>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                          <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+                                    </div>
+                              </div> 
                             </div>
 
-                            <div class="panel-collapse collapse in" id="cert_incorp_collapse" role="tabpanel" aria-labelledby="cert_incorp_heading">
-                                <div class="panel-body">
-
+                            <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+                                <div class="card-body" id="box2-card-body">
                                     {% if org_extras.identification %}
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-12 col-md-4 col-lg-2">
-                                                <label>Current Certificate</label>
+                                      <div class="row align-items-center mb-3">
+                                        <!-- Label -->
+                                        <div class="col-md-2">
+                                          <label class="form-label fw-bold">Current Certificate</label>
                                         </div>
-                                        <div class="col-sm-12 col-md-4 col-lg-6">
-                                                 <A HREF='/media/{{ org_extras.identification.upload }}'>{{ org_extras.identification.upload }}</A>
+                                  
+                                        <!-- File Link -->
+                                        <div class="col-md-6">
+                                          <a href="/media/{{ org_extras.identification.upload }}">{{ org_extras.identification.upload }}</a>
                                         </div>
-                                        <div class="col-sm-12 col-md-5 col-lg-4">
-                                            <A HREF='{% url "organisation_update_identification_admin" org_extras.id %}'><img src='{% static "images/bin_blue.png" %}'>Remove & Provide New ID</A>
+                                  
+                                        <!-- Remove & Provide New -->
+                                        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                                          <a href="{% url 'organisation_update_identification_admin' org_extras.id %}" class="text-danger text-decoration-none">
+                                            <img src="{% static 'images/bin_blue.png' %}" alt="Remove" class="me-1" style="height:16px;">
+                                            Remove &amp; Provide New ID
+                                          </a>
                                         </div>
-                                    </div>
+                                      </div>
                                     {% else %}
-                                    <A HREF='{% url "organisation_update_identification_admin" org_extras.id %}'>Add Certificate</A>
+                                      <a href="{% url 'organisation_update_identification_admin' org_extras.id %}" class="btn btn-primary btn-sm">
+                                        Add Certificate
+                                      </a>
                                     {% endif %}
-                                </div>
+                                  </div>                                  
                             </div>
                         </div>
                         {% elif nav_details_address == "active" %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="title_heading">
-                                <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" href="#address_details_collapse" aria-expanded="false" aria-controls="address_details_collapse">
+                        <div class="card">
+                            <div class="card-header fw-bold h4" style="padding:30px;">
+                                <div class="row">
+                                    <div class="col-6">
                                         Address Details
-                                        <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                                    </a>
-                                </h3>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                          <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+                                    </div>
+                              </div> 
                             </div>
 
-                            <div class="panel-collapse collapse in" id="address_details_collapse" role="tabpanel" aria-labelledby="address_details_heading">
-                                <div class="panel-body">
+                            <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+                                <div class="card-body" id="box3-card-body">
 
-                                    <div class="panel panel-default">
-                                        <div class="panel-body">
-                                            <div>
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Postal Address</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.postal_address.line1 }} {{ object.postal_address.line2 }} {{ object.postal_address.line3 }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Town/Suburb</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.postal_address.locality }}
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12 col-md-3 col-lg-3">
-
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>State</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.postal_address.state }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-9 col-lg-9">
-
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Postcode</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.postal_address.postcode }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Country</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.postal_address.country }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                <div class="col-sm-12 col-md-10 col-lg-10">
-                                                    &nbsp;
-                                                </div>
-                                                <div class="col-sm-12 col-md-2 col-lg-2">
-
-                                                    {% if object.postal_address %}
-                                                    <a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_address_change' object.postal_address.pk object.pk %}">Edit</a>
-                                                    {% else %}
-                                                    <a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_address_create' object.pk 'postal' %}">Edit</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Postal Address</label>
+                                            </div>                                              
+                                          <div class="col-md-9">
+                                            {{ object.postal_address.line1 }} {{ object.postal_address.line2 }} {{ object.postal_address.line3 }}
+                                          </div>
                                         </div>
-                                    </div>
-
-                                    <div class="panel panel-default">
-                                        <div class="panel-body">
-                                            <div>
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Billing Address</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.billing_address.line1 }} {{ object.billing_address.line2 }} {{ object.billing_address.line3 }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Town/Suburb</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.billing_address.locality }}
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>State</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.billing_address.state }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-9 col-lg-9">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Postcode</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.billing_address.postcode }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                                        <label>Country</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-9 col-lg-9">
-                                                        {{ object.billing_address.country }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                <div class="col-sm-12 col-md-10 col-lg-10">
-                                                    &nbsp;
-                                                </div>
-                                                <div class="col-sm-12 col-md-2 col-lg-2">
-                                                    {% if object.billing_address %}
-                                                    <a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_address_change' object.billing_address.pk object.pk %}">Edit</a>
-                                                    {% else %}
-                                                    <a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_address_create' object.pk 'billing' %}">Edit</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Town/Suburb</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.postal_address.locality }}
+                                          </div>
                                         </div>
-                                    </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">State</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.postal_address.state }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Postcode</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.postal_address.postcode }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Country</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.postal_address.country }}
+                                          </div>
+                                        </div>
+                                      
+                                        <!-- Edit Button aligned bottom-right -->
+                                        <div class="row">
+                                          <div class="col-12 d-flex justify-content-end">
+                                            {% if object.postal_address %}
+                                              <a class="btn btn-primary btn-sm" href="{% url 'organisation_address_change' object.postal_address.pk object.pk %}">Edit</a>
+                                            {% else %}
+                                              <a class="btn btn-primary btn-sm" href="{% url 'organisation_address_create' object.pk 'postal' %}">Edit</a>
+                                            {% endif %}
+                                          </div>
+                                        </div>
+                                      </div>                                      
+
+                                      <div class="card-body">
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Billing Address</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.billing_address.line1 }} {{ object.billing_address.line2 }} {{ object.billing_address.line3 }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Town/Suburb</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.billing_address.locality }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">State</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.billing_address.state }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Postcode</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.billing_address.postcode }}
+                                          </div>
+                                        </div>
+                                      
+                                        <div class="row mb-3">
+                                          <div class="col-md-3">
+                                            <label class="form-label fw-bold">Country</label>
+                                          </div>
+                                          <div class="col-md-9">
+                                            {{ object.billing_address.country }}
+                                          </div>
+                                        </div>
+                                      
+                                        <!-- Edit Button aligned bottom-right -->
+                                        <div class="row">
+                                          <div class="col-12 d-flex justify-content-end">
+                                            {% if object.billing_address %}
+                                              <a class="btn btn-primary btn-sm" href="{% url 'organisation_address_change' object.billing_address.pk object.pk %}">Edit</a>
+                                            {% else %}
+                                              <a class="btn btn-primary btn-sm" href="{% url 'organisation_address_create' object.pk 'billing' %}">Edit</a>
+                                            {% endif %}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
                                 </div>
                             </div>
                             {% elif nav_details_contactdetails == "active" %}
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="title_heading">
-                                    <h3 class="panel-title">
-                                        <a role="button" data-toggle="collapse" href="#contact_details_collapse" aria-expanded="false" aria-controls="contact_details_collapse">
+                            <div class="card">
+                                <div class="card-header fw-bold h4" style="padding:30px;">
+                                    <div class="row">
+                                        <div class="col-6">
                                             Contact Details
-                                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                                        </a>
-                                    </h3>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box4-card-body" onclick=""></i>
+                                        </div>
+                                  </div> 
                                 </div>
-                                <div class="panel-collapse collapse in" id="contact_details_collapse" role="tabpanel" aria-labelledby="contact_details_heading">
-                                    <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12 col-lg-10">
-                                            &nbsp;
+    
+                                <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+                                    <div class="card-body" id="box4-card-body">
+                                        <!-- Add New Person Button -->
+                                        <div class="d-flex justify-content-end mb-3">
+                                          <a class="btn btn-primary btn-sm" href="{% url 'organisation_contact_create' object.pk %}">
+                                            Add New Person
+                                          </a>
                                         </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-2">
-                                            <span class="pull-right"><a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_contact_create' object.pk %}">Add New Person</a></span>
-                                        </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                            &nbsp;
-                                        </div>
-                                        <table id='org-contact-table' class="table table-striped table-bordered table-condensed" >
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Phone</th>
-                                                    <th>Mobile</th>
-                                                    <th>Fax</th>
-                                                    <th>Email</th>
-                                                    <th>Action</th>
-                                                </tr>
+                                      
+                                        <!-- Contacts Table -->
+                                        <div class="table-responsive">
+                                          <table id="org-contact-table" class="table table-striped table-bordered align-middle">
+                                            <thead class="table-light">
+                                              <tr>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Mobile</th>
+                                                <th>Fax</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                              </tr>
                                             </thead>
                                             <tbody>
-                                                {% for oc in organisation_contacts %}
-                                                <tr>
-                                                    <td>{{ oc.first_name }} {{ oc.last_name }}</td>
-                                                    <td>{{ oc.phone_number }}</td>
-                                                    <td>{{ oc.mobile_number }}</td>
-                                                    <td>{{ oc.fax_number }}</td>
-                                                    <td>{{ oc.email }}</td>
-                                                    <td><a class="btn btn-primary btn-sm" role="button" href="{% url 'organisation_contact_update' oc.pk %}">Edit</a></td>
-                                                </tr>
-                                                {% endfor %}
+                                              {% for oc in organisation_contacts %}
+                                              <tr>
+                                                <td>{{ oc.first_name }} {{ oc.last_name }}</td>
+                                                <td>{{ oc.phone_number }}</td>
+                                                <td>{{ oc.mobile_number }}</td>
+                                                <td>{{ oc.fax_number }}</td>
+                                                <td>{{ oc.email }}</td>
+                                                <td>
+                                                  <a class="btn btn-primary btn-sm" href="{% url 'organisation_contact_update' oc.pk %}">Edit</a>
+                                                </td>
+                                              </tr>
+                                              {% endfor %}
                                             </tbody>
-                                        </table>
-                                            <script>
-                                                    function loadTable() {
-                                                        $('#org-contact-table').dataTable({ paging: true, "pageLength": 10});
-                                                    }
-                                                    window.onload= function() {
-                                                        loadTable();
-                                                    }
-                                            </script>
-
-                                    </div>
+                                          </table>
+                                        </div>
+                                      
+                                        <!-- DataTables Initialization -->
+                                        <script>
+                                          function loadTable() {
+                                            $('#org-contact-table').DataTable({
+                                              paging: true,
+                                              pageLength: 10,
+                                              responsive: true
+                                            });
+                                          }
+                                          window.onload = loadTable;
+                                        </script>
+                                      </div>
+                                      
                                 </div>
                             </div>
                             {% elif nav_details_linkedperson == "active" %}
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="title_heading">
-                                    <h3 class="panel-title">
-                                        <a role="button" data-toggle="collapse" href="#linked_person_collapse" aria-expanded="false" aria-controls="linked_person_collapse">
-                                            Linked Person
-                                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                                        </a>
-                                    </h3>
+                            <div class="card">
+                                <div class="card-header fw-bold h4" style="padding:30px;">
+                                    <div class="row">
+                                        <div class="col-6">
+                                           Linked Person's
+                                        </div>
+                                        <div class="col-6 text-end">
+                                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box5-card-body" onclick=""></i>
+                                        </div>
+                                  </div> 
                                 </div>
-
-                                <div class="panel-collapse collapse in" id="linked_person_collapse" role="tabpanel" aria-labelledby="linked_person_heading">
-                                    <div class="panel-body">
-
-                                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                                &nbsp;
+    
+                                <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+                                    <div class="card-body" id="box5-card-body">
+                                        <!-- PIN Codes Section -->
+                                        <div class="row mb-4">
+                                          <!-- <div class="col-md-6"></div> -->
+                                          <div class="col-md-6">
+                                            <div class="row mb-2">
+                                              <div class="col-6">
+                                                <label class="form-label fw-bold">Pin code 1</label>
+                                              </div>
+                                              <div class="col-6">
+                                                {{ org_extras.pin1 }}
+                                              </div>
                                             </div>
-                                            <div class="col-sm-12 col-md-6 col-lg-6">
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-6 col-lg-6">
-                                                        <label>Pin code 1</label>
-                                                    </div>
-
-                                                    <div class="col-sm-12 col-md-6 col-lg-6">
-                                                        {{ org_extras.pin1 }} 
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                                    <div class="col-sm-12 col-md-6 col-lg-6">
-                                                        <label>Pin code 2</label>
-                                                    </div>
-
-                                                    <div class="col-sm-12 col-md-6 col-lg-6">
-                                                        {{ org_extras.pin2 }} 
-                                                    </div>
-                                                </div>
+                                            <div class="row">
+                                              <div class="col-6">
+                                                <label class="form-label fw-bold">Pin code 2</label>
+                                              </div>
+                                              <div class="col-6">
+                                                {{ org_extras.pin2 }}
+                                              </div>
                                             </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                <label>Persons linked to this company:</label>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                &nbsp;
-                                            </div>
+                                          </div>
                                         </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12">
-
-                                            {% for co in linkedpersons %}
-
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                                    <label><img src='{% static "images/person.png" %}'> {{ co.user.legal_first_name }} {{ co.user.legal_last_name }}</label>
-                                                </div>
-                                                <div class="col-sm-12 col-md-5 col-lg-5">
-							<A HREF='{% url 'unlink_delegate' co.delegate.organisation.id co.delegate.email_user %}'><IMG SRC='{% static "images/bin_blue.png" %}' title="Remove"></A>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
+                                      
+                                        <!-- Linked Persons Header -->
+                                        <div class="row mb-2">
+                                          <div class="col-12">
+                                            <label class="form-label fw-bold h5">Persons linked to this company:</label>
+                                          </div>
                                         </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                &nbsp;
-                                            </div>	
-                                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                                *Persons linked to the company are controlled by the company.  The Department cannot manage the list of linked people.
+                                      
+                                        <!-- Linked Persons List -->
+                                        <div class="row mb-3">
+                                          {% for co in linkedpersons %}
+                                            <div class="col-12 d-flex align-items-center mb-2">
+                                              <div class="me-3">
+                                                <img src="{% static 'images/person.png' %}" alt="Person" style="height:20px;">
+                                              </div>
+                                              <div class="flex-grow-1">
+                                                {{ co.user.legal_first_name }} {{ co.user.legal_last_name }}
+                                              </div>
+                                              <div>
+                                                <a href="{% url 'unlink_delegate' co.delegate.organisation.id co.delegate.email_user %}">
+                                                  <img src="{% static 'images/bin_blue.png' %}" alt="Remove" title="Remove" style="height:16px;">
+                                                </a>
+                                              </div>
                                             </div>
-
+                                          {% endfor %}
                                         </div>
-                                    </div>
+                                      
+                                        <!-- Note -->
+                                        <div class="row">
+                                          <div class="col-12 text-muted small">
+                                            *Persons linked to the company are controlled by the company. The Department cannot manage the list of linked people.
+                                          </div>
+                                        </div>
+                                      </div>                                      
                                 </div>
                             </div>
                             {% endif %} 
                         </div>
 
                         {% elif nav_other == "active" %}
-                        <div class="col-sm-12 col-md-9 col-lg-9">
-                            <ul class="nav nav-pills">
-                                <li role="presentation" class="{{ nav_other_applications }}"><a href="{% url "organisation_other_actions" object.pk "applications" %}">Applications</a></li>
-                                <li role="presentation" class="{{ nav_other_approvals }}" ><a href="{% url "organisation_other_actions" object.pk "approvals" %}">Approvals</a></li>
-                                <li role="presentation" class="{{ nav_other_emergency }}" ><a href="{% url "organisation_other_actions" object.pk "emergency" %}">Emergency Works</a></li>
-                                <li role="presentation" class="{{ nav_other_clearance }}" ><a href="{% url "organisation_other_actions" object.pk "clearance" %}">Clearance of Conditions</a></li>
+                        <div class="col-12 col-md-9">
+                            <ul class="nav nav-pills mb-3">
+                              <li class="nav-item">
+                                <a class="nav-link {{ nav_other_applications }}" href="{% url 'organisation_other_actions' object.pk 'applications' %}">
+                                  Applications
+                                </a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link {{ nav_other_approvals }}" href="{% url 'organisation_other_actions' object.pk 'approvals' %}">
+                                  Approvals
+                                </a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link {{ nav_other_emergency }}" href="{% url 'organisation_other_actions' object.pk 'emergency' %}">
+                                  Emergency Works
+                                </a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link {{ nav_other_clearance }}" href="{% url 'organisation_other_actions' object.pk 'clearance' %}">
+                                  Clearance of Conditions
+                                </a>
+                              </li>
                             </ul>
-                            <br>
-                        </div>
+                          </div>                          
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <BR>
 
@@ -419,7 +474,6 @@
                         {% endif %}
                         <p>
                     </div>
-                </div>
             </div>
         </div>
     </div>

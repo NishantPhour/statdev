@@ -54,7 +54,7 @@ var django_ajax_form = {
         	  django_ajax_form.var.form_html = data;
 		  //  $('#vesselModal').remove();
       
-$('#PLvesselModal').hide();
+// $('#PLvesselModal').hide();
 		  $('#PLvesselModal').remove();
 		  $('.modal-backdrop').remove();
                   django_ajax_form.CloseForm();

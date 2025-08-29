@@ -1,148 +1,120 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Workflow</h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Workflow</h3>
     </div>
 
-    <div class="panel-body">
+    <div class="card-body">
         <h5>Workflow</h5>
-        {# TODO: hide the Actions dropdown when no actions can be performed #}
-        <ul>
-
-        {% if workflow_actions %}
-        {% for action in workflow_actions %}
-            <!-- Lodge -->
-            {% if action.routegroup == "lodge" %}
-                {% if may_lodge == "True" %}<li><a href="{% url 'application_lodge' object.pk %}">{{ action.title }}</a></li>{% endif %}
+        <ul class="list-unstyled">
+            {% if workflow_actions %}
+                {% for action in workflow_actions %}
+                    {% if action.routegroup == "lodge" and may_lodge == "True" %}
+                        <li><a href="{% url 'application_lodge' object.pk %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "admin" and may_assign_processor == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'admin' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "manager" and may_submit_approval == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'manager' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "director" and may_assign_director == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'director' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "exec" and may_assign_exec == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'exec' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "assess" and may_assign_assessor == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'assess' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "referral" and may_send_for_referral == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'referral' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "emergency" and may_assign_emergency %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'emergency' action.actionid %}">{{ action.title|default:"Assign to an admin officer" }}</a></li>
+                    {% endif %}
+                    {% if action.routegroup == "creator" and may_assign_to_creator == "True" %}
+                        <li><a href="{% url 'application_nextaction' object.pk 'creator' action.actionid %}">{{ action.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
-            <!-- End Lodge -->
-
-            <!-- Admin Officer/Processor -->
-            {% if action.routegroup == "admin" %}
-                {% if may_assign_processor == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'admin' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-            <!-- End Admin Officer/Processor -->
-
-            <!-- Manager -->
-            {% if action.routegroup == "manager" %}
-                {% if may_submit_approval == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'manager' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-            <!-- End Manager -->
-
-            <!-- Director -->
-            {% if action.routegroup == "director" %}
-                {% if may_assign_director == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'director' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-            <!-- End Director -->
-            {% if action.routegroup == "exec" %}
-                {% if may_assign_exec == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'exec' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-
-            <!-- Assessor -->
-            {% if action.routegroup == "assess" %}
-                {% if may_assign_assessor == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'assess' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-            <!-- Assessor -->
-
-            <!-- Referrals -->
-            {% if action.routegroup == "referral" %}
-                {% if may_send_for_referral == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'referral' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-
-            {% if action.routegroup == "emergency" %}
-            {% if may_assign_emergency %}<li><a href="{% url 'application_nextaction' object.pk 'emergency' action.actionid %}">{% if action.title %}{{ action.title }}{% else %}Assign to an admin officer{% endif %}</a></li>{% endif %}
-            {% endif %}
-            <!-- Referrals -->
-            <!-- Assign to Form Creator -->
-            {% if action.routegroup == "creator" %}
-                {% if may_assign_to_creator == "True" %}<li><a href="{% url 'application_nextaction' object.pk 'creator' action.actionid %}">{{ action.title }}</a></li>{% endif %}
-            {% endif %}
-            <!-- Assign to Form Creator -->
-
-        {% endfor %}
-
-        {% endif %}
-
         </ul>
 
         <h5>Actions</h5>
-        <ul>
-		
-        {% if workflow_actions %}
-
-            {% if may_create_condition == "True-disabled" %}<li><a href="javascript:void();" onclick="django_ajax_form.OpenForm('{% url 'condition_create' object.pk %}','Create Condition');">Create a condition</a></li>{% endif %}
-            {% if mode == 'update' %}{% if may_refer == "True-disabled" %}<li><a onclick="django_ajax_form.OpenForm('{% url 'application_refer' object.pk %}','Add Referral');" href="javascript:void();">Add Referral</a></li>{% endif %}{% endif %}
-            {% if may_generate_pdf == "True" %}<li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>{% endif %}
-
-        {% else %}
-            {% if old_actions == "True" %}
-                {% if may_update %}<li><a href="{% url 'application_update' object.pk %}">Update application</a></li>{% endif %}
-                {% if may_create_condition  %}<li><a href="javascript:void();" onclick="django_ajax_form.OpenForm('{% url 'condition_create' object.pk %}','Create Condition');">Create a condition</a></li>{% endif %}
-                {% if may_refer  %}<li><a href="{% url 'application_refer' object.pk %}">Add Referral</a></li>{% endif %}
-                {% if may_generate_pdf  %}<li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>{% endif %}
+        <ul class="list-unstyled">
+            {% if workflow_actions %}
+                {% if may_create_condition == "True-disabled" %}
+                    <li><a href="javascript:void(0);" onclick="django_ajax_form.OpenForm('{% url 'condition_create' object.pk %}','Create Condition');">Create a condition</a></li>
+                {% endif %}
+                {% if mode == 'update' and may_refer == "True-disabled" %}
+                    <li><a href="javascript:void(0);" onclick="django_ajax_form.OpenForm('{% url 'application_refer' object.pk %}','Add Referral');">Add Referral</a></li>
+                {% endif %}
+                {% if may_generate_pdf == "True" %}
+                    <li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>
+                {% endif %}
+            {% else %}
+                {% if old_actions == "True" %}
+                    {% if may_update %}
+                        <li><a href="{% url 'application_update' object.pk %}">Update application</a></li>
+                    {% endif %}
+                    {% if may_create_condition %}
+                        <li><a href="javascript:void(0);" onclick="django_ajax_form.OpenForm('{% url 'condition_create' object.pk %}','Create Condition');">Create a condition</a></li>
+                    {% endif %}
+                    {% if may_refer %}
+                        <li><a href="{% url 'application_refer' object.pk %}">Add Referral</a></li>
+                    {% endif %}
+                    {% if may_generate_pdf %}
+                        <li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>
+                    {% endif %}
+                {% endif %}
             {% endif %}
-        {% endif %}
-
         </ul>
 
-        <ul>
-            {% if object.state == 14 %}
-               <!-- do nothing -->
-            {% else %}
+        <ul class="list-unstyled">
+            {% if object.state != 14 %}
                 {% if may_update == "True" %}
-                      <li><a href="{% url 'application_update' object.pk %}">{% if formcomponent.update.title %}{{ formcomponent.update.title }}{% else %} Update application{% endif %}</a></li>
+                    <li><a href="{% url 'application_update' object.pk %}">{{ formcomponent.update.title|default:"Update application" }}</a></li>
                 {% endif %}
-
-
                 {% if may_assign_to_person == "True" %}
-                  <li><a href="{% url 'application_assign_person' object.pk %}">{% if object.assignee != None %} Reassign{% else %}Assign Person{% endif %}</a></li>
+                    <li><a href="{% url 'application_assign_person' object.pk %}">{{ object.assignee|yesno:"Reassign,Assign Person" }}</a></li>
                 {% endif %}
             {% endif %}
         </ul>
     </div>
 
-
-
-    <div class="panel-body">
-
-
+    <div class="card-body">
         <h4>Status:</h4>
+        <p style="display: none;">{{ object.get_state_display }}</p>
+        <p>With {{ object.route_status }}</p>
 
-        <p style='display: none' >{{ object.get_state_display }}</p>
-	<p>With {{ object.route_status }}</p>
-	<div style='display: none'>
-        <h4>Assigned Group:</h4>
+        <div style="display: none;">
+            <h4>Assigned Group:</h4>
+            <p>{% if object.group %}{{ object.group }}{% endif %}</p>
+        </div>
+
+        <h4>Assigned to:</h4>
         <p>
-            {% if object.group %}
-               {{ object.group  }}
+            {% if assignee %}
+                {% if assignee.legal_first_name %}
+                    {{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
+                {% else %}
+                    {{ assignee.email }}
+                {% endif %}
+            {% else %}
+                -- 
             {% endif %}
         </p>
-	</div>
-        <h4>Assigned to:</h4>
-        {% if assignee %}
-        <p>
-        {% if assignee.legal_first_name %}
-		{{ assignee.legal_first_name }} {{ assignee.legal_first_name }}
-        {% else %}
-		{{ assignee.email }}
-        {% endif %}
-        </p>
-        {% else %}
-        <p>--</p>
-        {% endif %}
 
-	
         <h4>Assigned Officer:</h4>
-        {% if assigned_officer %}
         <p>
-        {% if assigned_officer.legal_first_name %}
-                {{ assigned_officer.legal_first_name }} {{ assigned_officer.legal_last_name }}
-        {% else %}
-                {{ assigned_officer.email }}
-        {% endif %}
+            {% if assigned_officer %}
+                {% if assigned_officer.legal_first_name %}
+                    {{ assigned_officer.legal_first_name }} {{ assigned_officer.legal_last_name }}
+                {% else %}
+                    {{ assigned_officer.email }}
+                {% endif %}
+            {% else %}
+                -- 
+            {% endif %}
         </p>
-        {% else %}
-        <p>--</p>
-        {% endif %}
-
     </div>
 </div>

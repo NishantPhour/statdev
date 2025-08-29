@@ -4,22 +4,25 @@
 
 
 
-           <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="publication_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#publication_collapse" aria-expanded="false" aria-controls="publication_collapse">
-                            Publication
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse {{ collapse.publication }}" id="publication_collapse" role="tabpanel" aria-labelledby="publication_heading">
-                    <div class="panel-body">
+         <div class="card">
+            <div class="card-header fw-bold h4" style="padding:30px;">
+                <div class="row">
+                    <div class="col-6">
+                        Publication
+                    </div>
+                    <div class="col-6 text-end">
+                          <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box10-card-body" onclick=""></i>
+                    </div>
+              </div> 
+            </div>
+            <div class="collapse show {{ collapse.publication }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                <div class="card-body" id="box10-card-body">
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 <label>Application published in newspaper</label>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
 				<div id='newspaper_table'>
             	                    {% include 'applications/application_publication_newspaper_table.html' %}
                                 </div>
@@ -34,7 +37,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body">
+                    
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-10">
                                 <label>Application published on Department's website</label>
@@ -59,7 +63,7 @@
                                 </td>
                             </div>
 
-                            <div class="panel-body">
+                            <div class="card-body">
                                 <table class="table table-bordered table-striped">
                                     <tr>
                                         <th class="col-sm-5 col-md-5 col-lg-5">Orignal Document</th>
@@ -130,13 +134,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
 				    <label>Received Feedback</label>
                             </div>
 
-                            <div class="panel-body">
+                            <div class="card-body">
 				<div id='feedback_review_table'>
                                          {% include "applications/application_feedback_review_table.html" %}
 				</div>
@@ -154,7 +158,7 @@
                     </div>
 
 
-                    <div class="panel-body">
+                    <div class="card-body">
                         {% if hidden.publish_publication_feedback_draft == "False" %}
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-4">
@@ -196,7 +200,7 @@
                         {% endif %}
                     </div>
                     {% if hidden.publication_feedback_draft == "False" %}
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 <label>Received Feedback (Draft)</label>
@@ -226,7 +230,7 @@
 
                     {% if hidden.publication_feedback_final == "False" %}
 
-                    <div class="panel-body">
+                    <div class="card-body">
                         {% if hidden.publish_publication_feedback_final == "False" %}
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-3">
@@ -274,7 +278,7 @@
 
                    </div>
 
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 <label>Received Feedback (Final)</label>
@@ -302,7 +306,7 @@
                      {% endif %}
 
 
-			<div class="panel-body">
+			<div class="card-body">
                         {% if hidden.publish_publication_feedback_determination == "False" %}
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-3">
@@ -349,7 +353,7 @@
 
 		   
                   {% if hidden.publication_feedback_determination == "False" %}
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 <label>Received Feedback (Determination)</label>
@@ -376,4 +380,6 @@
 
                 </div>
             </div>
+            </div>
+            <br>
           {% endif %}

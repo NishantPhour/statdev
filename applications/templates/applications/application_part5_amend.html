@@ -14,343 +14,408 @@
     <div class="row">
             {% include "applications/application_side_menu.html" %}
         <!-- Main panel start -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="col-sm-8 col-md-9 col-lg-9">
             <!-- Applicant panel -->
             {% if hidden.applicant == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="applicant_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#applicant_collapse" aria-expanded="false" aria-controls="application_collapse">
-                            Applicant
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                                Applicant
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.applicant }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.applicant }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box1-card-body">
                         {% include "applications/applicant_snippet.html" %}
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
             {% if hidden.title == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#title_collapse" aria-expanded="true" aria-controls="title_collapse">
-                            Title
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                                Title
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.title }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box2-card-body">
                         <p>{{ object.title }}</p>
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.proposed_activities == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#proposed_activities_collapse" aria-expanded="false" aria-controls="proposed_activities_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Proposed Commercial Acts and Activites
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.proposed_activities }} " id="proposed_activities_collapse" role="tabpanel" aria-labelledby="proposed_activities_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.proposed_activities }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box3-card-body">
                         <p>{{ object.description }}</p>
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.certificate_commerical_acts_and_activities == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#certificate_commerical_acts_and_activities_collapse" aria-expanded="false" aria-controls="certificate_commerical_acts_and_activities_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Certificate of Title Information
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box4-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.certificate_commerical_acts_and_activities }}" id="certificate_commerical_acts_and_activities_collapse" role="tabpanel" aria-labelledby="certificate_commerical_acts_and_activities_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Certificate of Title Volume</Label>
+                
+                <div class="collapse show {{ collapse.certificate_commerical_acts_and_activities }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box4-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Certificate of Title Volume</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ certificate_of_title_volume }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Folio</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Folio</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ folio }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Diagram / Plan / Deposit Number</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Diagram / Plan / Deposit Number</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ diagram_plan_deposit_number }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Subject Lot Lot Number</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Subject Lot Lot Number</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ lot }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-8">
-                            <div class="col-lg-12">
-                                <label>Location</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Location</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ location }}
                             </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Reserve Number</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Reserve Number</label>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-9">
                                 {{ reserve_number }}
                             </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Street Number & Name</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Street Number &amp; Name</label>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-md-9">
                                 {{ street_number_and_name }}
                             </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Town / Suburb</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Town / Suburb</label>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-9">
                                 {{ town_suburb }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Nearest road intersection</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Nearest road intersection</label>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-md-9">
                                 {{ nearest_road_intersection }}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.river_reserve_lease_section_29 == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="river_reserve_lease_section_29_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#river_reserve_lease_section_29_collapse" aria-expanded="false" aria-controls="river_reserve_lease_section_29_collapse">
-                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 29
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 29)
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box5-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.river_reserve_lease_section_29 }}" id="river_reserve_lease_section_29_collapse" role="tabpanel" aria-labelledby="river_reserve_lease_section_29_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                If you intend to apply for a lease in relation to this proposed develeopment, you will need to complete a seperate Form - Application for a River reserve lease - and lodge it concurrently with this application. Note " River reserve leases will not be granted for developments requiring approval under section 70 of the Act - to which the proposed lease relates - unless that approval has been granted.
+                
+                <div class="collapse show {{ collapse.river_reserve_lease_section_29 }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box5-card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    If you intend to apply for a lease in relation to this proposed development, you will need to complete a separate Form – Application for a River reserve lease – and lodge it concurrently with this application. 
+                                    <strong>Note:</strong> River reserve leases will not be granted for developments requiring approval under section 70 of the Act – to which the proposed lease relates – unless that approval has been granted.
+                                </p>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Does the development reqiure a River reserve lease?</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Does the development require a River reserve lease?</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if object.river_lease_require_river_lease is True %}
-                                Yes
+                                    Yes
                                 {% else %}
-                                No
+                                    No
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>If Yes, Please Attach application. (PDF)</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>If Yes, Please Attach application (PDF)</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if object.river_lease_scan_of_application %}
-				<A HREF='{{ object.river_lease_scan_of_application.file_url }}' target="new_tab_{{ object.river_lease_scan_of_application.id }}">{{ river_lease_scan_of_application_short }}</A>
+                                    <a href="{{ object.river_lease_scan_of_application.file_url }}" target="new_tab_{{ object.river_lease_scan_of_application.id }}">
+                                        {{ river_lease_scan_of_application_short }}
+                                    </a>
                                 {% else %}
-                                No Attachment Added
+                                    No Attachment Added
                                 {% endif %}
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.river_reserve_lease_section_32 == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="river_reserve_lease_section_32_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#river_reserve_lease_section_32_collapse" aria-expanded="false" aria-controls="river_reserve_lease_section_32_collapse">
-                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 32
-                             <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 32)
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box6-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.river_reserve_lease_section_32 }}" id="river_reserve_lease_section_32_collapse" role="tabpanel" aria-labelledby="river_reserve_lease_section_32_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                based on screen shot something is surposed to go here..  but not sure what!
+                
+                <div class="collapse show {{ collapse.river_reserve_lease_section_32 }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box6-card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    Based on screenshot something is supposed to go here... but not sure what!
+                                </p>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Does the proposed development involve an activity in the River reserve that will require a River reserve licence?</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Does the proposed development involve an activity in the River reserve that will require a River reserve licence?</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if object.river_lease_reserve_licence is True %}
-                                Yes
+                                    Yes
                                 {% else %}
-                                No
+                                    No
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>If Yes, Enter application number (Application must have a been successfully submitted)</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>If Yes, Enter application number (Application must have been successfully submitted)</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if object.river_lease_application_number %}
-                                {{ object.river_lease_application_number }}
+                                    {{ object.river_lease_application_number }}
                                 {% else %}
-                                <i>No Application Number</i>
+                                    <i>No Application Number</i>
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
+            <br>
             {% endif %}
             {% if hidden.details_of_proposed_development == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="details_of_proposed_development_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#details_of_proposed_development_collapse" aria-expanded="false" aria-controls="details_of_proposed_development_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Details of Proposed Development
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box7-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.details_of_proposed_development }}" id="details_of_proposed_development_collapse" role="tabpanel" aria-labelledby="details_of_proposed_development_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Estimated cost of development (AU$)</Label>
+                
+                <div class="collapse show {{ collapse.details_of_proposed_development }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box7-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Estimated cost of development (AU$)</label>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-9">
                                 {{ object.cost }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Current use of land</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Current use of land</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ object.proposed_development_current_use_of_land }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Proposed development</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Proposed development</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ object.proposed_development_description }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Attach a full set of plans</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Attach a full set of plans</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if proposed_development_plans_list %}
-
-                                {% for doc in proposed_development_plans_list %}
-				<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc.path_short }}</A></div>
-                                {% endfor %}
+                                    {% for doc in proposed_development_plans_list %}
+                                        <div class="mb-1">
+                                            <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc.path_short }}</a>
+                                        </div>
+                                    {% endfor %}
                                 {% else %}
-                                No Attachments
+                                    No Attachments
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
+            <br>
             {% endif %}
             {% if hidden.landowner_consent == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="landowner_consent_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#landowner_consent_collapse" aria-expanded="false" aria-controls="landowner_consent_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Landowner Consent
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box8-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.landowner_consent }} " id="landowner_consent_collapse" role="tabpanel" aria-labelledby="landowner_consent_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                Print <a href=''>this document</a> and have it signed by each landowner (or body responsible for management.<BR><BR>
-                                <label>Attached signed documents to this application.</label>
+                
+                <div class="collapse show {{ collapse.landowner_consent }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box8-card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    Print <a href="">this document</a> and have it signed by each landowner (or body responsible for management).<br><br>
+                                    <label class="fw-bold">Attach signed documents to this application.</label>
+                                </p>
                             </div>
-                            <div class="col-lg-4">
+                        </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Attachments</label>
+                            </div>
+                            <div class="col-md-9">
                                 {% if land_owner_consent_list %}
-
-                                {% for doc in land_owner_consent_list %}
-				<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc.path_short }}</A></div>
-                                {% endfor %}
+                                    {% for doc in land_owner_consent_list %}
+                                        <div class="mb-1">
+                                            <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc.path_short }}</a>
+                                        </div>
+                                    {% endfor %}
                                 {% else %}
-                                No Attachments Added
+                                    No Attachments Added
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
+            <br>
             {% endif %}
             {% if hidden.deed == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="deed_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#deed_collapse" aria-expanded="false" aria-controls="deed_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Deed
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box9-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.deed }}" id="deed_collapse" role="tabpanel" aria-labelledby="deed_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.deed }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box9-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 Print <a href=''>this deed</a>, sign it and attach it to this application<BR>
@@ -362,6 +427,7 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.publication == "False" %}
@@ -369,170 +435,101 @@
             {% endif %}
 
             {% if hidden.stakeholdercommunication == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="stakeholder_communication_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#stakeholder_communication_collapse" aria-expanded="false" aria-controls="stakeholder_communication_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Stakeholder Communication
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse {{ collapse.stakeholder_communication }}" id="stakeholder_communication_collapse" role="tabpanel" aria-labelledby="stakeholder_communication_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label><u>Application</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <label>The letter to stakeholders</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    Generated Letter.PDF
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-
-                                <div class="col-lg-6">
-                                    <label>Emailed to</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="col-lg-12">
-                                        joe@gmail.com (Jow Captian - Applicat)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        fredauthorised@agent.com (Fred Authorised - Submitter)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        example@a.com (Joe Talkback - Feedback)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@perth.wa.gov.au (Perth City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@joon.wqa.gov.au (Joonfaloop City - Referral)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <label><u>Draft Report</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <label>The letter to stakeholders</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    Generated Letter.PDF
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-
-                                <div class="col-lg-6">
-                                    <label>Emailed to</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="col-lg-12">
-                                        joe@gmail.com (Jow Captian - Applicat)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        fredauthorised@agent.com (Fred Authorised - Submitter)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        example@a.com (Joe Talkback - Feedback)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@perth.wa.gov.au (Perth City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@joon.wqa.gov.au (Joonfaloop City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-6">Swan River Trust board</div> <div class="col-lg-6"> (Fred Van Dam 24/02/2017) </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <label><u>Final Report</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <label>The letter to stakeholders</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    Generated Letter.PDF
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-
-                                <div class="col-lg-6">
-                                    <label>Emailed to</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="col-lg-12">
-                                        joe@gmail.com (Jow Captian - Applicat)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        fredauthorised@agent.com (Fred Authorised - Submitter)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        example@a.com (Joe Talkback - Feedback)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@perth.wa.gov.au (Perth City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@joon.wqa.gov.au (Joonfaloop City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-6">Swan River Trust board</div> <div class="col-lg-6"> (Fred Van Dam 24/02/2017)</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <label><u>Determination</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <label>The letter to stakeholders</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    Generated Letter.PDF
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-
-                                <div class="col-lg-6">
-                                    <label>Emailed to</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="col-lg-12">
-                                        joe@gmail.com (Jow Captian - Applicat)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        fredauthorised@agent.com (Fred Authorised - Submitter)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        example@a.com (Joe Talkback - Feedback)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@perth.wa.gov.au (Perth City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        info@joon.wqa.gov.au (Joonfaloop City - Referral)
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-6">Swan River Trust board</div> <div class="col-lg-6"> <input type='checkbox' > Click here when done.</div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                    </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box10-card-body" onclick=""></i>
+                        </div>
+                </div> 
+                </div>
+                
+                <div class="collapse show {{ collapse.stakeholder_communication }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box10-card-body">
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <label class="fw-bold text-decoration-underline">Application</label>
+                          </div>
+                          <div class="col-6 fw-bold">The letter to stakeholders</div>
+                          <div class="col-6">Generated Letter.PDF</div>
+                          <div class="col-6 fw-bold">Emailed to</div>
+                          <div class="col-6">
+                            <div>joe@gmail.com (Jow Captian - Applicat)</div>
+                            <div>fredauthorised@agent.com (Fred Authorised - Submitter)</div>
+                            <div>example@a.com (Joe Talkback - Feedback)</div>
+                            <div>info@perth.wa.gov.au (Perth City - Referral)</div>
+                            <div>info@joon.wqa.gov.au (Joonfaloop City - Referral)</div>
+                          </div>
+                        </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <label class="fw-bold text-decoration-underline">Draft Report</label>
+                          </div>
+                          <div class="col-6 fw-bold">The letter to stakeholders</div>
+                          <div class="col-6">Generated Letter.PDF</div>
+                          <div class="col-6 fw-bold">Emailed to</div>
+                          <div class="col-6">
+                            <div>joe@gmail.com (Jow Captian - Applicat)</div>
+                            <div>fredauthorised@agent.com (Fred Authorised - Submitter)</div>
+                            <div>example@a.com (Joe Talkback - Feedback)</div>
+                            <div>info@perth.wa.gov.au (Perth City - Referral)</div>
+                            <div>info@joon.wqa.gov.au (Joonfaloop City - Referral)</div>
+                            <div class="row">
+                              <div class="col-6 fw-bold">Swan River Trust board</div>
+                              <div class="col-6">(Fred Van Dam 24/02/2017)</div>
+                            </div>
+                          </div>
+                        </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <label class="fw-bold text-decoration-underline">Final Report</label>
+                          </div>
+                          <div class="col-6 fw-bold">The letter to stakeholders</div>
+                          <div class="col-6">Generated Letter.PDF</div>
+                          <div class="col-6 fw-bold">Emailed to</div>
+                          <div class="col-6">
+                            <div>joe@gmail.com (Jow Captian - Applicat)</div>
+                            <div>fredauthorised@agent.com (Fred Authorised - Submitter)</div>
+                            <div>example@a.com (Joe Talkback - Feedback)</div>
+                            <div>info@perth.wa.gov.au (Perth City - Referral)</div>
+                            <div>info@joon.wqa.gov.au (Joonfaloop City - Referral)</div>
+                            <div class="row">
+                              <div class="col-6 fw-bold">Swan River Trust board</div>
+                              <div class="col-6">(Fred Van Dam 24/02/2017)</div>
+                            </div>
+                          </div>
+                        </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <label class="fw-bold text-decoration-underline">Determination</label>
+                          </div>
+                          <div class="col-6 fw-bold">The letter to stakeholders</div>
+                          <div class="col-6">Generated Letter.PDF</div>
+                          <div class="col-6 fw-bold">Emailed to</div>
+                          <div class="col-6">
+                            <div>joe@gmail.com (Jow Captian - Applicat)</div>
+                            <div>fredauthorised@agent.com (Fred Authorised - Submitter)</div>
+                            <div>example@a.com (Joe Talkback - Feedback)</div>
+                            <div>info@perth.wa.gov.au (Perth City - Referral)</div>
+                            <div>info@joon.wqa.gov.au (Joonfaloop City - Referral)</div>
+                            <div class="row">
+                              <div class="col-6 fw-bold">Swan River Trust board</div>
+                              <div class="col-6">
+                                <input type="checkbox"> Click here when done.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.referrals == "False" %}
@@ -546,252 +543,245 @@
             <!-- Workflow - Assessment -->
 
             {% if hidden.assessments == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="assessment_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#assessment_collapse" aria-expanded="false" aria-controls="assessment_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Assessment
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box11-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.assessments }}" id="assessment_collapse" role="tabpanel" aria-labelledby="assessment_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {% if hidden.assessments_draft_report == "False" %}
-                            <div class="col-lg-12">
-                                <label><u>Draft Report</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    <label>Current Version of Report</label>
-                                </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_new_draft %}
-				    <A HREF='{{ object.document_new_draft.file_url }}' target="new_tab_{{ object.document_new_draft.id }}" >Assessment Report Version 2.PDF</A>
-                                    {% else %}
-                                    {% if object.document_draft %}
-				    <A HREF='{{ object.document_draft.file_url }}' target="new_tab_{{ object.document_draft.id }}">Assessment Report.PDF</A>
-                                    {% else %}
-                                    No Attachment
-                                    {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            {% if hidden.assessments_swan_river_trust_board_feedback == "False" %}
-                            <div class="col-lg-12">
-
-                           	    <div class="col-lg-3">
-                                    <label>Swan River Trust Board Feedback</label>
-                                </div>
-                                <div class="col-lg-9">
-                                    {% if object.swan_river_trust_board_feedback %}
-				    <A HREF='{{ object.swan_river_trust_board_feedback.file_url }}' target="new_tab_{{ object.swan_river_trust_board_feedback.id }}">Feedback.PDF</A>
-                                    {% else %}
-                                    No Attachment
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            {% endif %}
-
-                            {% if hidden.assessments_new_draft == "False" %}
-                                {% if object.document_new_draft %}
+                
+                <div class="collapse show {{ collapse.assessments }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box11-card-body">
+                        <div class="row">
+                          {% if hidden.assessments_draft_report == "False" %}
+                          <div class="col-12 mb-2">
+                            <label class="fw-bold text-decoration-underline">Draft Report</label>
+                          </div>
+                      
+                          <div class="row mb-2">
+                            <div class="col-3 fw-bold">Current Version of Report</div>
+                            <div class="col-9">
+                              {% if object.document_new_draft %}
+                                <a href="{{ object.document_new_draft.file_url }}" target="new_tab_{{ object.document_new_draft.id }}">Assessment Report Version 2.PDF</a>
+                              {% else %}
+                                {% if object.document_draft %}
+                                  <a href="{{ object.document_draft.file_url }}" target="new_tab_{{ object.document_draft.id }}">Assessment Report.PDF</a>
                                 {% else %}
-                                <div class="col-lg-12">
-
-                                    <div class="col-lg-3">
-                                        <label>Attach new version of Report</label>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        {% if object.document_new_draft %}
-					<A HREF='{{ object.document_new_draft.file_url }}' target="new_tab_{{ object.document_new_draft.id }}">Assessment Report Version 2.PDF</A>
-                                        {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                        {% endif %}
-                                    </div>
-                                </div>
+                                  No Attachment
                                 {% endif %}
-                            {% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    <label> Start Date</label>
-                                </div>
-                                <div class="col-lg-9">
-                                    {{ object.assessment_start_date }}
-                                </div>
+                              {% endif %}
                             </div>
-
-                            {% if hidden.swanriverpostaladdress == "False" %}
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                       <label>To be posted to:</Label>
-                                </div>
-                                <div class="col-lg-9">
-                                    <strong>
-                                    Swan River Trust Board, attn Peter Secretary <BR>
-                                    PO Box 3344<br>
-                                    Perth WA 6000<br>
-                                    </strong>
-                                </div>
-                             </div>
-                             {% endif %}
-
-                       {% if hidden.publish_publication_feedback_draft == "False" %}
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-3">
-                                <label>Signed copy (signed by DG) of draft report</label>
-                            </div>
-                            <div class="col-lg-9">
-                                {% if object.document_draft_signed.upload.name %}
-				<A HREF='{{ object.document_draft_signed.file_url }}' target="new_tab_{{ object.document_draft_signed.id }}">Signed Document.pdf</A>
-                                {% else %}
-                                {% if may_update == "True" %}
-                                <A HREF="{% url 'application_update' object.pk %}">Attach File</A>
-                                {% else %}
+                          </div>
+                      
+                          {% if hidden.assessments_swan_river_trust_board_feedback == "False" %}
+                          <div class="row mb-2">
+                            <div class="col-3 fw-bold">Swan River Trust Board Feedback</div>
+                            <div class="col-9">
+                              {% if object.swan_river_trust_board_feedback %}
+                                <a href="{{ object.swan_river_trust_board_feedback.file_url }}" target="new_tab_{{ object.swan_river_trust_board_feedback.id }}">Feedback.PDF</a>
+                              {% else %}
                                 No Attachment
-                                {% endif %}
-                                {% endif %}
+                              {% endif %}
                             </div>
-                        </div>
-						{% endif %}
-
-                             <div class="col-lg-12">
-                                 <div class="col-lg-3">
-                                     <label> {{ workflow.assessment_extra.label }}</label>
-                                 </div>
-                                 <div class="col-lg-9">
-                                     <strong style='{% if workflow.assessment_extra.color %}color: {{ workflow.assessment_extra.color }} {% endif %}' > {{ workflow.assessment_extra.description }} </strong>
-                                 </div>
+                          </div>
+                          {% endif %}
+                      
+                          {% if hidden.assessments_new_draft == "False" %}
+                            {% if object.document_new_draft %}
+                            {% else %}
+                            <div class="row mb-2">
+                              <div class="col-3 fw-bold">Attach new version of Report</div>
+                              <div class="col-9">
+                                {% if object.document_new_draft %}
+                                  <a href="{{ object.document_new_draft.file_url }}" target="new_tab_{{ object.document_new_draft.id }}">Assessment Report Version 2.PDF</a>
+                                {% else %}
+                                  <a href="{% url 'application_update' object.pk %}">
+                                    {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                  </a>
+                                {% endif %}
                               </div>
-                        <div class="col-lg-12">
-                        {% if may_update_assessment_draft == "True" %}
-                        <a href="{% url 'application_update' object.pk %}" class="btn btn-primary" role="button">
-                            Update
-                        </a>
+                            </div>
+                            {% endif %}
+                          {% endif %}
+                          {% endif %}
 
-                        {% endif %}
-                        </div>
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">Start Date</div>
+                            <div class="col-9">{{ object.assessment_start_date }}</div>
+                          </div>
+                          
+                          {% if hidden.swanriverpostaladdress == "False" %}
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">To be posted to:</div>
+                            <div class="col-9">
+                              <strong>
+                                Swan River Trust Board, attn Peter Secretary<br>
+                                PO Box 3344<br>
+                                Perth WA 6000
+                              </strong>
+                            </div>
+                          </div>
+                          {% endif %}
+                          
+                          {% if hidden.publish_publication_feedback_draft == "False" %}
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">Signed copy (signed by DG) of draft report</div>
+                            <div class="col-9">
+                              {% if object.document_draft_signed.upload.name %}
+                                <a href="{{ object.document_draft_signed.file_url }}" target="new_tab_{{ object.document_draft_signed.id }}">Signed Document.pdf</a>
+                              {% else %}
+                                {% if may_update == "True" %}
+                                  <a href="{% url 'application_update' object.pk %}">Attach File</a>
+                                {% else %}
+                                  No Attachment
+                                {% endif %}
+                              {% endif %}
+                            </div>
+                          </div>
+                          {% endif %}
+                          
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">{{ workflow.assessment_extra.label }}</div>
+                            <div class="col-9">
+                              <strong style="{% if workflow.assessment_extra.color %}color: {{ workflow.assessment_extra.color }}{% endif %}">
+                                {{ workflow.assessment_extra.description }}
+                              </strong>
+                            </div>
+                          </div>
+                          
+                          {% if may_update_assessment_draft == "True" %}
+                          <div class="row mb-3">
+                            <div class="col-12">
+                              <a href="{% url 'application_update' object.pk %}" class="btn btn-primary" role="button">Update</a>
+                            </div>
+                          </div>
+                          {% endif %}
+                          
 
                         {% endif %}
 
                         </div>
                         {% if hidden.assessments_draft_report_after_public_consultation == "False" %}
                          <BR>
-                        <div class="col-lg-12">
-                            <div class="col-lg-12">
-                                <label><u>Draft Report after public consultation</u></label>
-                            </div>
-							{% if hidden.reportandmemoprint == "False" %}
-							 <div class="col-lg-12">
-                                 <div class="col-lg-12">
-                                     <label> Print the report and memo and send to Director General</label>
-                                 </div>
-                             </div>
-							{% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Attach new version of draft report
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                  <label class="fw-bold text-decoration-underline">Draft Report after public consultation</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_new_draft_v3 %}
-				    <A HREF='{{ object.document_new_draft_v3.file_url }}' target="new_tab_{{ object.document_new_draft_v3.id }}">Assessment Report Version 3.PDF</A>
-                                    {% else %}
-                                    <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
+                              </div>
+                              
+                              {% if hidden.reportandmemoprint == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-12 fw-bold">
+                                  Print the report and memo and send to Director General
                                 </div>
-
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Memo
+                              </div>
+                              {% endif %}
+                              
+                              <div class="row mb-3">
+                                <div class="col-3 fw-bold">Attach new version of draft report</div>
+                                <div class="col-9">
+                                  {% if object.document_new_draft_v3 %}
+                                    <a href="{{ object.document_new_draft_v3.file_url }}" target="new_tab_{{ object.document_new_draft_v3.id }}">Assessment Report Version 3.PDF</a>
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_memo %}
-				    <A HREF='{{ object.document_memo.file_url }}' target="new_tab_{{ object.document_memo.id }}">Memo.PDF</A>
-                                    {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
-                                 </div>
-                            </div>
-
-                        </div>
+                              </div>
+                              
+                              <div class="row mb-3">
+                                <div class="col-3 fw-bold">Memo</div>
+                                <div class="col-9">
+                                  {% if object.document_memo %}
+                                    <a href="{{ object.document_memo.file_url }}" target="new_tab_{{ object.document_memo.id }}">Memo.PDF</a>
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
+                                </div>
+                              </div>                              
                         {% endif %}
 
                         {% if hidden.assessments_determination_and_briefing_note == "False" %}
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-12">
-                                <label><u>Determination and Briefing Note</u></label>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                              <label class="fw-bold text-decoration-underline">Determination and Briefing Note</label>
                             </div>
-							{% if hidden.finalreportdetermination == "False" %}
-                             <div class="col-lg-12">
-                                 <div class="col-lg-12">
-                                     <label> Print the determination, breifing note and final report and send to the Director General</label>
-                                 </div>
-                             </div>
-                            {% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Determination
-                                </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_determination %}
-				    <A HREF='{{ object.document_determination.file_url }}' target="new_tab_{{ object.document_determination.id }}">Determination.PDF</A>
-                                    {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
-
-                                </div>
-
+                          </div>
+                          
+                          {% if hidden.finalreportdetermination == "False" %}
+                          <div class="row mb-3">
+                            <div class="col-12 fw-bold">
+                              Print the determination, briefing note and final report and send to the Director General
                             </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Briefing Note
-                                </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_briefing_note %}
-				    <A HREF='{{ object.document_briefing_note.file_url }}' target="new_tab_{{ object.document_briefing_note.id }}">Briefing.PDF</A>
-                                    {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
-                                </div>
-
+                          </div>
+                          {% endif %}
+                          
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">Determination</div>
+                            <div class="col-9">
+                              {% if object.document_determination %}
+                                <a href="{{ object.document_determination.file_url }}" target="new_tab_{{ object.document_determination.id }}">Determination.PDF</a>
+                              {% else %}
+                                <a href="{% url 'application_update' object.pk %}">
+                                  {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                </a>
+                              {% endif %}
                             </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                   	Final Report
-                                </div>
-                                <div class="col-lg-9">
-				    {% if object.document_final_signed %}
-				    <A HREF='{{ object.document_final_signed.file_url }}' target="new_tab_{{ object.document_final_signed.id }}">Signed Document.pdf</A>
-
-                                    {% else %}
-                                            No Attachment
-                                    {% endif %}
-                                </div>
-
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">Briefing Note</div>
+                            <div class="col-9">
+                              {% if object.document_briefing_note %}
+                                <a href="{{ object.document_briefing_note.file_url }}" target="new_tab_{{ object.document_briefing_note.id }}">Briefing.PDF</a>
+                              {% else %}
+                                <a href="{% url 'application_update' object.pk %}">
+                                  {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                </a>
+                              {% endif %}
                             </div>
-
-
-                        </div>
+                          </div>
+                          
+                          <div class="row mb-3">
+                            <div class="col-3 fw-bold">Final Report</div>
+                            <div class="col-9">
+                              {% if object.document_final_signed %}
+                                <a href="{{ object.document_final_signed.file_url }}" target="new_tab_{{ object.document_final_signed.id }}">Signed Document.pdf</a>
+                              {% else %}
+                                No Attachment
+                              {% endif %}
+                            </div>
+                          </div>
+                          
                         {% endif %}
 
                         {% if may_update == "True" %}
-                        <div class="col-lg-12">
-
-                                <a class="btn btn-primary" role="button" href="{% url 'application_update' object.pk %}">{% if formcomponent.update.title %}{{ formcomponent.update.title }}{% else %} Update application{% endif %}</a>
-                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                              <a class="btn btn-primary" role="button" href="{% url 'application_update' object.pk %}">
+                                {% if formcomponent.update.title %}
+                                  {{ formcomponent.update.title }}
+                                {% else %}
+                                  Update application
+                                {% endif %}
+                              </a>
+                            </div>
+                          </div>                          
                         {% endif %}
 
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
 

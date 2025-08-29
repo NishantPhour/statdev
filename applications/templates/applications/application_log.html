@@ -1,18 +1,19 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Logs</h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Logs</h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <h5>Communications</h5>
-        <p><a href="{% url 'application_comms' object.pk %}">Show</a> | <a href="{% url 'application_comms_create' object.pk %}">Add Entry</a></p>
+        <p>
+            <a href="{% url 'application_comms' object.pk %}">Show</a> |
+            <a href="{% url 'application_comms_create' object.pk %}">Add Entry</a>
+        </p>
         <hr />
         <h5>Actions</h5>
-        <ul>
-        <!-- Action log -->
-        {% if may_view_action_log == "True" %}<li><a href="{% url 'application_actions' object.pk %}">Action Log</a></li>{% endif %}
-        <!-- Action log end -->
+        <ul class="list-unstyled">
+            {% if may_view_action_log == "True" %}
+                <li><a href="{% url 'application_actions' object.pk %}">Action Log</a></li>
+            {% endif %}
         </ul>
     </div>
 </div>
-
-

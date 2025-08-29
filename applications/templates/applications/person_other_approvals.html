@@ -1,94 +1,57 @@
 {% load static %}
 
-<div class="panel panel-default">
-    <div class="panel-collapse collapse in" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
-        <div class="panel-body">
+<div class="card">
+    <div class="card-body">
             <div class="row">
-                <form action="" method="get">
-
-                   <input type='hidden' name='action' value='search'>
-
-                    <div class="col-sm-12 col-lg-9">
-                        <!-- RES -->
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>From Issue Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                        <input class="dateinput form-control" id="id_from_date" name="from_date" value="{{ from_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>To Issue Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                  <input class="dateinput form-control" id="id_to_date" name="to_date" value="{{ to_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                </div>
-
-
-
-                    <div class="col-sm-12 col-lg-12">
-                        <!-- RES -->
-
-
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Type:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_apptype" name="apptype">
-                                    <option value="" >All</option>
-                                    {% for at in app_apptypes %}
-                                    {% if apptype == at.0 %}
-                                    <option selected="selected" value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% else %}
-                                    <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% endif %}
-
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Status:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_appstatus" name="appstatus">
-                                    <option value="" selected="selected">All</option>
-                                    {% for at in app_appstatus %}
-                                    {% if appstatus == at.0 %}
-                                    <option selected value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% else %}
-                                    <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
+                <form action="" method="get" class="row g-3">
+                    <input type="hidden" name="action" value="search">
+                  
+                    <!-- From Issue Date -->
+                    <div class="col-md-4">
+                      <label for="id_from_date" class="form-label">From Issue Date:</label>
+                      <input type="text" class="form-control dateinput" id="id_from_date" name="from_date" value="{{ from_date }}" autocomplete="off">
                     </div>
-                    <div class="col-sm-12 col-lg-12">
-                        <div class="col-sm-12 col-lg-9">
-
-                            <div class="col-sm-12 col-lg-12">
-                                <label for="search_field">Keywords:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <input id="search_field" type="text" class="form-control" name="q" placeholder="Enter Keywords" value="{{ query_string }}">
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                            </div>
-                        </div>
+                  
+                    <!-- To Issue Date -->
+                    <div class="col-md-4">
+                      <label for="id_to_date" class="form-label">To Issue Date:</label>
+                      <input type="text" class="form-control dateinput" id="id_to_date" name="to_date" value="{{ to_date }}" autocomplete="off">
                     </div>
-
-                </form>
+                  
+                    <!-- Type -->
+                    <div class="col-md-4">
+                      <label for="id_apptype" class="form-label">Type:</label>
+                      <select class="form-select" id="id_apptype" name="apptype">
+                        <option value="">All</option>
+                        {% for at in app_apptypes %}
+                          <option value="{{ at.0 }}" {% if apptype == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  
+                    <!-- Status -->
+                    <div class="col-md-4">
+                      <label for="id_appstatus" class="form-label">Status:</label>
+                      <select class="form-select" id="id_appstatus" name="appstatus">
+                        <option value="">All</option>
+                        {% for at in app_appstatus %}
+                          <option value="{{ at.0 }}" {% if appstatus == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  
+                    <!-- Keywords -->
+                    <div class="col-md-8">
+                      <label for="search_field" class="form-label">Keywords:</label>
+                      <input id="search_field" type="text" class="form-control" name="q" placeholder="Enter Keywords" value="{{ query_string }}">
+                    </div>
+                  
+                    <!-- Search Button -->
+                    <div class="col-md-4 d-flex align-items-end">
+						<button type="submit" name="search" class="btn btn-primary mt-3">Search</button>
+					</div>	
+                  </form>                  
+                  
             </div>
             <hr>
             <div class="row">
@@ -124,49 +87,44 @@
                                 <td align='center' valign='center'>{% if app_obj.approval_url %}<A HREF='{{ app_obj.approval_url }}'><img src='{% static "images/pdf.png" %}'></A>{% endif %}</td>
 				<td>
 
-                                                                        <ul class="nav navbar-nav">
-                                                                                <li class="dropdown">
-                                                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Actions</a>
-                                                                                        <ul class="dropdown-menu" role="menu">
-												{% if app_obj.app.get_status_display == "Current" or app_obj.app.get_status_display == "Suspended" %}
-
-
-                                                                                                {% if app_obj.app.app_type == 3 %}
-                                                                                                            {% if app_obj.app.ammendment_application %}
-                                                                                                                       {% if app_obj.app.ammendment_application.get_state_display == "Approved" %}
-                                                                                                                           <li><A HREF='{% url 'application_change' app_obj.app.pk 'amend' %}'>Amend</A></li>
-                                                                                                                       {% endif %}
-                                                                                                            {% endif %}
-
-                                                                                                {% else %}
-             												<li><A HREF='{% url 'application_change' app_obj.app.pk 'amend' %}'>Amend</A></li>
-                                                                                                {% endif %}
-												
-												{% endif %}
-                                
-                                                                                                {% if app_obj.app.app_type == 3 %}
-                                                                                                             <li><a href="{% url 'application_change' app_obj.app.pk 'requestamendment' %}">Request Amendment</a></li>
-
-                                                                                                {% endif %}
-
-												<li><A HREF=''>Renew</A></li>
-												{% if app_obj.app.get_status_display == "Current" or app_obj.app.get_status_display == "Suspended" %}
-												<li><A HREF='{% url 'approval_status_change' app_obj.app.pk 'surrendered' %}'>Surrender</A></li>
-												{% endif %}
-                                                                                        </ul>
-                                                                                </li>
-                                                                        </ul>
-
-
-
-</td>
+                    <ul class="nav">
+                        <li class="nav-item dropdown">
+                          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                            Actions
+                          </a>
+                          <ul class="dropdown-menu">
+                            {% if app_obj.app.get_status_display == "Current" or app_obj.app.get_status_display == "Suspended" %}
+                              {% if app_obj.app.app_type == 3 %}
+                                {% if app_obj.app.ammendment_application %}
+                                  {% if app_obj.app.ammendment_application.get_state_display == "Approved" %}
+                                    <li><a class="dropdown-item" href="{% url 'application_change' app_obj.app.pk 'amend' %}">Amend</a></li>
+                                  {% endif %}
+                                {% endif %}
+                              {% else %}
+                                <li><a class="dropdown-item" href="{% url 'application_change' app_obj.app.pk 'amend' %}">Amend</a></li>
+                              {% endif %}
+                            {% endif %}
+                      
+                            {% if app_obj.app.app_type == 3 %}
+                              <li><a class="dropdown-item" href="{% url 'application_change' app_obj.app.pk 'requestamendment' %}">Request Amendment</a></li>
+                            {% endif %}
+                      
+                            <li><a class="dropdown-item" href="#">Renew</a></li>
+                      
+                            {% if app_obj.app.get_status_display == "Current" or app_obj.app.get_status_display == "Suspended" %}
+                              <li><a class="dropdown-item" href="{% url 'approval_status_change' app_obj.app.pk 'surrendered' %}">Surrender</a></li>
+                            {% endif %}
+                          </ul>
+                        </li>
+                      </ul>
+                      
+                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
     </div>
 
     <script>

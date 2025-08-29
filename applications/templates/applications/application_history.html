@@ -1,13 +1,19 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Related Application</h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Related Application</h3>
     </div>
-    <div class="panel-body">
-        <table border=0 width='100%'>
-        {% for a in application_history %}
-            <tr><td><A HREF='/applications/{{ a.id }}/'>WO-{{ a.id }}</a></td><td>{{ a.title|truncatechars:25 }}</td></p>
-        {% endfor %}
-        </table>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-borderless w-100 mb-0">
+                <tbody>
+                    {% for a in application_history %}
+                        <tr>
+                            <td><a href="/applications/{{ a.id }}/">WO-{{ a.id }}</a></td>
+                            <td>{{ a.title|truncatechars:25 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-

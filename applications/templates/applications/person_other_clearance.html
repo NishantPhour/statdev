@@ -1,50 +1,31 @@
-<div class="panel panel-default">
-    <div class="panel-body">
-        <form action="" method="get">
-            <div class="row">
-                <input type='hidden' name='action' value='search'>
-
-
-                <div class="col-sm-12 col-lg-9">
-                        <!-- RES -->
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>From Due Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                        <input class="dateinput form-control" id="id_from_date" name="from_date" value="{{ from_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>To Due Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                  <input class="dateinput form-control" id="id_to_date" name="to_date" value="{{ to_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                </div>
-		    
-                <div class="col-sm-12 col-lg-12">
-                    <div class="col-sm-12 col-lg-9">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Keyword:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-12">
-                            &nbsp;
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <input type="submit" name="search" value="Search" class="btn btn-primary btn-md" id="submit-id-save">
-                        </div>
-                    </div>
-                </div>
+<div class="card">
+    <div class="card-body">
+        <form action="" method="get" class="row g-3">
+            <input type="hidden" name="action" value="search">
+          
+            <!-- From Due Date -->
+            <div class="col-md-4">
+              <label for="id_from_date" class="form-label">From Due Date:</label>
+              <input type="text" class="form-control dateinput" id="id_from_date" name="from_date" value="{{ from_date }}" autocomplete="off">
             </div>
-        </form>
+          
+            <!-- To Due Date -->
+            <div class="col-md-4">
+              <label for="id_to_date" class="form-label">To Due Date:</label>
+              <input type="text" class="form-control dateinput" id="id_to_date" name="to_date" value="{{ to_date }}" autocomplete="off">
+            </div>
+          
+            <!-- Keyword -->
+            <div class="col-md-8">
+              <label for="search_field" class="form-label">Keyword:</label>
+              <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
+            </div>
+          
+            <!-- Search Button (Bottom Left) -->
+            <div class="col-12">
+              <button type="submit" name="search" class="btn btn-primary btn-md">Search</button>
+            </div>
+          </form>          
         <hr>
         <table id='compliance-table' class="table table-striped table-bordered table-condensed">
             <thead>

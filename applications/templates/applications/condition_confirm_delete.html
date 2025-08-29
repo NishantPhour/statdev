@@ -4,8 +4,9 @@
     {% csrf_token %}
     <center>
        <h4>Are you sure that you want to delete condition "{{ object.condition_no }}"?</h4>
-       <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-lg btn-danger ajax-submit" id="submit-id-confirm">
        <input type="submit" name="cancel" value="Cancel" class="btn btn-primary ajax-close" id="submit-id-cancel">
+       <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-danger ajax-submit" id="submit-id-confirm">
+       
     </center>
 </form>
 {% endblock %}

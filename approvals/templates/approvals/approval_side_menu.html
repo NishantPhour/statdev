@@ -1,11 +1,11 @@
-<div class="col-sm-4 col-md-3 col-lg-2">
+<div class="col-sm-4 col-md-3 col-lg-3">
 {% if admin_staff == True %}
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Actions</h3>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Actions</h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <h5>Communications</h5>
         <p><a href="{% url 'approvals_comms' object.pk %}">Show</a> | <a href="{% url 'approvals_comms_create' object.pk %}">Add Entry</a></p>
         <hr />
@@ -16,25 +16,43 @@
         <ul>
     </div>
 </div>
+<br>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Workflow</h3>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Workflow</h3>
     </div>
-    <div class="panel-body">
-        <label>Status</Label>
-        <p>{{ object.get_status_display }}</p>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-lg-3 d-flex align-items-center">
+                <span class="fw-bold">Status</span>
+            </div>
+            <div class="col-lg-9 d-flex align-items-center">
+                <span>{{ object.get_status_display }}</span>
+            </div>
+        </div>
         <hr />
-	<label>Assigned To</Label>
-	<p></p>
+        <div class="row mb-3">
+            <div class="col-lg-3 d-flex align-items-center">
+                <span class="fw-bold">Assigned To</span>
+            </div>
+            <div class="col-lg-9 d-flex align-items-center">
+                <span>{{ object.assignee }}</span>
+            </div>
+        </div>
     </div>
-</div>
+    
+    
+    
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Related Approval</h3>
+</div>
+<br>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Related Approval</h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
 	<table border=0 width='100%'>
 	{% for a in approval_history %}
     	    <tr><td><A HREF='/approvals/{{ a.id }}/'>AP-{{ a.id }}</a></td><td>{{ a.title|truncatechars:25 }}</td></p>
@@ -42,6 +60,7 @@
 	</table>
     </div>
 </div>
+<br>
 
 {% endif %}
 </div>

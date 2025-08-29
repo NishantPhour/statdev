@@ -5,24 +5,23 @@
 {% endblock %}
 
 {% block extra_css %}
-        <link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap/dist/css/bootstrap.css?ver={{ GIT_COMMIT_HASH }}	">
-	<link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatables.net-bs/css/dataTables.bootstrap.css?ver={{ GIT_COMMIT_HASH }}">
+        <!-- <link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap/dist/css/bootstrap.css?ver={{ GIT_COMMIT_HASH }}	"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatables.net-bs/css/dataTables.bootstrap.css?ver={{ GIT_COMMIT_HASH }}"> -->
 	<link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css?ver={{ GIT_COMMIT_HASH }}">
 	<link rel="stylesheet" type="text/css" href="/static/css/applications.css?ver={{ GIT_COMMIT_HASH }}" />
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.css?ver={{ GIT_COMMIT_HASH }}" />
-
+    <link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatable_bootstrap5/datatables.css?ver={{ GIT_COMMIT_HASH }}" />
 
 
         <!-- npm modules -->
 	<script type="text/javascript" src="/static/common/node_modules/jquery/dist/jquery.js?ver={{ GIT_COMMIT_HASH }}"></script>
-	<script type="text/javascript" src="/static/common/node_modules/datatables/media/js/jquery.dataTables.js?ver={{ GIT_COMMIT_HASH }}"></script>
-	<script type="text/javascript" src="/static/common/node_modules/datatables.net-bs/js/dataTables.bootstrap.js?ver={{ GIT_COMMIT_HASH }}"></script>
+	<script type="text/javascript" src="/static/common/node_modules/datatable_bootstrap5/datatables.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/common/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/common/node_modules/bootstrap/dist/js/bootstrap.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/js/moment.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 
-	<script type="text/javascript" language="javascript" src="/static/js/dataTables.buttons.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
+	<!-- <script type="text/javascript" language="javascript" src="/static/js/dataTables.buttons.min.js?ver={{ GIT_COMMIT_HASH }}"></script> -->
 	<script type="text/javascript" language="javascript" src="/static/js/jszip.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" language="javascript" src="/static/js/pdfmake.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" language="javascript" src="/static/js/vfs_fonts.js?ver={{ GIT_COMMIT_HASH }}"></script>
@@ -62,24 +61,7 @@
 {% block menu_items_left_brand %}
 {% endblock%}
 
-{% block menu_items_left %}
 
-<ul class='nav navbar-nav'>
-    <li class="nav-item" ><a class="nav-link" href="/">Dashboard</a></li>
-    {% if staff == True %}
-        <li class="nav-item" ><a class="nav-link" href="{% url 'application_list' %}" title="Applications">Applications</a></li>
-        <li class="nav-item" ><a class="nav-link" href="{% url 'approval_list' %}" title="Approvals">Approvals</a></li>
-        <li class="nav-item" ><a class="nav-link" href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
-        <li class='nav-item' ><a class="nav-link" href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
-        <li class="nav-item" ><a class="nav-link" href="{% url 'organisation_access_requests' %}" title="Company Access">Company Access</a></li>
-        <li class="nav-item" ><a class="nav-link" href="{% url 'search_list' %}">Search</a></li>
-    {% else %}
-        <li class="nav-item" ><a class="nav-link" href="" title="Contact Us">Contact Us</a></li> 
-        <li class="nav-item" ><a class="nav-link" href="" title="Further Information">Further Information</a></li>
-    {% endif %}
-</ul>
-
-{% endblock %}
 
 <!-- {% if staff == True %}
     <li class='hidden-lg hidden-md'><a href="{% url 'approval_list' %}" title="Applications">Approvals</a></li>
@@ -92,23 +74,7 @@
     <li class='hidden-lg hidden-md' ><a href="" title="Contact Us">Contact Us</a></li>
     <li class='hidden-lg hidden-md' ><a href="" title="Further Information">Further Information</a></li>
 {% endif %} -->
-{% block menu_dropdown %}
-{% if request.user.is_authenticated %}
-        <!-- TODO: change to system-accounts page -->
-        <li><a href="{% url "person_details_actions" user.pk "personal" %}">My personal details</a></li>
-        <li><a class="dropdown-item" href="/ledger-ui/system-accounts">Manage Account</a></li>
-        {% if staff == False %}
-        <li><a href="{% url "person_details_actions" user.pk "companies" %}" title="My Companies">My Companies</a></li>
-        {% endif %}
-        {% if user.is_superuser %}
-        <li><a href="{% url 'admin:index' %}" title="Administration">Administration</a></li>
-        {% endif %}
-        {% if staff == True %}
-        <li><a href="{% url 'application_flows' %}" title="Flows">Flows</a></li>
-        {% endif %}
-        <li><a href="{% url 'logout' %}" title="Log out">Log out</a></li>
-{% endif %}
-{% endblock %}
+
 {% block menu_spacer %}
     {% endblock %}
 {% block messages %}
@@ -178,9 +144,6 @@
     outline: 0;
 }
 
-select.form-control {
-  appearance: auto !important;
-}
 .modal-backdrop.fade {
     opacity: 0.5 !important;
 }
@@ -192,16 +155,7 @@ select.form-control {
     background-color: transparent !important;
 }
 
-.nav-link {
-    color: #6c757d !important; /* Bootstrap's text-secondary (dark gray) */
-    background-color: transparent !important;
-}
 
-.nav-link:hover,
-.nav-link:focus {
-    color: #495057 !important; /* Slightly darker gray on hover */
-    background-color: transparent !important;
-}
 
 
 .modal.fade .modal-dialog {
@@ -217,6 +171,21 @@ select.form-control {
 
 .form-select.is-invalid {
   background-image: var(--bs-form-select-bg-image) !important;
+}
+
+div.dt-button-info {
+    background-color: #fff !important;
+    color: #000 !important; /* Ensure text is visible */
+    border: 1px solid #ccc; /* Optional: add a light border */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Optional: subtle shadow */
+}
+
+.modal,
+.modal-content,
+.modal-body,
+.modal-header,
+.modal-footer {
+    font-family: var(--bs-font-sans-serif);
 }
 
 
@@ -263,6 +232,7 @@ select.form-control {
             todayHighlight: true
         });
     });
+   
 </script>
 
 

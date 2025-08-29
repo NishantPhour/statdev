@@ -1,70 +1,46 @@
 
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card">
+    <div class="card-body">
         <div class="row">
             <form action="" method="get">
-                <div class="col-sm-12 col-lg-12" style='display:none'>
-                    <input type='hidden' name='searchaction' value='search'>
-                    <!-- RES -->
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Type:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <select class="select form-control" id="id_apptype" name="apptype">
-                                <option value="" >All</option>
-                                {% for at in app_apptypes %}
-                                {% if apptype == at.0 %}
-                                <option selected="selected" value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% else %}
-                                <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                <div class="row d-none">
+                    <input type="hidden" name="searchaction" value="search">
+                    
+                    <!-- Type -->
+                    <div class="col-lg-3 mb-3">
+                        <label for="id_apptype" class="form-label">Type:</label>
+                        <select class="form-select" id="id_apptype" name="apptype">
+                            <option value="">All</option>
+                            {% for at in app_apptypes %}
+                                <option value="{{ at.0 }}" {% if apptype == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-3">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <label>Status:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <select class="select form-control" id="id_appstatus" name="appstatus">
-                                <option value="" selected="selected">All</option>
-                                {% for at in app_appstatus %}
-                                {% if appstatus == at.0 %}
-	                                <option selected value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% else %}
-	                                <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+            
+                    <!-- Status -->
+                    <div class="col-lg-3 mb-3">
+                        <label for="id_appstatus" class="form-label">Status:</label>
+                        <select class="form-select" id="id_appstatus" name="appstatus">
+                            <option value="" {% if not appstatus %}selected{% endif %}>All</option>
+                            {% for at in app_appstatus %}
+                                <option value="{{ at.0 }}" {% if appstatus == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
-                <div class="col-sm-12 col-lg-12">
-                    <div class="col-sm-12 col-lg-9">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Keyword:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                        </div>
+            
+                <!-- Keyword and Search Button -->
+                <div class="row">
+                    <div class="col-lg-9 mb-3">
+                        <label for="search_field" class="form-label">Keyword:</label>
+                        <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
                     </div>
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-6">
-                            <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                        </div>
-                        <div class="col-sm-12 col-lg-6">
-                        </div>
-
+                    <div class="col-lg-3 d-flex align-items-end mb-3">
+                        <input type="submit" name="search" value="Search" class="btn btn-primary w-100">
                     </div>
-                    <!-- end -->
                 </div>
-                <div class="col-sm-12 col-lg-3">
-
-                </div>
-
             </form>
+            
             <BR>
         </div>
         <hr>

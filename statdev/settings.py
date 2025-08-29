@@ -24,6 +24,18 @@ LEDGER_TEMPLATE = 'bootstrap5'
 JCAPTCHA_EXPIRY_MINUTES=15
 JCAPTCHA_CLEANUP_MINUTES=100
 
+#TODO: configure jcaptcha images
+JCAPTCHA_IMAGE_DIR = os.path.join(STATIC_ROOT, 'images', 'jcaptcha')
+
+try:
+    JCAPTCHA_IMAGE_LIST = [
+        f'{STATIC_URL}images/jcaptcha/{filename}'
+        for filename in os.listdir(JCAPTCHA_IMAGE_DIR)
+        if filename.lower().endswith(('.jpg', '.jpeg', '.png'))
+    ]
+except FileNotFoundError:
+    JCAPTCHA_IMAGE_LIST = []
+
 # Define the following in the environment:
 DEBUG = env('DEBUG', False)
 SECRET_KEY = env('SECRET_KEY')

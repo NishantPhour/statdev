@@ -15,26 +15,36 @@
 
         <!--- remove everything eblow this tag to the end tag if everything has been moved -->
         <div class="col-sm-4 col-md-3 col-lg-2"  style='display: none'>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Actions</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actions</h5>
                 </div>
-                <div class="panel-body">
-                    <ul>
-                        {% if may_update %}<li><a href="{% url 'application_update' object.pk %}">Update application</a></li>{% endif %}
-                        {% if may_create_condition %}<li><a href="{% url 'condition_create' object.pk %}">Create a condition</a></li>{% endif %}
-                        {% if may_assign_emergency %}<li><a href="{% url 'application_assign' object.pk 'assign_emergency' %}">Assign</a></li>{% endif %}
-                        {% if may_issue %}<li><a href="{% url 'application_issue' object.pk %}">Issue/decline application</a></li>{% endif %}
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        {% if may_update %}
+                            <li><a href="{% url 'application_update' object.pk %}">Update application</a></li>
+                        {% endif %}
+                        {% if may_create_condition %}
+                            <li><a href="{% url 'condition_create' object.pk %}">Create a condition</a></li>
+                        {% endif %}
+                        {% if may_assign_emergency %}
+                            <li><a href="{% url 'application_assign' object.pk 'assign_emergency' %}">Assign</a></li>
+                        {% endif %}
+                        {% if may_issue %}
+                            <li><a href="{% url 'application_issue' object.pk %}">Issue/decline application</a></li>
+                        {% endif %}
                         <li><a href="{% url 'application_actions' object.pk %}">Actions log</a></li>
-                        {% if may_generate_pdf %}<li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>{% endif %}
+                        {% if may_generate_pdf %}
+                            <li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>
+                        {% endif %}
                     </ul>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Submission</h3>
+            </div>            
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Submission</h5>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <h4>Submitted by:</h4>
                     <p>
                         {% if applicant.legal_first_name %}{{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
@@ -49,11 +59,11 @@
                     {% endcomment %}
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Workflow</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Workflow</h5>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <h4>Status:</h4>
                     <p>{{ object.get_state_display }}</p>
                     <h4>Assigned to:</h4>
@@ -74,59 +84,69 @@
     
         <!-- Main panel start -->
         {% if hidden.holder == "False" %}
-        <div class="col-sm-8 col-md-9 col-lg-10">
-            <!-- Holder panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#holder_collapse">
-                    <h3 class="panel-title">
-                        Holder
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse {{ collapse.holder }}" id="holder_collapse">
-                    <div class="panel-body">
-                        <div class="col-sm-8 col-md-6 col-lg-4">
-                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Name<label>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-8">
-                                    {% if object.organisation %}
-                                        {{ object.organisation.name }}
-                                    {% elif applicant %}
-                                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
-                                    {% endif %}
-                                </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    {% if object.organisation %}
-                                    <div class="col-sm-12 col-md-6 col-lg-4"> 
-                                    <label>ABN</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                        {{ object.organisation.abn }}
-                                     </div>
-                                   {% endif %}
-                                </div>
-                            </div>
+        <!-- Holder panel -->
+        <div class="col-sm-8 col-md-9 col-lg-9">
+        <div class="card">
+            <div class="card-header fw-bold h4" style="padding:30px;">
+            <div class="row">
+                    <div class="col-6">
+                    Holder
+                    </div>
+                    <div class="col-6 text-end">
+                    <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box26-card-body" onclick=""></i>
+                    </div>
+            </div> 
+            </div>
+            
+            <div class="collapse show {{ collapse.holder }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                <div class="card-body" id="box26-card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-md-9">
+                            {% if object.organisation %}
+                                {{ object.organisation.name }}
+                            {% elif applicant %}
+                                {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
+                            {% endif %}
                         </div>
                     </div>
+                
+                    {% if object.organisation %}
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">
+                            <label>ABN</label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ object.organisation.abn }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                
                 </div>
             </div>
+            <br>
             {% endif %}
 
             <!-- Address details panel -->
             {% if hidden.address == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#address_collapse">
-                    <h3 class="panel-title">
-                        Address Details
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                <div class="row">
+                        <div class="col-6">
+                            Address Details
+                        </div>
+                        <div class="col-6 text-end">
+                        <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box27-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.address }}" id="address_collapse">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.address }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box27-card-body">
                         <div class="col-sm-4 col-md-3 col-lg-3">
                             <table class="table table-borderless">
                                 <tr>
@@ -156,19 +176,25 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
             <!-- Emergency works panel -->
 
             {% if hidden.emergencyworks == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#emergency_collapse">
-                    <h3 class="panel-title">
-                        Emergency Works
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                <div class="row">
+                        <div class="col-6">
+                            Emergency Works
+                        </div>
+                        <div class="col-6 text-end">
+                        <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box28-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.emergencyworks }}" id="emergency_collapse">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.emergencyworks }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box28-card-body">
                         <div class="col-sm-8 col-md-6 col-lg-3">
                             <table class="table table-borderless">
                                 <tr>
@@ -188,6 +214,7 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             <!-- Conditions panel -->

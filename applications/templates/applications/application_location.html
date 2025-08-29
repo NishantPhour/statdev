@@ -1,65 +1,72 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#certificate_commerical_acts_and_activities_collapse" aria-expanded="false" aria-controls="certificate_commerical_acts_and_activities_collapse">
-                            Location
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
+                  Location
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box32-card-body" onclick=""></i>
+            </div>
+      </div> 
+    </div>
+      
+    <div class="collapse show {{ collapse.certificate_commerical_acts_and_activities }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box32-card-body">
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Lot Number</label>
                 </div>
-                <div class="panel-collapse collapse {{ collapse.certificate_commerical_acts_and_activities }}" id="certificate_commerical_acts_and_activities_collapse" role="tabpanel" aria-labelledby="certificate_commerical_acts_and_activities_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-4">
-                            <div class="col-lg-12">
-                                <label>Lot Number</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ object.lot }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Reserve Number</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ reserve_number }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Town / Suburb</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ town_suburb }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Nearest road intersection</Label>
-                            </div>
-                            <div class="col-lg-8">
-                                {{ nearest_road_intersection }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Local government authority</Label>
-                            </div>
-                            <div class="col-lg-8">
-                                {{ local_government_authority }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Are any proposed works, acts or activities in or over waters?</Label>
-                            </div>
-                            <div class="col-lg-8">
-                                {{ over_water }}
-                            </div>
-                        </div>
-
-
-                    </div>
+                <div class="col-md-9">
+                    {{ object.lot }}
                 </div>
             </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Reserve Number</label>
+                </div>
+                <div class="col-md-9">
+                    {{ reserve_number }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Town / Suburb</label>
+                </div>
+                <div class="col-md-9">
+                    {{ town_suburb }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Nearest road intersection</label>
+                </div>
+                <div class="col-md-9">
+                    {{ nearest_road_intersection }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Local government authority</label>
+                </div>
+                <div class="col-md-9">
+                    {{ local_government_authority }}
+                </div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                    <label>Are any proposed works, acts or activities in or over waters?</label>
+                </div>
+                <div class="col-md-9">
+                    {{ over_water }}
+                </div>
+            </div>
+        </div>
 
+    </div>
+</div>
+<br>

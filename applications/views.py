@@ -10694,6 +10694,7 @@ class OrganisationUpdate(LoginRequiredMixin, UpdateView):
     """
     model = Organisation
     form_class = apps_forms.OrganisationForm
+    
 
     def get(self, request, *args, **kwargs):
         # Rule: request user must be a delegate (or superuser).

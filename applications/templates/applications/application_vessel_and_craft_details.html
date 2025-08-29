@@ -1,48 +1,50 @@
 
 <!-- Vessel / Craft Panel -->
-<div class="panel panel-default" >
-    <div class="panel-heading" role="tab" id="vessels_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#vessels_collapse" aria-expanded="false" aria-controls="vessels_collapse">
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
                 Vessel and craft details
-                <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-            </a>
-        </h3>
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box35-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
-    <div class="panel-collapse collapse " id="vessels_collapse" role="tabpanel" aria-labelledby="vessels_heading">
-        <div class="panel-body">
-
-          {% if object.vessel_or_craft_details == 3 %}
-                 <div id='vessels_table'>
-                     {% include "applications/application_vessels_table.html" %}
-                 </div>
-                 {% if object.vessels.exists %}
-                 {% else %}
-                       <p>None</p>
-                 {% endif %}
-          {% elif object.vessel_or_craft_details == 2 %}
-                        <div class='col-sm-12 col-md-12 col-lg-12'>
-                        <div class='col-sm-12 col-md-3 col-lg-3'>
-                        <label>Type of Craft</label>
-                        </div>
-                        <div class='col-sm-12 col-md-9 col-lg-9'>
-                                {{ object.type_of_crafts }}
-                        </div>
-                        </div>
-
-                        <div class='col-sm-12 col-md-12 col-lg-12'>
-                        <div class='col-sm-12 col-md-3 col-lg-3'>
-                        <label>Number of Craft</label>
-                        </div>
-                        <div class='col-sm-12 col-md-9 col-lg-9'>
-                                {{ object.number_of_crafts }}
-                        </div>
-                        </div>
-          {% else %}
-                 No Selection
-          {% endif %}
-
-        </div>
+    <div class="collapse show" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+        <div class="card-body" id="box35-card-body">
+            {% if object.vessel_or_craft_details == 3 %}
+              <div id="vessels_table">
+                {% include "applications/application_vessels_table.html" %}
+              </div>
+              {% if not object.vessels.exists %}
+                <p>None</p>
+              {% endif %}
+          
+            {% elif object.vessel_or_craft_details == 2 %}
+              <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                  Type of Craft
+                </div>
+                <div class="col-md-9">
+                  {{ object.type_of_crafts }}
+                </div>
+              </div>
+          
+              <div class="row mb-3">
+                <div class="col-md-3 fw-bold">
+                  Number of Craft
+                </div>
+                <div class="col-md-9">
+                  {{ object.number_of_crafts }}
+                </div>
+              </div>
+          
+            {% else %}
+              <p>No Selection</p>
+            {% endif %}
+          </div>
+          
    </div>
 </div>
 

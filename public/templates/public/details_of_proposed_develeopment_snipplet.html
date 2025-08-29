@@ -1,103 +1,107 @@
 
 {% load static %}
-
-<div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="details_of_proposed_development_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#details_of_proposed_development_collapse" aria-expanded="false" aria-controls="details_of_proposed_development_collapse">
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                            Details of Proposed Development
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse in {{ collapse.details_of_proposed_development }}" id="details_of_proposed_development_collapse" role="tabpanel" aria-labelledby="details_of_proposed_development_heading">
-                    <div class="panel-body">
-                        {% if action == 'determination' %}
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Issue Date</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ approval.issue_date }}
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Start Date</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ approval.start_date }}
-                            </div>
-                        </div>
-
-			    
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Expiry Date</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                {{ approval.expiry_date }}
-                            </div>
-			</div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Approval Document</Label>
-                            </div>
-                            <div class="col-lg-4">
-                                 {% if approval.approval_url %}<A HREF='{{ approval.approval_url }}'><img src='{% static "images/pdf.png" %}' title="Click to Download PDF">Download</A>{% endif %} 
-                            </div>
-                        </div>
-
-
-
-
-			
-		        {% else %}
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                             <div class="col-lg-12">
-                                <label>Estimated cost of development (AU$)</Label>
-                             </div>
-                             <div class="col-lg-4">
-                                {{ object.cost }}
-                             </div>
-                         </div>
-			
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Current use of land</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ object.proposed_development_current_use_of_land }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Proposed development</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {{ object.proposed_development_description }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Attach a full set of plans</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {% if proposed_development_plans_list %}
-                                        {% for doc in proposed_development_plans_list %}
-                                        <div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc.name }}</A></div>
-                                        {% endfor %}
-                                {% else %}
-                                        No Attachments
-                                {% endif %}
-                            </div>
-                        </div>
-			{% endif %}
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+    <div class="row">
+            <div class="col-6">
+                Details of Proposed Development
+            </div>
+            <div class="col-6 text-end">
+            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+            </div>
+    </div> 
+    </div>
+    
+    <div class="collapse show {{ collapse.details_of_proposed_development }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box3-card-body">
+            {% if action == 'determination' %}
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Issue Date</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ approval.issue_date }}
                     </div>
                 </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Start Date</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ approval.start_date }}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Expiry Date</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ approval.expiry_date }}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Approval Document</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {% if approval.approval_url %}
+                            <a href="{{ approval.approval_url }}">
+                                <img src="{% static 'images/pdf.png' %}" title="Click to Download PDF"> Download
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+        
+            {% else %}
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Estimated cost of development (AU$)</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ object.cost }}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Current use of land</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ object.proposed_development_current_use_of_land }}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Proposed development</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ object.proposed_development_description }}
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <label>Attach a full set of plans</label>
+                    </div>
+                    <div class="col-lg-6">
+                        {% if proposed_development_plans_list %}
+                            {% for doc in proposed_development_plans_list %}
+                                <div class="mb-1">
+                                    <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc.name }}</a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            No Attachments
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>        
+                </div>
             </div>
+            <br>
 

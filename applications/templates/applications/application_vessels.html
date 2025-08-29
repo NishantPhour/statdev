@@ -1,27 +1,30 @@
 <!-- Vessel / Craft Panel -->
-<div id='vessel_and_crafts_option'>
-<div class="panel panel-default" style='display:none'>
-    <div class="panel-heading" role="tab" id="vessels_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#vessels_collapse" aria-expanded="false" aria-controls="vessels_collapse">
-                Vessel and craft details
-                <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-            </a>
-        </h3>
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
+                Vessel and Craft Details
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box9-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
-    <div class="panel-collapse collapse {{ collapse.vessels }}" id="vessels_collapse" role="tabpanel" aria-labelledby="vessels_heading">
-        <div class="panel-body">
+    <div class="collapse show {{ collapse.proposed_activities}}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+        <div class="card-body" id="box9-card-body">
+            <div id='vessels_table'>
+                {% include "applications/application_vessels_table.html" %}
+                </div>
+                
+                {% if may_update_vessels_list == "True"  %}
+                        <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_vessel' object.pk %}','Add New Vessel');" type='button'>Add new vessel / craft</button>
+                {% endif %}
         </div>
     </div>
-</div>
+<br>
 
-<div id='vessels_table'>
-{% include "applications/application_vessels_table.html" %}
-</div>
 
-{% if may_update_vessels_list == "True"  %}
-        <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_vessel' object.pk %}','Add New Vessel');" type='button'>Add new vessel / craft</button>
-{% endif %}
 
 </div>
+<br>
 

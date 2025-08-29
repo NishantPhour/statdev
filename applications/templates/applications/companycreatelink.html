@@ -5,8 +5,8 @@
 
 <link rel="stylesheet" type="text/css" href="{% static "/css/applications.css" %}?ver={{ GIT_COMMIT_HASH }}" />
 
-<div class="panel panel-default">
-    <div class="panel-body ">
+<div class="card">
+    <div class="card-body ">
         <div class="row">
             <div class="col-xs-12">
                 <p style='font-size: 17px'>
@@ -51,7 +51,7 @@
             {% include "applications/application_side_menu.html" %}
         {% endif %}
         <!-- Main panel start -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="col-sm-8 col-md-9 col-lg-9">
 
             <h1 style='display:none'>{{ page_heading }}</h1>
             {% crispy form %}

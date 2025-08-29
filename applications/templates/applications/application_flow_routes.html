@@ -5,161 +5,163 @@
 
 <div >
 
-<div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Choose Route </button>
-      <ul class="dropdown-menu">
-
-	{% for r,v in workflow %}
-           {% if r == 'options' %}
-
-	   {% else %}
-               {% if route == r %}
-   	           <li><a href="?route={{ r }}" style='color:red;font-weight: bold;'>Route {{ r }} - {{ v.title }}</a></li>
-               {% else %}
-		   <li><a href="?route={{ r }}">Route {{ r }} - {{ v.title }}</a></li>
-               {% endif %}
-	   {% endif %}
-	{% endfor %}
-
-
-      </ul>
-    </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      Choose Route
+    </button>
+    <ul class="dropdown-menu">
+      {% for r, v in workflow %}
+        {% if r != 'options' %}
+          {% if route == r %}
+            <li>
+              <a class="dropdown-item" href="?route={{ r }}" style="color:red; font-weight: bold;">
+                Route {{ r }} - {{ v.title }}
+              </a>
+            </li>
+          {% else %}
+            <li>
+              <a class="dropdown-item" href="?route={{ r }}">
+                Route {{ r }} - {{ v.title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+  
 
 <br><br>
 </div>
 
 
-<div class="panel panel-default">
+<div class="card">
+  <div class="card-header fw-bold h4" style="padding:30px;">
+      <div class="row">
+          <div class="col-6">
+            Application Flows - route ({{ route }}) - {{ workflow_route.title }}
+          </div>
+          <div class="col-6 text-end">
+                <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box5-card-body" onclick=""></i>
+          </div>
+    </div> 
+  </div>
 
-    <div class="panel-heading" role="tab" id="title_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#application_list_collapse" aria-expanded="false" aria-controls="application_list_collapse">
-                Application Flows - route ({{ route }}) - {{ workflow_route.title }}
-                <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-            </a>
-        </h3>
-    </div>
-    <div class="panel-collapse collapse in" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
-        <div class="panel-body">
-        <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h3 class="panel-title">Collapse Boxes</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.collapse.items %}
-                       &nbsp;&nbsp;<b>{{ r }}</b> : {{ v }}<BR>
+  <div class="collapse show" id="company_details_collapse" role="tabpanel" aria-labelledby="company_details_heading">
+      <div class="card-body" id="box5-card-body">
+        <div class="card border-warning mb-3">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="card-title mb-0">Collapse Boxes</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.collapse.items %}
+              <strong>{{ r }}</strong>: {{ v }}<br>
+            {% endfor %}
+          </div>
+        </div>
         
-                {% endfor %}
-              </div>
+        <div class="card border-warning mb-3">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="card-title mb-0">Fields</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.fields.items %}
+              <strong>{{ r }}</strong>: {{ v }}<br>
+            {% endfor %}
+          </div>
         </div>
-
-        <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h3 class="panel-title">Fields</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.fields.items %}
-                       &nbsp;&nbsp;<b>{{ r }}</b> : {{ v }}<BR>
-                {% endfor %}
-              </div>
+        
+        <div class="card border-warning mb-3">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="card-title mb-0">Hidden</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.hidden.items %}
+              <strong>{{ r }}</strong>: {{ v }}<br>
+            {% endfor %}
+          </div>
         </div>
-
-        <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h3 class="panel-title">Hidden</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.hidden.items %}
-                       &nbsp;&nbsp;<b>{{ r }}</b> : {{ v }}<BR>
-                {% endfor %}
-              </div>
+        
+        <div class="card border-info mb-3">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Assigned To Permissions</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.assigntoaccess.items %}
+              <strong>{{ r }}</strong>: {{ v }}<br>
+            {% endfor %}
+          </div>
         </div>
-
-        <div class="panel panel-info">
-              <div class="panel-heading">
-                <h3 class="panel-title">Assigned To Permissions</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.assigntoaccess.items %}
-                       &nbsp;&nbsp;<b>{{ r }}</b> : {{ v }}<BR>
-                {% endfor %}
-              </div>
+        
+        <div class="card border-info mb-3">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Group Permissions</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.groupaccess.items %}
+              <strong>{{ r }}</strong><br>
+              {% for c, d in v.items %}
+                &nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ c }}</strong>: {{ d }}<br>
+              {% endfor %}
+            {% endfor %}
+          </div>
         </div>
-
-        <div class="panel panel-info">
-              <div class="panel-heading">
-                <h3 class="panel-title">Group Permissions</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.groupaccess.items %}
-                       &nbsp;&nbsp;<b>{{ r }}</b><br> 
-                       {% for c,d in v.items %}
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ c }}</b> : {{ d }}<BR>
-                       {% endfor %}
-                {% endfor %}
-              </div>
+        
+        <div class="card border-danger mb-3">
+          <div class="card-header bg-danger text-white">
+            <h5 class="card-title mb-0">Condition Based Routes</h5>
+          </div>
+          <div class="card-body">
+            {% for r, v in workflow_route.condition_based_actions.items %}
+              <strong>{{ r }}</strong>:<br>
+              {% for c, d in v.items %}
+                {% if c == 'routeoptions' %}
+                  &nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ c }}</strong><br>
+                  {% for e, f in d.0items %}
+                    {% if e == 'required' %}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ e }}</strong>
+                      {% for g in f %}
+                        {{ g }},
+                      {% endfor %}
+                      <br>
+                    {% elif e == 'route' %}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ e }}</strong> <a href="?route={{ f }}">{{ f }}</a><br>
+                    {% else %}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ e }}</strong>: {{ f }}<br>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  &nbsp;&nbsp;&nbsp;&nbsp;<strong>{{ c }}</strong>: {{ d }}<br>
+                {% endif %}
+              {% endfor %}
+              <br>
+            {% endfor %}
+          </div>
         </div>
-        <div class="panel panel-danger">
-              <div class="panel-heading">
-                <h3 class="panel-title">Condition Based Routes</h3>
-              </div>
-              <div class="panel-body">
-                {% for r,v in workflow_route.condition_based_actions.items %}
-                                &nbsp;&nbsp;<b>{{ r }}</b> : <BR>
-                                {% for c,d in v.items %}
-                                      {% if c == 'routeoptions' %}
-                                         &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ c }}</b><br>
-                                        
-                                              {% for e,f in d.0items %}
-                                                 {% if e == 'required' %}
-                                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ e }}</b> 
-                                                      {% for g in f %}
-                                                          {{ g }},
-                                                      {% endfor %}
-                                                      <br>
-                                                 {% else %}
-                                                      {% if e == 'route' %}
-                                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ e }}</b> <a href='?route={{ f }}'>{{ f }}</a><br>
-                                                      {% else %}
-                                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ e }}</b> {{ f }}<br>
-                                                      {% endif %}
-                                                 {% endif %}
-                                              {% endfor %}
-                                      {% else %}
-                                           &nbsp;&nbsp;&nbsp;&nbsp;<b>{{ c }}</b> {{ d}}<br>
-                                      {% endif %}
-
-                                {% endfor %}
-                                <br>
-                {% endfor %}
-              </div>
-        </div>
-
-        <div class="panel panel-danger">
-              <div class="panel-heading">
-                <h3 class="panel-title">Action / Routes</h3>
-              </div>
-              <div class="panel-body">
-                {% for v in workflow_route.actions %}
-                       {% for r,y in v.items %}
-                            {% if r == 'required' %}
-                                     &nbsp;&nbsp;<b>{{ r }}</b> :
-                                     {% for c in y.items %}
-                                           {{ c }}
-                                     {% endfor %}
-                                     <br>
-                            {% else %}
-                                     {% if r == 'route' %}
-                                          &nbsp;&nbsp;<b>{{ r }}</b> : <a class='btn btn-primary' href='?route={{ y }}'>Route {{ y }}</a><BR>
-                                     {% else %}
-                                          &nbsp;&nbsp;<b>{{ r }}</b> : {{ y }}<BR> 
-                                     {% endif %}
-                            {% endif %}
-                       {% endfor %}
-                       <BR><BR>
-                {% endfor %}
-              </div>
-        </div>
+        
+        <div class="card border-danger mb-3">
+          <div class="card-header bg-danger text-white">
+            <h5 class="card-title mb-0">Action / Routes</h5>
+          </div>
+          <div class="card-body">
+            {% for v in workflow_route.actions %}
+              {% for r, y in v.items %}
+                {% if r == 'required' %}
+                  <strong>{{ r }}</strong>:
+                  {% for c in y.items %}
+                    {{ c }}
+                  {% endfor %}
+                  <br>
+                {% elif r == 'route' %}
+                  <strong>{{ r }}</strong>: <a class="btn btn-primary btn-sm" href="?route={{ y }}">Route {{ y }}</a><br>
+                {% else %}
+                  <strong>{{ r }}</strong>: {{ y }}<br>
+                {% endif %}
+              {% endfor %}
+              <br><br>
+            {% endfor %}
+          </div>
+        </div>        
 
 
         <!--- END -->
