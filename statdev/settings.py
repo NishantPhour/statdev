@@ -54,7 +54,6 @@ INSTALLED_APPS += [
     'webtemplate_dbca',
     'crispy_forms',
     'bootstrap3',
-    'django_q',
     'public',
     'rest_framework',
     'rest_framework_gis',
@@ -134,9 +133,15 @@ TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'applications', 'templates', 
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append('statdev.context_processors.template_context')
 TEMPLATES[0]['OPTIONS']['context_processors'].append('statdev.context_processors.payment_processor')
-#TODO: check this change to env
-PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE='0637'
-PAYMENT_INTERFACE_SYSTEM_ID='41'
+
+PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE = env('PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE', 'PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE not configured')
+PS_PAYMENT_SYSTEM_ID = PAYMENT_INTERFACE_SYSTEM_PROJECT_CODE.replace('0', 'S')
+PAYMENT_INTERFACE_SYSTEM_ID = env('PAYMENT_INTERFACE_SYSTEM_ID', 'PAYMENT_INTERFACE_SYSTEM_ID not configured')
+if not VALID_SYSTEMS:
+    VALID_SYSTEMS = [PS_PAYMENT_SYSTEM_ID]
+BPAY_ALLOWED = env('BPAY_ALLOWED',False)
+EXTERNAL_URL = env('EXTERNAL_URL','')
+
 WSGI_APPLICATION = 'statdev.wsgi.application'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -361,8 +366,4 @@ if len(GIT_COMMIT_HASH) == 0:
        print ("ERROR: No git hash provided")
 
 
-PS_PAYMENT_SYSTEM_ID = env('PS_PAYMENT_SYSTEM_ID', 'S637')
-if not VALID_SYSTEMS:
-    VALID_SYSTEMS = [PS_PAYMENT_SYSTEM_ID]
-BPAY_ALLOWED = env('BPAY_ALLOWED',False)
-EXTERNAL_URL = env('EXTERNAL_URL','')
+

@@ -87,7 +87,7 @@
                         <tr>
                             <td><a href="{% if app_obj.app.state == 1 %}{% if app_obj.app.app_type == None %}{% url 'application_apply_form' app_obj.app.pk 'apptype' %}{% else %}{% url 'application_update' app_obj.app.pk %}{% endif %}{% else %}{% url 'application_detail' app_obj.app.pk %}{% endif %}">WO-{{ app_obj.app.pk }}</a></td>
 
-			    <td{{ app_obj.app.get_app_type_display }}</td>
+			    <td>{{ app_obj.app.get_app_type_display }}</td>
                             <td>{{ app_obj.app.title }}</td>
                             <td>{% if app_obj.app.organisation %}
                                  {{ app_obj.app.organisation }}
@@ -95,23 +95,7 @@
                                  {{ app_obj.applicant.legal_first_name }} {{ app_obj.applicant.legal_last_name }}
                                 {% endif %}
                             </td>
-                            <td>
-                                 {% if staff == True %}
-                                        {{ app_obj.app.get_state_display }}
-				 {% else %}
-                            	     {% if app_obj.app.state == 1 %}
-                                         {{ app_obj.app.get_state_display }}
-				     {% elif app_obj.app.state == 8 %}
-                                         {{ app_obj.app.get_state_display }}
-                                     {% elif  app_obj.app.state == 10 %} 
-					{{ app_obj.app.get_state_display }}
-                                     {% elif  app_obj.app.state == 14 %}
-					{{ app_obj.app.get_state_display }}
-				     {% else %}
-					Submitted
-                                     {% endif %}
-				{% endif %}
-                            </td>
+
 			    <td>{{ app_obj.app.get_status_display }} </td>
                             <td>{{ app_obj.app.submit_date|date:"d-M-Y" }}</td>
                             {% if staff == True %}
