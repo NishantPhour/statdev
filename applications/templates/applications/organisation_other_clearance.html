@@ -43,14 +43,14 @@
                 <td>{{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}</td>
                 <td>{{ obj.get_status_display }}</td>
                 <td>{{ obj.due_date|date:"d-M-Y" }}</td>
-                <td>{{ obj.assignee }</td>
+                <td>{{ obj.assignee }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
-  </div>}
+  </div>
   
 <script>
 function loadTable() {
