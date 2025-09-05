@@ -47,12 +47,10 @@ class BookingInvoiceInline(admin.TabularInline):
 
 @register(Booking)
 class BookingAdmin(ModelAdmin):
-    # list_display = ('customer', 'application', 'cost_total','created')
-    # list_filter = ('customer',)
-    # raw_id_fields = ('customer','application','overridden_by','canceled_by','created_by',)
-    # search_fields = ('customer','application')
-    # inlines = [BookingInvoiceInline,]
-    x='x'
+    list_display = ( 'application', 'cost_total','created')
+    raw_id_fields = ('application',)
+    search_fields = ('application',)
+    inlines = [BookingInvoiceInline,]
 
 @register(DiscountReason)
 class DiscountReasonAdmin(ModelAdmin):
@@ -92,14 +90,13 @@ class ApplicationLicenceFeeAdmin(ModelAdmin):
     
 @register(Application)
 class ApplicationAdmin(ModelAdmin):
-    # date_hierarchy = 'submit_date'
-    # filter_horizontal = ('records',)
-    # raw_id_fields = ('applicant','assignee','assigned_officer','approval_document','approval_document_signed','submitted_by','assessed_by','organisation','group','old_application',)
-    # readonly_fields = ('records','location_route_access','cert_survey','cert_public_liability_insurance','risk_mgmt_plan','safety_mgmt_procedures','brochures_itineries_adverts','other_relevant_documents','vessels','land_owner_consent','deed','river_lease_scan_of_application','proposed_development_plans','document_draft','document_new_draft','document_new_draft_v3','document_draft_signed','swan_river_trust_board_feedback','document_memo','document_memo_2','document_briefing_note','document_determination_approved','supporting_info_demonstrate_compliance_trust_policies','document_final','document_final_signed','document_determination','document_completion',)
-    # list_display = ('id', 'app_type', 'organisation', 'state', 'title', 'submit_date', 'expire_date')
-    # list_filter = ('app_type', 'state')
-    # search_fields = ('applicant__email', 'organisation__name', 'assignee__email', 'title')
-    x='x'
+    date_hierarchy = 'submit_date'
+    filter_horizontal = ('records',)
+    raw_id_fields = ('approval_document','approval_document_signed','organisation','group','old_application',)
+    readonly_fields = ('records','location_route_access','cert_survey','cert_public_liability_insurance','risk_mgmt_plan','safety_mgmt_procedures','brochures_itineries_adverts','other_relevant_documents','vessels','land_owner_consent','deed','river_lease_scan_of_application','proposed_development_plans','document_draft','document_new_draft','document_new_draft_v3','document_draft_signed','swan_river_trust_board_feedback','document_memo','document_memo_2','document_briefing_note','document_determination_approved','supporting_info_demonstrate_compliance_trust_policies','document_final','document_final_signed','document_determination','document_completion',)
+    list_display = ('id', 'app_type', 'organisation', 'state', 'title', 'submit_date', 'expire_date')
+    list_filter = ('app_type', 'state')
+    search_fields = ('applicant', 'organisation__name', 'assignee', 'title')
 
 
 @register(Location)
@@ -114,7 +111,7 @@ class ReferralAdmin(ModelAdmin):
     filter_horizontal = ('records',)
     list_display = ('id', 'application', 'referee', 'sent_date', 'period', 'status', 'expire_date', 'response_date')
     list_filter = ('status',)
-    search_fields = ('application__title', 'referee__email', 'details', 'feedback')
+    search_fields = ('application__title', 'details', 'feedback')
     raw_id_fields = ('application',)
     readonly_fields = ('referee',)
 
@@ -132,18 +129,17 @@ class ConditionAdmin(ModelAdmin):
 
 @register(Compliance)
 class ComplianceAdmin(ModelAdmin):
-    # date_hierarchy = 'submit_date'
-    # filter_horizontal = ('records',)
-    # raw_id_fields = ('condition','assessed_by','applicant','assignee','assessed_by','submitted_by')
-    # readonly_fields = ('external_documents',)
-    # list_display = ('__str__', 'applicant', 'approval_id','assignee', 'status', 'submit_date', 'approve_date','due_date','compliance_group')
-    # search_fields = ('applicant__email', 'assignee__email', 'compliance', 'comments')
-    x='x'
+    date_hierarchy = 'submit_date'
+    filter_horizontal = ('records',)
+    raw_id_fields = ('condition',)
+    readonly_fields = ('external_documents',)
+    list_display = ('__str__', 'approval_id', 'status', 'submit_date', 'approve_date','due_date','compliance_group')
+    search_fields = ('compliance', 'comments')
 
 @register(ComplianceGroup)
 class ComplianceGroupAdmin(ModelAdmin):
-    list_display = ('__str__', 'applicant', 'approval_id','assignee', 'status', 'due_date')
-    search_fields = ('applicant__email', 'assignee__email', 'compliance', 'comments')
+    list_display = ('__str__', 'applicant', 'approval_id', 'status', 'due_date')
+    search_fields = ('compliance', 'comments')
 
 @register(Delegate)
 class DelegateAdmin(ModelAdmin):
