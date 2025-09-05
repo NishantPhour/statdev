@@ -195,19 +195,19 @@ openUploader: function(input_id,upload_type) {
 
 		      var htmlvalue = "";
 		      //           htmlvalue += '<div id="uploadModal" class="modal fade" role="dialog">';
-		      htmlvalue += '<div id="'+input_id+'__uploadbox">';
+		      htmlvalue += '<div id="'+input_id+'__uploadbox" style="margin-top: 20px;">';
 		      htmlvalue += '<div>';
 		      //            htmlvalue += '<div class="modal-dialog">';
 
 		      htmlvalue += '    <div class="modal-content">';
-		      htmlvalue += '      <div class="modal-header">';
-		      htmlvalue += '        <button type="button" class="close"  onclick="ajax_loader_django.closeUploader(\''+input_id+'\');" >&times;</button>';
-		      htmlvalue += '        <h4 class="modal-title">File Uploader</h4>';
-		      htmlvalue += '      </div>';
+			  htmlvalue += '    <div class="modal-header d-flex justify-content-between align-items-center">';
+			  htmlvalue += '      <h4 class="modal-title mb-0">File Uploader</h4>';
+			  htmlvalue += '      <button type="button" class="btn-close" aria-label="Close" onclick="ajax_loader_django.closeUploader(\''+input_id+'\');"></button>';
+			  htmlvalue += '    </div>';
 		      htmlvalue += '      <div class="modal-body" >';
 		      htmlvalue += '<form action="/applications-uploads/" method="post" enctype="multipart/form-data" id="upload_form" id="'+input_id+'__uploadform" >';
 		      htmlvalue += '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrfmiddlewaretoken+'" />';
-		      htmlvalue += '  <label class="custom-file">';
+		      htmlvalue += '  <label class="custom-file" style="display: block;">';
 		      //            htmlvalue += '  <input name="__files[]" type="file" ';
 		      htmlvalue += '  <input name="__files[]" id="'+input_id+'__submit__files" type="file" onchange="ajax_loader_django.autoUpload('+"'"+input_id+"__submit'"+');" ';
 
@@ -219,8 +219,8 @@ openUploader: function(input_id,upload_type) {
 		      htmlvalue += '  >';
 		      htmlvalue += '  <span class="custom-file-control"></span>';
 		      htmlvalue += '</label>';
-		      htmlvalue += '<input name="__submit__" type="submit" class="btn btn-primary" style="margin-top:20px;" id="'+input_id+'__submit" value="Upload"/>';
-		      htmlvalue += '</form>';
+			  htmlvalue += '  <input name="__submit__" type="submit" class="btn btn-primary" style="margin-top:10px;" id="'+input_id+'__submit" value="Upload"/>';
+			  htmlvalue += ' </form>';			  
 		      htmlvalue += '<BR><BR>';
 
 		      htmlvalue += '<div id="'+input_id+'__submit-progress-wrp" class="progress">';
