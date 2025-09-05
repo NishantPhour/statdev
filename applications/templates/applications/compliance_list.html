@@ -59,54 +59,54 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for obj in items|dictsort:"due_date" %}
+                  {% for obj in app_list %}
                   <tr>
-                    <td><a href="{% url 'compliance_approval_update_internal' obj.pk %}">CO-{{ obj.pk }}</a></td>
-                    <td>{{ obj.get_app_type_display }}</td>
+                    <td><a href="{% url 'compliance_approval_update_internal' obj.app.pk %}">CO-{{ obj.app.pk }}</a></td>
+                    <td>{{ obj.app.get_app_type_display }}</td>
                     <td>
-                      {% if obj.approval_id is None %}
+                      {% if obj.app.approval_id is None %}
                         None
                       {% else %}
-                        <a href="{% url 'approval_detail' obj.approval_id %}">AP-{{ obj.approval_id }}</a>
+                        <a href="{% url 'approval_detail' obj.app.approval_id %}">AP-{{ obj.app.approval_id }}</a>
                       {% endif %}
                     </td>
-                    <td>{{ obj.title }}</td>
+                    <td>{{ obj.app.title }}</td>
                     <td>
-                      {% if obj.organisation %}
-                        {{ obj.organisation }}
+                      {% if obj.app.organisation %}
+                        {{ obj.app.organisation }}
                       {% else %}
-                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
+                        {{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}
                       {% endif %}
                     </td>
                     <td>
                       {% if staff %}
-                        {{ obj.get_status_display }}
+                        {{ obj.app.get_status_display }}
                       {% else %}
-                        {% if obj.status == 2 or obj.status == 3 or obj.status == 4 or obj.status == 8 or obj.status == 9 %}
-                          {{ obj.get_status_display }}
+                        {% if obj.app.status == 2 or obj.app.status == 3 or obj.app.status == 4 or obj.app.status == 8 or obj.app.status == 9 %}
+                          {{ obj.app.get_status_display }}
                         {% else %}
                           Submitted
                         {% endif %}
                       {% endif %}
                     </td>
-                    <td>{{ obj.due_date|date:"d-M-Y" }}</td>
-                    <td>{{ obj.assignee }}</td>
+                    <td>{{ obj.app.due_date|date:"d-M-Y" }}</td>
+                    <td>{{ obj.assignee.legal_first_name }} {{ obj.assignee.legal_last_name }}</td>
                     <td>
                       <div class="dropdown">
                         <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" role="button" aria-expanded="false">Actions</a>
                         <ul class="dropdown-menu">
-                          {% if app_obj.app.state == 1 %}
-                            <li><a class="dropdown-item" href="{% url 'compliance_condition_update' obj.approval_id %}">Process</a></li>
-                            {% if app_obj.app.assignee > 0 %}
-                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.pk %}">Reassign</a></li>
+                          {% if app_obj.app.app.state == 1 %}
+                            <li><a class="dropdown-item" href="{% url 'compliance_condition_update' obj.app.approval_id %}">Process</a></li>
+                            {% if app_obj.app.app.assignee > 0 %}
+                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.app.pk %}">Reassign</a></li>
                             {% else %}
-                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.pk %}">Assign</a></li>
+                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.app.pk %}">Assign</a></li>
                             {% endif %}
                           {% else %}
-                            {% if obj.status == 1 or obj.status == 2 or obj.status == 3 or obj.status == 7 %}
-                              <li><a class="dropdown-item" href="{% url 'compliance_approval_update_external' obj.pk %}">Submit</a></li>
+                            {% if obj.app.status == 1 or obj.app.status == 2 or obj.app.status == 3 or obj.app.status == 7 %}
+                              <li><a class="dropdown-item" href="{% url 'compliance_approval_update_external' obj.app.pk %}">Submit</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'compliance_approval_update_internal' obj.pk %}">View</a></li>
+                            <li><a class="dropdown-item" href="{% url 'compliance_approval_update_internal' obj.app.pk %}">View</a></li>
                           {% endif %}
                         </ul>
                       </div>

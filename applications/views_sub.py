@@ -498,8 +498,9 @@ class FormsList():
                     donothing = ''
                 else:
                     #TODO check this
-                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
+                    if(applicant.legal_first_name and applicant.legal_last_name):
+                        context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                        context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
 
 
             context['app_list'].append(row)
