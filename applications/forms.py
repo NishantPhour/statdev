@@ -1923,7 +1923,7 @@ class ApplicationReferralConditionsPart5(ModelForm):
 
 class ReferralForm(ModelForm):
     referee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2314,7 +2314,7 @@ class AssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assignee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2379,7 +2379,7 @@ class AssignOfficerForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assigned_officer = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2423,7 +2423,7 @@ class ComplianceAssignPersonForm(ModelForm):
     """A form for assigning an application to people with a specific group.
     """
     assignee = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -2465,7 +2465,7 @@ class AssignApplicantForm(ModelForm):
     """A form for assigning or change the applicant on application.
     """
     applicant = forms.ModelChoiceField(
-        queryset=SystemUser.objects.all(),
+        queryset=SystemUser.objects.all().exclude(ledger_id__isnull=True),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -3098,28 +3098,7 @@ class OrganisationCertificateForm(ModelForm):
                 
             # )
         )
-#TODO remove this
-# class UserFormIdentificationUpdate(ModelForm):
-#     identification2 = FileField(required=False, max_length=128, widget=ClearableFileInput)
 
-#     class Meta:
-#         model = EmailUser
-#         fields = ['id']
-        
-
-#     def __init__(self, *args, **kwargs):
-#         super(UserFormIdentificationUpdate, self).__init__(*args, **kwargs)
-#         self.helper = BaseFormHelper(self)
-#         self.helper.form_id = 'id_form_emailuser_account_update'
-#         self.helper.attrs = {'novalidate': ''}
-#         # Define the form layout.
-#         self.helper.layout = Layout(
-#             'identification2',
-#             FormActions(
-#                 Submit('save', 'Save', css_class='btn-lg'),
-#                 Submit('cancel', 'Cancel')
-#             )
-#         )
 
 class AddressForm(ModelForm):
 
