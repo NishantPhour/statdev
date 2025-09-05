@@ -931,9 +931,12 @@ class ApplicationApplicantChange(LoginRequiredMixin,DetailView):
             query_str_split = query_str.split()
             search_filter = Q()
             search_filter = Q(first_name__icontains=query_str) | Q(last_name__icontains=query_str) | Q(email__icontains=query_str)
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)[:100]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)
         else:
-            listusers =  SystemUser.objects.all().exclude(is_staff=True)[:100]
+            listusers =  SystemUser.objects.all().exclude(is_staff=True)
+            
+        listusers = listusers.filter(Q(legal_first_name__isnull=False) & Q(legal_last_name__isnull=False)).distinct()[:100]
+
 
         context['acc_list'] = []
         for lu in listusers:
@@ -1814,10 +1817,11 @@ class SearchPersonList(ListView):
             # Add Organsations Results , Will also filter out duplicates
             search_filter |= Q(pk__in=orgs)
             # Get all applicants
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)[:200]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)
         else:
-            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id')[:200]       
+            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id')      
 
+        listusers = listusers.filter(Q(legal_first_name__isnull=False) & Q(legal_last_name__isnull=False)).distinct()[:200]
         context['acc_list'] = []
         for lu in listusers:
             row = {}
