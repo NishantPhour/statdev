@@ -32,19 +32,45 @@ crispy_para:
 
 """
 
-def crispy_heading(collapse_id, header_id , heading_label):
-    #    return Div(id=header_id, css_class='panel-heading')
-     return Div(HTML('<h3 class="panel-title" ><a role="button" data-toggle="collapse" href="#'+collapse_id+'" aria-expanded="false" aria-controls="application_collapse"><span class="glyphicon glyphicon-chevron-down collapse-glyph"></span></span>'+heading_label+' </a></h3>'), id=header_id, css_class='panel-heading')
+def crispy_heading(collapse_id, header_id, heading_label):
+    box_collapse_id = f"box_{collapse_id}"
+    return HTML(f'''
+        <div class="card-header fw-bold h4" id="{header_id}" style="padding:30px;">
+            <div class="row align-items-center">
+                <div class="col-6 d-flex align-items-center">
+                    {heading_label}
+                </div>
+                <div class="col-6 text-end d-flex justify-content-end align-items-center">
+                    <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;"
+                       data-bs-target="#{box_collapse_id}"
+                       aria-expanded="true"
+                       aria-controls="{collapse_id}"
+                       style="font-size: 1.25rem; cursor: pointer;">
+                    </i>
+                </div>
+            </div>
+        </div>
+    ''')
 
-def crispy_box(collapse_id, header_id , heading_label,*field_set):
-     return Div(crispy_heading(collapse_id, header_id, heading_label),
-                            Div(Div(
-                              Fieldset('',
-                                   *field_set
-                            ), css_class='panel-body',
-                          ), css_class="panel-collapse collapse in",id=collapse_id,
-                    ), css_class='panel panel-default'
-             ,id='box_'+collapse_id)
+def crispy_box(collapse_id, header_id, heading_label, *field_set):
+    return Div(
+        crispy_heading(collapse_id, header_id, heading_label),
+        Div(
+            Div(
+                Fieldset('', *field_set),
+                css_class='card-body',
+                id='box_' + collapse_id
+            ),
+            css_class='collapse show',
+            id=collapse_id,
+            role='tabpanel',
+            **{'aria-labelledby': header_id}
+        ),
+        css_class='card mb-3',
+        
+    )
+
+
 
 def crispy_empty_box():
     return Div()
@@ -93,7 +119,7 @@ def check_fields_exist(fields,fieldstocheck):
     return False
 
 def crispy_button(helper,stepid,steplabel):
-    helper.add_input(Submit(stepid, steplabel, css_class='btn-lg'))
+    helper.add_input(Submit(stepid, steplabel))
     return helper
 
 def crispy_alert(message):

@@ -5,7 +5,8 @@
 <form action="" method="post">
     {% csrf_token %}
     <p>Are you sure that you want to delete the address "{{ object }}"?</p>
-    <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-lg btn-danger" id="submit-id-confirm">
     <input type="submit" name="cancel" value="Cancel" class="btn btn-primary" id="submit-id-cancel">
+    <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-danger" id="submit-id-confirm">
+    
 </form>
 {% endblock %}

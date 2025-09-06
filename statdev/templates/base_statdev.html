@@ -1,28 +1,27 @@
-{% extends "webtemplate_dbca/base_internet.html" %}
+{% extends "webtemplate_dbca/base_b5_auth_session.html" %}
 {% load static %}
 {% block base_style %}
 
 {% endblock %}
 
-{% block extra_head %}
-        <link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap/dist/css/bootstrap.css?ver={{ GIT_COMMIT_HASH }}	">
-	<link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatables.net-bs/css/dataTables.bootstrap.css?ver={{ GIT_COMMIT_HASH }}">
+{% block extra_css %}
+        <!-- <link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap/dist/css/bootstrap.css?ver={{ GIT_COMMIT_HASH }}	"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatables.net-bs/css/dataTables.bootstrap.css?ver={{ GIT_COMMIT_HASH }}"> -->
 	<link rel="stylesheet" type="text/css" href="/static/common/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css?ver={{ GIT_COMMIT_HASH }}">
 	<link rel="stylesheet" type="text/css" href="/static/css/applications.css?ver={{ GIT_COMMIT_HASH }}" />
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.css?ver={{ GIT_COMMIT_HASH }}" />
-
+    <link rel="stylesheet" type="text/css" href="/static/common/node_modules/datatable_bootstrap5/datatables.css?ver={{ GIT_COMMIT_HASH }}" />
 
 
         <!-- npm modules -->
 	<script type="text/javascript" src="/static/common/node_modules/jquery/dist/jquery.js?ver={{ GIT_COMMIT_HASH }}"></script>
-	<script type="text/javascript" src="/static/common/node_modules/datatables/media/js/jquery.dataTables.js?ver={{ GIT_COMMIT_HASH }}"></script>
-	<script type="text/javascript" src="/static/common/node_modules/datatables.net-bs/js/dataTables.bootstrap.js?ver={{ GIT_COMMIT_HASH }}"></script>
+	<script type="text/javascript" src="/static/common/node_modules/datatable_bootstrap5/datatables.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/common/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/common/node_modules/bootstrap/dist/js/bootstrap.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/js/moment.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 
-	<script type="text/javascript" language="javascript" src="/static/js/dataTables.buttons.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
+	<!-- <script type="text/javascript" language="javascript" src="/static/js/dataTables.buttons.min.js?ver={{ GIT_COMMIT_HASH }}"></script> -->
 	<script type="text/javascript" language="javascript" src="/static/js/jszip.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" language="javascript" src="/static/js/pdfmake.min.js?ver={{ GIT_COMMIT_HASH }}"></script>
 	<script type="text/javascript" language="javascript" src="/static/js/vfs_fonts.js?ver={{ GIT_COMMIT_HASH }}"></script>
@@ -48,25 +47,23 @@
 
 {% block base_js %}{% endblock %}
 
-{% block navbar_site_title %}
-
-<a class="navbar-brand" href="/">Dashboard</a>
-<ul class='nav navbar-nav hidden-xs'>
-    {% if staff == True %}
-        <li class='hidden-sm' ><a href="{% url 'application_list' %}" title="Applications">Applications</a></li>
-        <li class='hidden-sm' ><a href="{% url 'approval_list' %}" title="Approvals">Approvals</a></li>
-        <li class='hidden-sm' ><a href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
-        <li class='hidden-sm' ><a href="{% url 'organisation_access_requests' %}" title="Company Access">Company Access</a></li>
-        <li class='hidden-sm' ><a href="{% url 'search_list' %}">Search</a></li>
-    {% else %}
-        <li class='hidden-sm' ><a href="" title="Contact Us">Contact Us</a></li> 
-        <li class='hidden-sm' ><a href="" title="Further Information">Further Information</a></li>
+{% block development_header %}
+    {% if EMAIL_INSTANCE == 'DEV' or EMAIL_INSTANCE == 'UAT' or EMAIL_INSTANCE == 'TEST'  %}
+    <div class="col-lg-12 p-3 {% if request.session.user_obj.is_staff is True %}bg-warning{% else %}bg-danger{% endif %} text-white text-center fs-6" >
+        DEVELOPMENT: FOR TESTING ONLY DO NOT USE
+    </div>
     {% endif %}
-</ul>
+{% endblock %}
 
-{% endblock navbar_site_title %}
-{% block navbar_links %}
-{% if staff == True %}
+{% block header_top_menu %}
+{% endblock %}
+
+{% block menu_items_left_brand %}
+{% endblock%}
+
+
+
+<!-- {% if staff == True %}
     <li class='hidden-lg hidden-md'><a href="{% url 'approval_list' %}" title="Applications">Approvals</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'application_list' %}" title="Applications">Applications</a></li>
     <li class='hidden-lg hidden-md'><a href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
@@ -76,74 +73,59 @@
 {% else %}
     <li class='hidden-lg hidden-md' ><a href="" title="Contact Us">Contact Us</a></li>
     <li class='hidden-lg hidden-md' ><a href="" title="Further Information">Further Information</a></li>
-{% endif %}
+{% endif %} -->
 
-{% block navbar_auth %}
-{% if request.user.is_authenticated %}
-<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{% firstof user.get_full_name user.email %} <span class="caret"></span></a>
-    <ul class="dropdown-menu" role="menu">
-        <!-- TODO: change to system-accounts page -->
-        <li><a href="{% url "person_details_actions" user.pk "personal" %}">My personal details</a></li>
-        <li><a class="dropdown-item" href="/ledger-ui/system-accounts">Manage Account</a></li>
-        {% if staff == False %}
-        <li><a href="{% url "person_details_actions" user.pk "companies" %}" title="My Companies">My Companies</a></li>
-        {% endif %}
-        {% if user.is_superuser %}
-        <li><a href="{% url 'admin:index' %}" title="Administration">Administration</a></li>
-        {% endif %}
-        {% if staff == True %}
-        <li><a href="{% url 'application_flows' %}" title="Flows">Flows</a></li>
-        {% endif %}
-        <li><a href="{% url 'logout' %}" title="Log out">Log out</a></li>
-    </ul>
-</li>
-{% endif %}
-{% endblock navbar_auth %}
-{% endblock navbar_links %}
-
-{% block page_content %}
+{% block menu_spacer %}
+    {% endblock %}
+{% block messages %}
 <!-- Messages  -->
 {% if messages %}
-<div class="row">
-    <div class="col-xs-12">
-        {% for message in messages %}
-	{% if message.tags == 'error' %}
-		<div class="alert alert-danger">
-			{{ message|safe }}
-		</div>
-	{% else %}
-        <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
-            {{ message|safe }}
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-12">
+            {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                {{ message|safe }}
+            </div>
+        {% else %}
+            <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
+                {{ message|safe }}
+            </div>
+        {% endif %}
+            {% endfor %}
         </div>
-	{% endif %}
-        {% endfor %}
     </div>
 </div>
 {% endif %}
+{% endblock messages %}
 
-<div class="row">
-    <div class="col-xs-12">
-        {% block page_content_inner %}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-12">
+            {% block page_content_inner %}{% endblock %}
+            <iframe src="/blank.html" name="file_load_frame" height="300px" width="100%" title="File Load Frame" style='display:none'></iframe>
 
-        <iframe src="/blank.html" name="file_load_frame" height="300px" width="100%" title="File Load Frame" style='display:none'></iframe>
-
+        </div>
     </div>
 </div>
-{% endblock page_content %}
+{% endblock %}
 
-{% block page_footer %}
-<div id="footer">
-    <div class="container-fluid">
-        <hr>
-        <div class="row">
-            <div class="col-xs-9 text-muted">
-                <small>v{{ project_version }}, Commit: {{ project_last_commit_date }} &copy; Department of Parks and Wildlife</small>
-            </div>
-            <div class="col-xs-3 text-muted text-right">
-                {% if object.routeid %}
-                <small> Form Step: {{ object.routeid }} </small>
-                {% endif %}
+{% block footer %}
+<div class="container">
+    <div id="footer">
+        <div class="container-fluid">
+            <hr>
+            <div class="row">
+                <div class="col-xs-9 text-muted">
+                    <small>v{{ project_version }}, Commit: {{ project_last_commit_date }} &copy; Department of Parks and Wildlife</small>
+                </div>
+                <div class="col-xs-3 text-muted text-right">
+                    {% if object.routeid %}
+                    <small> Form Step: {{ object.routeid }} </small>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -161,6 +143,53 @@
     -webkit-overflow-scrolling: touch;
     outline: 0;
 }
+
+.modal-backdrop.fade {
+    opacity: 0.5 !important;
+}
+.navbar{
+    margin-bottom: 0px;
+}
+
+.nav-item {
+    background-color: transparent !important;
+}
+
+
+
+
+.modal.fade .modal-dialog {
+  transform: translateY(-100px);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.modal.fade.show .modal-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.form-select.is-invalid {
+  background-image: var(--bs-form-select-bg-image) !important;
+}
+
+div.dt-button-info {
+    background-color: #fff !important;
+    color: #000 !important; /* Ensure text is visible */
+    border: 1px solid #ccc; /* Optional: add a light border */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Optional: subtle shadow */
+}
+
+.modal,
+.modal-content,
+.modal-body,
+.modal-header,
+.modal-footer {
+    font-family: var(--bs-font-sans-serif);
+}
+
+
+
 </style>
 <div class='overtop-modal' id='overtop' style='background-color: rgba(39, 39, 39, 0.5);'>
 
@@ -203,6 +232,7 @@
             todayHighlight: true
         });
     });
+   
 </script>
 
 

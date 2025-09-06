@@ -5,66 +5,76 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>Application for {{ object.get_app_type_display }} - {{ object.pk }}</h1>
-            <!-- Applicant panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Applicant</h3>
+            <!-- Applicant Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Applicant</h5>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>Applicant details here</p>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Title</h3>
+
+            <!-- Title Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Title</h5>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>{{ object.title }}</p>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Proposed Commercial Acts and Activites</h3>
+
+            <!-- Description Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Proposed Commercial Acts and Activities</h5>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>{{ object.description }}</p>
                 </div>
             </div>
-            <!-- Vessel / Craft Panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Vessel and Craft Details</h3>
-                </div>
-                <div class="panel-body">
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th>Nominated Vessel</th>
-                            <th>Vessel ID</th>
-                            <th>Hire and Drive Reg.</th>
-                            <th>Size (m)</th>
-                            <th>Engine (kw)</th>
-                            <th>Passenger Capacity</th>
-                        </tr>
 
-                        {% for vessel in object.vessels.all %}
-                            <tr>
-                                <td>{{ vessel.name }}</td>
-                                <td>{{ vessel.vessel_id }}</td>
-                                <td>{{ vessel.registration }}</td>
-                                <td>{{ vessel.size }}</td>
-                                <td>{{ vessel.engine }}</td>
-                                <td>{{ vessel.max_passengers }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+            <!-- Vessel / Craft Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Vessel and Craft Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nominated Vessel</th>
+                                    <th>Vessel ID</th>
+                                    <th>Hire and Drive Reg.</th>
+                                    <th>Size (m)</th>
+                                    <th>Engine (kw)</th>
+                                    <th>Passenger Capacity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vessel in object.vessels.all %}
+                                <tr>
+                                    <td>{{ vessel.name }}</td>
+                                    <td>{{ vessel.vessel_id }}</td>
+                                    <td>{{ vessel.registration }}</td>
+                                    <td>{{ vessel.size }}</td>
+                                    <td>{{ vessel.engine }}</td>
+                                    <td>{{ vessel.max_passengers }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <!-- Proposal details panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Proposal Details</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Proposal Details</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <div class="fluid-container">
                         <div class="row">
                             <div class="col-lg-4">
@@ -232,11 +242,11 @@
                 </div>
             </div>
             <!-- Other Documents panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Other Documents</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Other Documents</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <div class ="row">
                         <div class="col-lg-6">
                             <h5>Certificate of Survey</h5>
@@ -296,11 +306,11 @@
                 </div>
             </div>
             <!-- Landowner Consent panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Landowner Consent</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Landowner Consent</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <h5>Landowner consent document/s</h5>
                     {% if object.land_owner_consent.exists %}
                     <p>{{ object.land_owner_consent.all }}</p>
@@ -310,21 +320,21 @@
                 </div>
             </div>
             <!-- Deed panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Deed</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Deed</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <h5>Deed</h5>
                     <p>{{ object.deed }}</p>
                 </div>
             </div>
             <!-- Referrals panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Referrals</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Referrals</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     {% if object.referral_set.exists %}
                     <table class="table table-striped table-bordered table-condensed">
                         <thead>
@@ -354,11 +364,11 @@
                 </div>
             </div>
             <!-- Conditions panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Conditions</h3>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Conditions</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     {% if object.condition_set.exists %}
                     <table class="table table-bordered table-striped">
                         <thead>

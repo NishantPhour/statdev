@@ -2,7 +2,8 @@
 <form action="" method="post" id='id_form_modals'>
     {% csrf_token %}
     <p style='font-size: 14px;'>Are you sure that you want to delete Newspaper Publication "{{ object.date }} for {{ object.newspaper }}"?</p>
-    <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-lg btn-danger ajax-submit" id="submit-id-confirm">
     <input type="submit" name="cancel" value="Cancel" class="btn btn-primary ajax-close" id="submit-id-cancel">
+    <input type="submit" name="confirm" value="Confirm" class="btn btn-primary btn-danger ajax-submit" id="submit-id-confirm">
+    
 </form>
 {% endblock %}

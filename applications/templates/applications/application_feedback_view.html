@@ -11,115 +11,95 @@
     <!-- Action panel start -->
 
 
-        <div class="panel-body">
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Name</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-				{{ object.name }}
-                           </div>
-                   </div>
-              </div>
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Address</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.address }}
-                           </div>
-                   </div>
-              </div>
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Suburb</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.suburb }}
-                           </div>
-                   </div>
-              </div>
-
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>State</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.state }}
-                           </div>
-                   </div>
-              </div>
-
-
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Postcode</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.postcode }}
-                           </div>
-                   </div>
-              </div>
-
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Phone</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.phone }}
-                           </div>
-                   </div>
-              </div>
-
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Email</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.email }}
-                           </div>
-                   </div>
-              </div>
-
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Comments</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {{ object.comments }}
-                           </div>
-                   </div>
-              </div>
-              <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="col-lg-3">
-                          <label>Attachments</label>
-                    </div>
-                    <div class="col-lg-9">
-                          <div class="col-lg-12">
-                                {% if object.records %}
-                                        {% for doc in object.records.all %}
-					<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc.upload }}</A></div>
-                                        {% endfor %}
-                                {% else %}
-                                        No Attachments
-                                {% endif %}
-                           </div>
-                   </div>
-              </div>
-
-</div>
+    <div class="card-body">
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Name</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.name }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Address</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.address }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Suburb</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.suburb }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>State</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.state }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Postcode</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.postcode }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Phone</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.phone }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Email</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.email }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Comments</label>
+          </div>
+          <div class="col-lg-9">
+              {{ object.comments }}
+          </div>
+      </div>
+  
+      <div class="row mb-3">
+          <div class="col-lg-3 fw-bold">
+              <label>Attachments</label>
+          </div>
+          <div class="col-lg-9">
+              {% if object.records %}
+                  {% for doc in object.records.all %}
+                      <div class="mb-1">
+                          <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc.upload }}</a>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  No Attachments
+              {% endif %}
+          </div>
+      </div>
+  </div>
+  
 {% endblock %}

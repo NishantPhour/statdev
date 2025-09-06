@@ -1,17 +1,20 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#title_collapse" aria-expanded="true" aria-controls="title_collapse">
-                            Title
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
-                        <p>{{ object.title }}</p>
-                    </div>
-                </div>
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
+                Title
             </div>
+            <div class="col-6 text-end">
+                <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box40-card-body" onclick=""></i>
+            </div>
+    </div> 
+    </div>
+    <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+        <div class="card-body" id="box40-card-body">
+                <p>{{ object.title }}</p>
+        </div>
+    </div>
+</div>
+<br>
 
 

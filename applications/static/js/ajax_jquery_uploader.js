@@ -195,19 +195,19 @@ openUploader: function(input_id,upload_type) {
 
 		      var htmlvalue = "";
 		      //           htmlvalue += '<div id="uploadModal" class="modal fade" role="dialog">';
-		      htmlvalue += '<div id="'+input_id+'__uploadbox">';
+		      htmlvalue += '<div id="'+input_id+'__uploadbox" style="margin-top: 20px;">';
 		      htmlvalue += '<div>';
 		      //            htmlvalue += '<div class="modal-dialog">';
 
 		      htmlvalue += '    <div class="modal-content">';
-		      htmlvalue += '      <div class="modal-header">';
-		      htmlvalue += '        <button type="button" class="close"  onclick="ajax_loader_django.closeUploader(\''+input_id+'\');" >&times;</button>';
-		      htmlvalue += '        <h4 class="modal-title">File Uploader</h4>';
-		      htmlvalue += '      </div>';
+			  htmlvalue += '    <div class="modal-header d-flex justify-content-between align-items-center">';
+			  htmlvalue += '      <h4 class="modal-title mb-0">File Uploader</h4>';
+			  htmlvalue += '      <button type="button" class="btn-close" aria-label="Close" onclick="ajax_loader_django.closeUploader(\''+input_id+'\');"></button>';
+			  htmlvalue += '    </div>';
 		      htmlvalue += '      <div class="modal-body" >';
 		      htmlvalue += '<form action="/applications-uploads/" method="post" enctype="multipart/form-data" id="upload_form" id="'+input_id+'__uploadform" >';
 		      htmlvalue += '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrfmiddlewaretoken+'" />';
-		      htmlvalue += '  <label class="custom-file">';
+		      htmlvalue += '  <label class="custom-file" style="display: block;">';
 		      //            htmlvalue += '  <input name="__files[]" type="file" ';
 		      htmlvalue += '  <input name="__files[]" id="'+input_id+'__submit__files" type="file" onchange="ajax_loader_django.autoUpload('+"'"+input_id+"__submit'"+');" ';
 
@@ -219,13 +219,13 @@ openUploader: function(input_id,upload_type) {
 		      htmlvalue += '  >';
 		      htmlvalue += '  <span class="custom-file-control"></span>';
 		      htmlvalue += '</label>';
-		      htmlvalue += '<input name="__submit__" type="submit" class="btn btn-primary" id="'+input_id+'__submit" value="Upload"/>';
-		      htmlvalue += '</form>';
+			  htmlvalue += '  <input name="__submit__" type="submit" class="btn btn-primary" style="margin-top:10px;" id="'+input_id+'__submit" value="Upload"/>';
+			  htmlvalue += ' </form>';			  
 		      htmlvalue += '<BR><BR>';
 
 		      htmlvalue += '<div id="'+input_id+'__submit-progress-wrp" class="progress">';
 		      htmlvalue += '  <div id="'+input_id+'__submit-progress-bar-indicator" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:0%">';
-		      htmlvalue += '    <span class="status">0%</span> Complete (<span class="status-text">success</span>) ';
+		      htmlvalue += '    <h7 class="status">0%</h7>';
 		      htmlvalue += '  </div> ';
 		      htmlvalue += '</div>';
 		      htmlvalue += '<BR><BR>';
@@ -259,64 +259,52 @@ openUploader: function(input_id,upload_type) {
 		      // bindForm('#upload_form',input_id,upload_type);
 		      ajax_loader_django.showFiles(input_id,upload_type);
 	      },
-showFiles: function(input_id,upload_type) {
-	           console.log("IN"+input_id)
-		   var input_id_obj = $('#'+input_id+'_json').val();
-		   var input_array = [];
-		   var htmlvalue = "<BR>";
-		   if (input_id_obj.length > 0) {
-			   console.log(upload_type);
-			   if (upload_type == 'multiple') { 
-				   input_array = JSON.parse(input_id_obj);
-
-				   htmlvalue += '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">';
-				   var filecount = 1;
-				   for (var file in input_array) {
-					   htmlvalue += '<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">';
-                                            
-					   //htmlvalue += filecount+'. <A HREF="/media/'+input_array[file].path+'">';
-                                           htmlvalue += filecount+'. <A HREF="/private-media/view/'+input_array[file].doc_id+'-file'+input_array[file].extension+'" target="new_tab_'+input_array[file].doc_id+'">';
-                                           if (input_array[file].name.length > 2) {
-                                               htmlvalue += input_array[file].name;
-                                           }  else  {
-                                               htmlvalue += input_array[file].short_name;
-					   }
-					   htmlvalue += '</a></div>';
-					   htmlvalue += '<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">';
-					   htmlvalue += '<A onclick="ajax_loader_django.deleteFile(\''+input_id+'\',\''+input_array[file].doc_id+'\',\''+upload_type+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: red"></span></A>';
-					   htmlvalue += '</div>';
-					   filecount++;
-				   }
-
-				   htmlvalue += '</div>';
-
-			   } else {
-				   input_array = JSON.parse(input_id_obj);
-
-				   htmlvalue += '<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">';
-                                   //htmlvalue += '<A HREF="/media/'+input_array.path+'">';
-                                   htmlvalue += '<A HREF="/private-media/view/'+input_array.doc_id+'-file'+input_array.extension+'" target="new_tab_'+input_array.doc_id+'">';
-                                           if (input_array.name.length > 2) {
-                                               htmlvalue += input_array.name;
-                                           }  else  {
-                                               htmlvalue += input_array.short_name;
-                                           }
-
-				   htmlvalue += '</A>';
-				   htmlvalue += '</div>';
-				   htmlvalue += '<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">';
-				   htmlvalue += '<A onclick="ajax_loader_django.deleteFile(\''+input_id+'\',\''+input_array.doc_id+'\',\''+upload_type+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: red"></span></A>';
-				   htmlvalue += '</div>';
-			   }
-
-			   console.log(htmlvalue);
-			   //                  $('#'+input_id+'-showfiles').html(htmlvalue);
-			   $('#'+input_id+'__showfiles').html(htmlvalue);
-		   } else {
-			   $('#showfiles').html(htmlvalue);
-			   $('#'+input_id+'__showfiles').html(htmlvalue);
-		   }
-	   },
+		  showFiles: function(input_id, upload_type) {
+			console.log("IN" + input_id);
+			var input_id_obj = $('#' + input_id + '_json').val();
+			var input_array = [];
+			var htmlvalue = '<br>';
+		
+			if (input_id_obj.length > 0) {
+				console.log(upload_type);
+				if (upload_type == 'multiple') {
+					input_array = JSON.parse(input_id_obj);
+		
+					var filecount = 1;
+					for (var file in input_array) {
+						htmlvalue += '<div class="row mb-2">';
+						htmlvalue += '<div class="col-9">';
+						htmlvalue += filecount + '. <a href="/private-media/view/' + input_array[file].doc_id + '-file' + input_array[file].extension + '" target="new_tab_' + input_array[file].doc_id + '">';
+						htmlvalue += input_array[file].name.length > 2 ? input_array[file].name : input_array[file].short_name;
+						htmlvalue += '</a></div>';
+						htmlvalue += '<div class="col-3 text-end">';
+						htmlvalue += '<a onclick="ajax_loader_django.deleteFile(\'' + input_id + '\',\'' + input_array[file].doc_id + '\',\'' + upload_type + '\')" href="javascript:void(0);">';
+						htmlvalue += '<i class="bi bi-x-circle-fill text-danger"></i>';
+						htmlvalue += '</a></div>';
+						htmlvalue += '</div>';
+						filecount++;
+					}
+		
+				} else {
+					input_array = JSON.parse(input_id_obj);
+		
+					htmlvalue += '<div class="row mb-2">';
+					htmlvalue += '<div class="col-9">';
+					htmlvalue += '<a href="/private-media/view/' + input_array.doc_id + '-file' + input_array.extension + '" target="new_tab_' + input_array.doc_id + '">';
+					htmlvalue += input_array.name.length > 2 ? input_array.name : input_array.short_name;
+					htmlvalue += '</a></div>';
+					htmlvalue += '<div class="col-3 text-end">';
+					htmlvalue += '<a onclick="ajax_loader_django.deleteFile(\'' + input_id + '\',\'' + input_array.doc_id + '\',\'' + upload_type + '\')" href="javascript:void(0);">';
+					htmlvalue += '<i class="bi bi-x-circle-fill text-danger"></i>';
+					htmlvalue += '</a></div>';
+					htmlvalue += '</div>';
+				}
+		
+				$('#' + input_id + '__showfiles').html(htmlvalue);
+			} else {
+				$('#' + input_id + '__showfiles').html(htmlvalue);
+			}
+		},				
 deleteFile: function(input_id,file_id,upload_type) {
 		    console.log(input_id+' '+ file_id);
 		    var input_id_obj = $('#'+input_id+'_json').val();

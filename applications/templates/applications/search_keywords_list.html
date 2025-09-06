@@ -2,52 +2,61 @@
 
 {% block page_content_inner %}
 
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="title_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#search_person_company_collapse" aria-expanded="false" aria-controls="search_person_company_collapse">
-                Search Keyword {{ app_type_checkboxes.applications }}
-                <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-            </a>
-        </h3>
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
+                Search Keywords
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
 
-    <div class="panel-collapse collapse in" id="search_keyword_collapse" role="tabpanel" aria-labelledby="search_keyword_heading">
-        <div class="panel-body">
+
+    <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box1-card-body">
             <!-- Search bar -->
             <form action="" method="get">
-                <div class="row">
-                    <div class="hidden-xs col-sm-1">
-                        <label for="search_field">Filter:</label>
+                <!-- Filter checkboxes -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-1 d-none d-sm-block">
+                        <label class="form-label">Filter:</label>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11">
+                    <div class="col-12 col-md-11">
                         {% for applist in APP_TYPES %}
-                                <input type='checkbox'  name='filter-{{ applist.key }}' id='filter-{{ applist.key }}'
-                            {% if applist.key == 'applications' %}
-                                {{ app_type_checkboxes.applications }}
-                            {% elif applist.key == 'approvals' %}
-                                {{ app_type_checkboxes.approvals }}
-                            {% elif applist.key == 'emergency' %}
-                                {{ app_type_checkboxes.emergency }}
-                            {% elif applist.key == 'compliance' %}
-                                {{ app_type_checkboxes.compliance }}
-                            {% endif %}
-                         > {{ applist.value }} 
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="filter-{{ applist.key }}" id="filter-{{ applist.key }}"
+                                    {% if applist.key == 'applications' %}
+                                        {{ app_type_checkboxes.applications }}
+                                    {% elif applist.key == 'approvals' %}
+                                        {{ app_type_checkboxes.approvals }}
+                                    {% elif applist.key == 'emergency' %}
+                                        {{ app_type_checkboxes.emergency }}
+                                    {% elif applist.key == 'compliance' %}
+                                        {{ app_type_checkboxes.compliance }}
+                                    {% endif %}
+                                >
+                                <label class="form-check-label" for="filter-{{ applist.key }}">{{ applist.value }}</label>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="hidden-xs col-sm-1">
-                        <label for="search_field">Search:</label>
+            
+                <!-- Search field -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-sm-1 d-none d-sm-block">
+                        <label for="search_field" class="form-label">Search:</label>
                     </div>
-                    <div class="col-xs-12 col-sm-11 col-md-8">
+                    <div class="col-12 col-md-8">
                         <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
                     </div>
-                    <div class="col-xs-12 col-sm-11 col-md-8">
+                    <div class="col-12 col-md-8 mt-2">
                         <span></span>
                     </div>
                 </div>
-            </form>
+            </form>            
             <hr>
 
         <table id='search-keyword-table' class="table table-striped table-bordered table-condensed">

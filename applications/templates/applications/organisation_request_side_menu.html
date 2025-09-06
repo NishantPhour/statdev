@@ -1,10 +1,10 @@
-<div class="col-sm-4 col-md-3 col-lg-2">
+<div class="col-sm-4 col-md-3 col-lg-3">
 {% if admin_staff == True %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Actions</h3>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Actions</h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <h5>Communications</h5>
         <p><a href="{% url 'organisation_comms' object.id %}">Show</a> | <a href="{% url 'organisation_comms_create' object.id %}">Add Entry</a></p>
         <hr />

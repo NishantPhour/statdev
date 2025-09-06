@@ -1,14 +1,18 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="vessel_details_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#vessel_details_collapse" aria-expanded="false" aria-controls="vessel_details_collapse">
-                             Vessel Details
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
-                </div>
-                <div class="panel-collapse {{ collapse.vessel_details }} " id="vessel_details_collapse" role="tabpanel" aria-labelledby="vessel_details_heading">
-                    <div class="panel-body">
+           
+           <div class="card">
+            <div class="card-header fw-bold h4" style="padding:30px;">
+            <div class="row">
+                    <div class="col-6">
+                        Vessel Details
+                    </div>
+                    <div class="col-6 text-end">
+                    <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box17-card-body" onclick=""></i>
+                    </div>
+            </div> 
+            </div>
+            
+            <div class="collapse show {{ collapse.vessel_details }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box17-card-body">
                                
                                <h4>Vessels</h4>
                                <table class="table table-bordered table-striped">
@@ -67,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            <br>
 
 
 

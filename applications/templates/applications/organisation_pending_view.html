@@ -31,79 +31,61 @@
         {% include "applications/organisation_request_side_menu.html" %}
 
         <!-- Main panel start -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="col-sm-8 col-md-9 col-lg-9">
             <!-- Holder panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#holder_collapse">
-                    <h3 class="panel-title">
-                        Company Access Request 
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse in" id="holder_collapse">
-                    <div class="panel-body">
-                        <div class="col-sm-8 col-md-6 col-lg-4">
-                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Company<label>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-8">
-                                        {{ object.name }}
-                                </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-4"> 
-                                    <label>ABN</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                        {{ object.abn }}
-                                     </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Certificate of Incorportation</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                        <A HREF='{{ object.identification.path }}'>{{ object.identification }}</A>
-                                     </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Phone (home)</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                        {{ object.email_user.phone_number }}
-                                     </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12" style='display:none'>
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Phone (work)</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                     </div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Mobile</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                            {{ object.email_user.mobile_number }}
-                                     </div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <label>Email</label>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-8">
-                                        {{ object.email_user.email }}
-                                     </div>
-                                </div>
-                            </div>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Company Access Request 
                         </div>
-                    </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box37-card-body" onclick=""></i>
+                        </div>
+                  </div> 
+                </div>
+                  
+                <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box37-card-body">
+                        <div class="container-fluid">
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Company</div>
+                            <div class="col-md-8">{{ object.name }}</div>
+                          </div>
+                      
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">ABN</div>
+                            <div class="col-md-8">{{ object.abn }}</div>
+                          </div>
+                      
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Certificate of Incorporation</div>
+                            <div class="col-md-8">
+                              <a href="{{ object.identification.path }}">{{ object.identification }}</a>
+                            </div>
+                          </div>
+                      
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Phone (home)</div>
+                            <div class="col-md-8">{{ object.email_user.phone_number }}</div>
+                          </div>
+                      
+                          <div class="row mb-3" style="display: none;">
+                            <div class="col-md-4 fw-bold">Phone (work)</div>
+                            <div class="col-md-8"></div>
+                          </div>
+                      
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Mobile</div>
+                            <div class="col-md-8">{{ object.email_user.mobile_number }}</div>
+                          </div>
+                      
+                          <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Email</div>
+                            <div class="col-md-8">{{ object.email_user.email }}</div>
+                          </div>
+                        </div>
+                      </div>                      
                 </div>
             </div>
 

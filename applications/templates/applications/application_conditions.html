@@ -1,14 +1,16 @@
-<div class="panel panel-default">
-	<div class="panel-heading" role="tab" id="conditions_heading">
-		<h3 class="panel-title">
-			<a role="button" data-toggle="collapse" href="#conditions_collapse" aria-expanded="false" aria-controls="conditions_collapse">
-				Conditions
-                                <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-			</a>
-		</h3>
+<div class="card">
+	<div class="card-header fw-bold h4" style="padding:30px;">
+		<div class="row">
+			<div class="col-6">
+				  Conditions
+			</div>
+			<div class="col-6 text-end">
+				  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box23-card-body" onclick=""></i>
+			</div>
+	  </div> 
 	</div>
-	<div class="panel-collapse collapse {{ collapse.conditions }}" id="conditions_collapse" role="tabpanel" aria-labelledby="conditions_heading">
-            <div class="panel-body">
+	<div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+		<div class="card-body" id="box23-card-body">
             <div id='conditions_table'>
 	     {% include "applications/application_conditions_table.html" %}
 	    </div>
@@ -22,3 +24,4 @@
 	</div>
 	</div>
 </div>
+<br>

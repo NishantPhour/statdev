@@ -1,55 +1,44 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="other_informaiton_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#other_informaiton_collapse" aria-expanded="true" aria-controls="other_informaiton_collapse">
-                            Other Information
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+<div class="card">
+        <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+                <div class="col-6">
+                        Other Information
                 </div>
-                <div class="panel-collapse {{ collapse.title }}" id="other_informaiton_collapse" role="tabpanel" aria-labelledby="other_informaiton_heading">
-                    <div class="panel-body">
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Prosposed commencement date</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.proposed_commence }}
-                                </div>
+                <div class="col-6 text-end">
+                <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box14-card-body" onclick=""></i>
+                </div>
+        </div> 
+        </div>
+        
+        <div class="collapse show {{ collapse.title }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                <div class="card-body" id="box14-card-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-6 fw-bold">Proposed commencement date</div>
+                            <div class="col-lg-6">{{ object.proposed_commence }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Prosposed end date</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.proposed_end }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-lg-6 fw-bold">Proposed end date</div>
+                            <div class="col-lg-6">{{ object.proposed_end }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Approximate cost</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.cost }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-lg-6 fw-bold">Approximate cost</div>
+                            <div class="col-lg-6">{{ object.cost }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Riverbank project number (if applicable)</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.project_no }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-lg-6 fw-bold">Riverbank project number (if applicable)</div>
+                            <div class="col-lg-6">{{ object.project_no }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Details of related permits</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.related_permits }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-lg-6 fw-bold">Details of related permits</div>
+                            <div class="col-lg-6">{{ object.related_permits }}</div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
 

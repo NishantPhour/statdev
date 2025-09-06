@@ -17,26 +17,32 @@
         {% include "applications/application_side_menu.html" %}
 
         <!-- Main panel start -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
-	{% if object.state == 1 %}
-		{% if object.submitter_comment|length > 1 %}
-			<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>&nbsp;&nbsp;{{ object.submitter_comment }}</div>
-		{% endif %}
-	{% endif %}
+        <div class="col-sm-8 col-md-9 col-lg-9">
+        {% if object.state == 1 %}
+            {% if object.submitter_comment|length > 1 %}
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                <strong class="visually-hidden">Error:</strong>
+                &nbsp;&nbsp;{{ object.submitter_comment }}
+            </div>        
+            {% endif %}
+        {% endif %}
 
             <!-- Applicant panel -->
             {% if hidden.applicant == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="applicant_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#applicant_collapse" aria-expanded="false" aria-controls="application_collapse">
-                            Applicant
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Applicant
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.applicant }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.applicant }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box1-card-body">
                     {# TODO: applicant details should only be visible to internal users. #}
                     <div class="row">
                     {% if object.organisation %}
@@ -48,228 +54,196 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.title == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#title_collapse" aria-expanded="true" aria-controls="title_collapse">
-                            Title
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Title
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box2-card-body">
                         <p>{{ object.title }}</p>
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.location == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="location_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#location_collapse" aria-expanded="true" aria-controls="location_collapse">
-                           Location 
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Location
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="location_collapse" role="tabpanel" aria-labelledby="location_heading">
-                    <div class="panel-body">
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Street Number</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.street_number_name }}
-                                </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Lot</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.lot }}
-                                </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Reverse number</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.reserve }}
-                                </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Town / Suburb</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.suburb }}
-                                </div>
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box3-card-body">
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Street Number</label></div>
+                            <div class="col-6">{{ location.street_number_name }}</div>
                         </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Nearest road intersection</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.intersection }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Lot</label></div>
+                            <div class="col-6">{{ location.lot }}</div>
                         </div>
-
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Local government authority</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.local_government_authority }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Reverse number</label></div>
+                            <div class="col-6">{{ location.reserve }}</div>
                         </div>
-
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Are any proposed works, acts or activities in or over waters?</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.over_water }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Town / Suburb</label></div>
+                            <div class="col-6">{{ location.suburb }}</div>
+                        </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Nearest road intersection</label></div>
+                            <div class="col-6">{{ location.intersection }}</div>
+                        </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Local government authority</label></div>
+                            <div class="col-6">{{ location.local_government_authority }}</div>
+                        </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Are any proposed works, acts or activities in or over waters?</label></div>
+                            <div class="col-6">{{ object.over_water }}</div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.other_information == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="other_informaiton_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#other_informaiton_collapse" aria-expanded="true" aria-controls="other_informaiton_collapse">
-                            Other Information
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Other Information
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box4-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="other_informaiton_collapse" role="tabpanel" aria-labelledby="other_informaiton_heading">
-                    <div class="panel-body">
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Prosposed commencement date</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.proposed_commence }}
-                                </div>
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box4-card-body">
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Proposed commencement date</label></div>
+                            <div class="col-6">{{ object.proposed_commence }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Prosposed end date</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.proposed_end }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Proposed end date</label></div>
+                            <div class="col-6">{{ object.proposed_end }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Approximate cost</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.cost }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Approximate cost</label></div>
+                            <div class="col-6">{{ object.cost }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Riverbank project number (if applicable)</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.project_no }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Riverbank project number (if applicable)</label></div>
+                            <div class="col-6">{{ object.project_no }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Details of related permits</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.related_permits }}
-                                </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Details of related permits</label></div>
+                            <div class="col-6">{{ object.related_permits }}</div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.description == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="description_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#description_collapse" aria-expanded="true" aria-controls="description_collapse">
-                           Description
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Description
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box5-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Description</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.description }}
-                                </div>
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box5-card-body">
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Description</label></div>
+                            <div class="col-6">{{ object.description }}</div>
                         </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Proposed development plans</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Proposed development plans</label></div>
+                            <div class="col-6">
                                 {% if object.proposed_development_plans %}
-                                	{% for doc in object.proposed_development_plans.all %}
-					<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                	                {% endfor %}
-                       	        {% else %}
-                               		No Attachments
-                                {% endif %}
-                                </div>
-                        </div>
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Supporting info demonstrate compliance trust policies</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                {% if object.supporting_info_demonstrate_compliance_trust_policies %}
-                                        {% for doc in object.supporting_info_demonstrate_compliance_trust_policies.all %}
-					<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                                        {% endfor %}
+                                    {% for doc in object.proposed_development_plans.all %}
+                                        <div><a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a></div>
+                                    {% endfor %}
                                 {% else %}
-                                No Attachments
+                                    No Attachments
                                 {% endif %}
-                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row mb-2">
+                            <div class="col-6"><label class="fw-bold">Supporting info demonstrate compliance trust policies</label></div>
+                            <div class="col-6">
+                                {% if object.supporting_info_demonstrate_compliance_trust_policies %}
+                                    {% for doc in object.supporting_info_demonstrate_compliance_trust_policies.all %}
+                                        <div><a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a></div>
+                                    {% endfor %}
+                                {% else %}
+                                    No Attachments
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
             {% endif %}
 
             <!-- Landowner Consent panel -->
             {% if hidden.landowner_consent == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="landowner_consent_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#landowner_consent_collapse" aria-expanded="false" aria-controls="landowner_consent_collapse">
-                            Landowner Consent
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Landowner Consent
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box6-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.landowner_consent }} " id="landowner_consent_collapse" role="tabpanel" aria-labelledby="landowner_consent_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box6-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-4">
                                 {% if  object.land_owner_consent %}
@@ -285,22 +259,25 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %} 
 
 
             <!-- Deed panel -->
     	    {% if hidden.deed == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="deed_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#deed_collapse" aria-expanded="false" aria-controls="deed_collapse">
-                            Deed
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Deed
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box7-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.deed }}" id="deed_collapse" role="tabpanel" aria-labelledby="deed_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box7-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 Print <a href=''>this deed</a>, sign it and attach it to this application<BR>
@@ -312,6 +289,7 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if is_staff == True %}

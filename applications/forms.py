@@ -67,8 +67,9 @@ class ApplicationCreateForm(ModelForm):
 
         self.helper.form_id = 'id_form_create_application'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('create', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('create', 'Create'))
 
         # Limit the organisation queryset unless the user is a superuser.
         #if not user.is_superuser:
@@ -93,13 +94,23 @@ class ApplicationApplyForm(ModelForm):
         super(ApplicationApplyForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper()
         # delete internal option
-        del self.fields['apply_on_behalf_of'].choices[4]
+        # print("Original choices:", self.fields['apply_on_behalf_of'].choices)
+        # del self.fields['apply_on_behalf_of'].choices[4]
 
+        # # Delete on behalf of indivdual or company (Future development)
+        # # These two lines delete option id 3 and 4 from models.Application.APP_APPLY_ON 
+        # # The lines below are duplicated for purpose :)
+        # del self.fields['apply_on_behalf_of'].choices[2]
+        # del self.fields['apply_on_behalf_of'].choices[2]
+        # print("After deleting:", self.fields['apply_on_behalf_of'].choices)
+        
+        
+        # delete internal option
         # Delete on behalf of indivdual or company (Future development)
-        # These two lines delete option id 3 and 4 from models.Application.APP_APPLY_ON 
-        # The lines below are duplicated for purpose :)
-        del self.fields['apply_on_behalf_of'].choices[2]
-        del self.fields['apply_on_behalf_of'].choices[2]
+        self.fields['apply_on_behalf_of'].choices = [
+            choice for choice in self.fields['apply_on_behalf_of'].choices
+            if choice[0] not in [3,4,5]
+        ]
 
         crispy_boxes = crispy_empty_box()
         self.helper.form_show_labels = False
@@ -522,8 +533,9 @@ class CommunicationCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Create'))
         # Add labels for fields
         #self.fields['app_type'].label = "Application Type"
 
@@ -548,8 +560,9 @@ class CommunicationOrganisationCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Create'))
         # Add labels for fields
         #self.fields['app_type'].label = "Application Type"
 
@@ -575,8 +588,9 @@ class CommunicationAccountCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Create'))
         # Add labels for fields
         #self.fields['app_type'].label = "Application Type"
 
@@ -601,8 +615,9 @@ class CommunicationComplianceCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Create'))
         # Add labels for fields
         #self.fields['app_type'].label = "Application Type"
 
@@ -621,8 +636,9 @@ class OrganisationAccessRequestForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Confirm', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Confirm'))
 
 class ApplicationWebPublishForm(ModelForm):
 
@@ -699,8 +715,9 @@ class ApplicationWebPublishForm(ModelForm):
             del self.fields['publish_draft_expiry']
             del self.fields['publish_final_expiry']
             raise 
-        self.helper.add_input(Submit('save', 'Publish to Website', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Publish to Website'))
 
 
 class ApplicationFormMixin(object):
@@ -1066,8 +1083,9 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
                               if 'steplabel' in self.initial['workflow']['condactions'][ca]: 
                                    self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
                      else:
-                          self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+                          
                           self.helper.add_input(Submit('cancel', 'Cancel'))
+                          self.helper.add_input(Submit('save', 'Save'))
                              
 
 
@@ -1330,8 +1348,9 @@ class ApplicationPermitForm(ApplicationFormMixin, ModelForm):
                          if 'steplabel' in self.initial['workflow']['condactions'][ca]:
                              self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
                  else:
-                     self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+                     
                      self.helper.add_input(Submit('cancel', 'Cancel'))
+                     self.helper.add_input(Submit('save', 'Save'))
 
 
         #self.fields['other_supporting_docs'].label = "Attach supporting information to demonstrate compliance with relevant Trust policies"
@@ -1353,8 +1372,9 @@ class ApplicationChange(ApplicationFormMixin, ModelForm):
         self.fields['title'].disabled = True
         self.helper.form_id = 'id_form_change_ammend'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('createform', 'Create Form', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('createform', 'Create Form'))
 
 class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 
@@ -1720,8 +1740,9 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
                               if 'steplabel' in self.initial['workflow']['condactions'][ca]:
                                    self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
                       else:
-                          self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+                          
                           self.helper.add_input(Submit('cancel', 'Cancel'))
+                          self.helper.add_input(Submit('save', 'Save'))
 
         if 'assessment_start_date' in self.fields:
             self.fields['assessment_start_date'].label = "Start Date" 
@@ -1784,7 +1805,7 @@ class ApplicationEmergencyForm(ModelForm):
                      if 'steplabel' in self.initial['workflow']['condactions'][ca]:
                           self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
              else:
-                 self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+                 self.helper.add_input(Submit('save', 'Save'))
                  #self.helper.add_input(Submit('cancel', 'Cancel'))
 
 
@@ -1808,10 +1829,11 @@ class ApplicationLodgeForm(Form):
         self.helper.form_id = 'id_form_lodge_application'
         self.helper.layout = Layout(
             HTML('<p>Confirm that this application should be lodged for assessment:</p>'),
-            FormActions(
-                Submit('lodge', 'Lodge', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('lodge', 'Lodge')
+                
+            # )
         )
 
 class ApplicationReferralConditionsPart5(ModelForm):
@@ -1930,10 +1952,11 @@ class ReferralForm(ModelForm):
             'referee',
             'period',
             'details',
-            FormActions(
-                Submit('save', 'Save', css_class='btn-lg ajax-submit'),
-                Submit('cancel', 'Cancel', css_class='ajax-close')
-            )
+            # FormActions(
+                
+                Submit('cancel', 'Cancel', css_class='ajax-close'),
+                Submit('save', 'Save', css_class='ajax-submit')
+            # )
         )
 
 
@@ -1946,8 +1969,9 @@ class ReferralCompleteForm(ModelForm):
         super(ReferralCompleteForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_referral_complete'
-        self.helper.add_input(Submit('complete', 'Complete', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('complete', 'Complete', css_class='ajax-submit'))
 
 
 class ReferralRecallForm(Form):
@@ -1958,8 +1982,9 @@ class ReferralRecallForm(Form):
         super(ReferralRecallForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('recall', 'Recall', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('recall', 'Recall', css_class='ajax-submit'))
 
 
 class ReferralRemindForm(Form):
@@ -1970,8 +1995,9 @@ class ReferralRemindForm(Form):
         super(ReferralRemindForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('remind', 'Remind', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('remind', 'Remind', css_class='ajax-submit'))
 
 
 class ReferralResendForm(Form):
@@ -1982,8 +2008,9 @@ class ReferralResendForm(Form):
         super(ReferralResendForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('remind', 'Resend', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('remind', 'Resend', css_class='ajax-submit'))
 
 class ReferralDeleteForm(Form):
     """Form is to allow a referral to be reminded about the outstanding feedback
@@ -1994,8 +2021,9 @@ class ReferralDeleteForm(Form):
         self.helper = ButtonBaseFormHelper(self)
 #       self.helper.form_id = 'id_form_referral_delete'
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('delete', 'Delete', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close' ))
+        self.helper.add_input(Submit('delete', 'Delete', css_class='ajax-submit'))
 
 class PersonOrgDeleteForm(Form):
     """Form is to allow a organisation to be unlinked from people 
@@ -2005,8 +2033,9 @@ class PersonOrgDeleteForm(Form):
         super(ReferralDeleteForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_person_org_delete'
-        self.helper.add_input(Submit('delete', 'Delete', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('delete', 'Delete'))
 
 
 class VesselDeleteForm(Form):
@@ -2018,8 +2047,9 @@ class VesselDeleteForm(Form):
         self.helper = PopupFormHelper(self)
         #self.helper.form_id = 'id_form_vessel_delete'
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('delete', 'Delete', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close' ))
+        self.helper.add_input(Submit('delete', 'Delete', css_class='ajax-submit'))
 
 class ComplianceCompleteExternal(ModelForm):
     """Compliance Complete form External
@@ -2090,8 +2120,9 @@ class ComplianceComplete(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         self.fields['condition'].required = True
         self.fields['condition'].disabled = True
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
+        
 
 class ConditionSuspension(ModelForm):
     """Condition suspension Form
@@ -2109,12 +2140,13 @@ class ConditionSuspension(ModelForm):
 #        self.fields['condition'].required = True
 #        self.fields['condition'].disabled = True
         self.helper.form_id = 'id_form_modals'
-        if self.initial['actionkwargs'] == 'suspend': 
-           self.helper.add_input(Submit('save', 'Suspend Condition', css_class='btn-lg ajax-submit'))
-        else:
-           self.helper.add_input(Submit('save', 'Unsuspend Condition', css_class='btn-lg ajax-submit'))
-
         self.helper.add_input(Submit('cancel', 'Cancel' , css_class='ajax-close'))
+        if self.initial['actionkwargs'] == 'suspend': 
+           self.helper.add_input(Submit('save', 'Suspend Condition', css_class='ajax-submit'))
+        else:
+           self.helper.add_input(Submit('save', 'Unsuspend Condition', css_class='ajax-submit'))
+
+        
 
 class ConditionCreateForm(ModelForm):
     predefined_conditions = ModelChoiceField(queryset=ConditionPredefined.objects.filter(status=1).order_by('title'), help_text="Select a predefined condition from the drop down to append condition rules to condition automtically.", widget=forms.Select(attrs={'class': 'form-control'})) 
@@ -2142,8 +2174,9 @@ class ConditionCreateForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         self.helper.form_id = 'id_form_modals'
         self.fields['condition'].required = True
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('save', 'Save', css_class='ajax-submit'))
+        
 
     def clean(self):
         cleaned_data = super(ConditionCreateForm, self).clean()
@@ -2178,8 +2211,9 @@ class ConditionUpdateForm(ModelForm):
         self.fields['advise'].required = False
 
         self.helper.form_id = 'id_form_modals'
-        self.helper.add_input(Submit('update', 'Update', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close' ))
+        self.helper.add_input(Submit('update', 'Update', css_class='ajax-submit'))
+        
 
     def clean(self):
         cleaned_data = super(ConditionUpdateForm, self).clean()
@@ -2203,8 +2237,9 @@ class ConditionActionForm(ModelForm):
         self.helper.form_id = 'id_form_modals'
         self.fields['condition'].disabled = True
         self.fields['due_date'].disabled = True
-        self.helper.add_input(Submit('update', 'Update', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('update', 'Update', css_class='ajax-submit'))
+        
 
 
 class OldConditionActionForm(ConditionUpdateForm):
@@ -2221,10 +2256,11 @@ class OldConditionActionForm(ConditionUpdateForm):
         self.helper.form_id = 'id_form_condition_action'
         self.fields['condition'].disabled = True
         self.fields['due_date'].disabled = True
+        self.helper.add_input(Submit('cancel', 'Cancel'))
  #       self.fields['recur_pattern'] = True
 #        self.fields['recur_freq'] = True
-        self.helper.add_input(Submit('update', 'Update', css_class='btn-lg'))
-        self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('update', 'Update'))
+        
 
 class ApplicationAssignNextAction(ModelForm):
     """A form for assigning an application back to a group.
@@ -2263,10 +2299,11 @@ class ApplicationAssignNextAction(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Application Next Action</p>'),
             'details','submitter_comment','records','referral_comment','attach_to_email',
-            FormActions(
-                Submit('assign', 'Submit', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Submit')
+                
+            # )
         )
 #        self.fields['title'].disabled = True
 #        self.helper.add_input(Submit('assign', 'Assign', css_class='btn-lg'))
@@ -2307,10 +2344,11 @@ class AssignPersonForm(ModelForm):
             HTML('<p>Assign this application for processing:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 class AssignCancelForm(ModelForm):
@@ -2331,9 +2369,9 @@ class AssignCancelForm(ModelForm):
         # Define the form layout.
         self.helper.layout = Layout(
             HTML('<p>Are you sure you want to cancel this application:</p>'),
-            FormActions(
-                Submit('cancel-application', 'Cancel Application', css_class='btn-lg'),
-            )
+            # FormActions(
+                Submit('cancel-application', 'Cancel Application'),
+            # )
         )
 
 
@@ -2372,10 +2410,11 @@ class AssignOfficerForm(ModelForm):
             HTML('<p>Assign this application an officer:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assigned_officer',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 
@@ -2415,10 +2454,11 @@ class ComplianceAssignPersonForm(ModelForm):
             HTML('<p>Assign this application for processing:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 class AssignApplicantForm(ModelForm):
@@ -2451,14 +2491,18 @@ class AssignApplicantForm(ModelForm):
         # Define the form layout.
         self.helper.layout = Layout(
             HTML('<p>Assign this application for processing:</p>'),
-            #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'applicant',
             'organisation',
-            FormActions(
-                Submit('assign', 'Assign Applicant', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
+            Div( 
+                Div(
+                    Submit('cancel', 'Cancel', css_class='btn btn-primary me-2'),
+                    Submit('assign', 'Assign Applicant', css_class='btn btn-primary'),
+                    css_class='d-flex justify-content-start'
+                ),
+                css_class='mt-4'  # Add spacing above buttons
             )
         )
+
 
 
 class ComplianceSubmitForm(ModelForm):
@@ -2484,10 +2528,11 @@ class ComplianceSubmitForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Are you sure you want submit for approval?</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
-            FormActions(
-                Submit('Submit', 'Submit', css_class='btn-lg'),
-                Submit('Back', 'Back')
-            )
+            # FormActions(
+                Submit('Back', 'Back'),
+                Submit('Submit', 'Submit')
+                
+            # )
         )
 
 
@@ -2523,10 +2568,11 @@ class ComplianceStaffForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>'+preconfirmtext+'</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
-            FormActions(
-                Submit('Submit', 'Submit', css_class='btn-lg'),
-                Submit('Back', 'Back')
-            )
+            # FormActions(
+                Submit('Back', 'Back'),
+                Submit('Submit', 'Submit')
+                
+            # )
         )
 
 class ApplicationDiscardForm(ModelForm):
@@ -2549,10 +2595,11 @@ class ApplicationDiscardForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Are  you sure you want to delete this application.</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
-            FormActions(
-                Submit('discard', 'Discard', css_class='btn-lg'),
-                Submit('Back', 'Back')
-            )
+            # FormActions(
+                Submit('Back', 'Back'),
+                Submit('discard', 'Discard')
+                
+            # )
         )
 
 
@@ -2586,10 +2633,11 @@ class AssignApplicantFormCompany(ModelForm):
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'applicant',
             'organisation',
-            FormActions(
-                Submit('assign', 'Change Applicant', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign Applicant')
+                
+            # )
         )
 
 
@@ -2618,10 +2666,11 @@ class AssignCustomerForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Reassign this application back to the applicant, with feedback:</p>'),
             'app_type', 'title', 'description', 'feedback',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 
@@ -2653,10 +2702,11 @@ class AssignProcessorForm(ModelForm):
             HTML('<p>Assign this application for processing:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                 Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+               
+            # )
         )
 
 
@@ -2687,10 +2737,11 @@ class AssignAssessorForm(ModelForm):
             HTML('<p>Assign this application for assessment:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 
@@ -2722,10 +2773,11 @@ class AssignApproverForm(ModelForm):
             HTML('<p>Assign this application to a manager for approval/issue:</p>'),
             #'app_type', 'title', 'description', 'submit_date', 'assignee',
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign')
+                
+            # )
         )
 
 
@@ -2756,10 +2808,11 @@ class AssignEmergencyForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Assign this Emergency Works to a new Admin officer:</p>'),
             'assignee',
-            FormActions(
-                Submit('assign', 'Assign', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('assign', 'Assign', css_class='btn-lg')
+                
+            # )
         )
 
 
@@ -2790,10 +2843,11 @@ class ApplicationIssueForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<p>Issue or decline this completed application:</p>'),
             'app_type', 'title', 'description', 'submit_date', 'assessment',
-            FormActions(
-                Submit('save', 'Save', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                 Submit('cancel', 'Cancel'),
+                Submit('save', 'Save')
+               
+            # )
         )
 
 
@@ -2830,10 +2884,11 @@ class ApplicationEmergencyIssueForm(ModelForm):
         # Define the form layout.
         self.helper.layout = Layout(crispy_boxes,
             HTML('<p>Click Issue to issue this completed Emergency Works application:</p>'),
-            FormActions(
-                Submit('issue', 'Issue', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('issue', 'Issue')
+                
+            # )
         )
 
         #        self.fields['proposed_commence'].label = "Start Date"
@@ -2888,8 +2943,9 @@ class VesselForm(ModelForm):
         dynamic_selections = HTML('{% include "applications/application_vessel_craft_js_dynamics.html" %}')
         self.helper.layout = Layout('vessel_type', 'name', 'vessel_id', 'size', 'engine', 'passenger_capacity','registration','craft_type','number_of_crafts','documents',dynamic_selections)
 
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('save', 'Save', css_class='ajax-submit'))
 
 
 class NewsPaperPublicationCreateForm(ModelForm):
@@ -2910,8 +2966,9 @@ class NewsPaperPublicationCreateForm(ModelForm):
 
         self.fields['application'].widget = HiddenInput()
         self.fields['date'].widget.attrs['autocomplete'] = 'off'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel' , css_class='ajax-close'))
+        self.helper.add_input(Submit('save', 'Save', css_class='ajax-submit'))
 
 
 class WebsitePublicationCreateForm(ModelForm):
@@ -2931,8 +2988,9 @@ class WebsitePublicationCreateForm(ModelForm):
         self.helper.form_id = 'id_form_create_websitepublication'
         self.helper.attrs = {'novalidate': ''}
 #        self.fields['application'].widget = HiddenInput()
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
 
 class WebsitePublicationForm(ModelForm):
 
@@ -2952,8 +3010,9 @@ class WebsitePublicationForm(ModelForm):
         self.helper.attrs = {'novalidate': ''}
         self.fields['application'].widget = HiddenInput()
     #    self.fields['original_document'].widget = HiddenInput()
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
 
 
 class FeedbackPublicationCreateForm(ModelForm):
@@ -2974,8 +3033,9 @@ class FeedbackPublicationCreateForm(ModelForm):
         self.fields['application'].widget = HiddenInput()
         self.fields['status'].widget = HiddenInput()
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg ajax-submit'))
         self.helper.add_input(Submit('cancel', 'Cancel', css_class='ajax-close'))
+        self.helper.add_input(Submit('save', 'Save', css_class='ajax-submit'))
+        
 
 
 class RecordCreateForm(ModelForm):
@@ -2988,8 +3048,9 @@ class RecordCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_document'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
+        
 
 
 class SystemUserForm(ModelForm):
@@ -3007,10 +3068,11 @@ class SystemUserForm(ModelForm):
         # Define the form layout.
         self.helper.layout = Layout(
             'first_name', 'last_name', 'title', 'legal_dob', 'phone_number', 'mobile_number', 'fax_number',
-            FormActions(
-                Submit('save', 'Save', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('save', 'Save')
+                
+            # )
         )
 
 
@@ -3030,10 +3092,11 @@ class OrganisationCertificateForm(ModelForm):
         # Define the form layout.
         self.helper.layout = Layout(
             'identification',
-            FormActions(
-                Submit('save', 'Save', css_class='btn-lg'),
-                Submit('cancel', 'Cancel')
-            )
+            # FormActions(
+                Submit('cancel', 'Cancel'),
+                Submit('save', 'Save')
+                
+            # )
         )
 
 
@@ -3050,8 +3113,9 @@ class AddressForm(ModelForm):
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_address'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
+        
 
 
 class OrganisationAddressForm2(ModelForm):
@@ -3067,8 +3131,9 @@ class OrganisationAddressForm2(ModelForm):
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_address'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
 
 
 class OrganisationForm(ModelForm):
@@ -3085,8 +3150,9 @@ class OrganisationForm(ModelForm):
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_organisation'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Save'))
 
 class OrganisationContactForm(ModelForm):
 
@@ -3102,17 +3168,18 @@ class OrganisationContactForm(ModelForm):
         self.helper = BaseFormHelper(self)
         self.helper.form_id = 'id_form_organisation'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-lg'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
-
+        self.helper.add_input(Submit('save', 'Save'))
+        
 
 class DelegateAccessForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(DelegateAccessForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
-        self.helper.add_input(Submit('confirm', 'Confirm', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('confirm', 'Confirm'))
 
 
 class UnlinkDelegateForm(Form):
@@ -3120,5 +3187,6 @@ class UnlinkDelegateForm(Form):
     def __init__(self, *args, **kwargs):
         super(UnlinkDelegateForm, self).__init__(*args, **kwargs)
         self.helper = BaseFormHelper(self)
-        self.helper.add_input(Submit('unlink', 'Unlink user', css_class='btn-lg btn-danger'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('unlink', 'Unlink user', css_class='btn-danger'))

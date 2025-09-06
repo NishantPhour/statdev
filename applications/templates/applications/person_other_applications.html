@@ -1,118 +1,63 @@
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card">
+    <div class="card-body">
         <div class="row">
-            <form action="" method="get">
-
-
-                    <div class="col-sm-12 col-lg-9">
-                        <input type='hidden' name='action' value='search'>
-                        <!-- RES -->
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>From Lodge Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                        <input class="dateinput form-control" id="id_from_date" name="from_date" value="{{ from_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>To Lodge Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                  <input class="dateinput form-control" id="id_to_date" name="to_date" value="{{ to_date }}" type="text" autocomplete='off'>
-                            </div>  
-                        </div>
+            <form action="" method="get" class="mt-3">
+                <input type="hidden" name="action" value="search">
+                <input type="hidden" name="searchaction" value="search">
+              
+                <!-- Row: Dates + Create button -->
+                <div class="row g-3 align-items-end">
+                  <div class="col-12 col-lg-4">
+                    <label for="id_from_date" class="form-label">From Lodge Date:</label>
+                    <input class="dateinput form-control" id="id_from_date" name="from_date" value="{{ from_date }}" type="text" autocomplete="off">
+                  </div>
+                  <div class="col-12 col-lg-4">
+                    <label for="id_to_date" class="form-label">To Lodge Date:</label>
+                    <input class="dateinput form-control" id="id_to_date" name="to_date" value="{{ to_date }}" type="text" autocomplete="off">
+                  </div>
                 </div>
-
-
-
-                <div class="col-sm-12 col-lg-9">
-                    <input type='hidden' name='searchaction' value='search'>
-                    <!-- RES -->
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Type:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <select class="select form-control" id="id_apptype" name="apptype">
-                                <option value="" >All</option>
-                                {% for at in app_apptypes %}
-                                   {% if apptype == at.0 %}
-                                      <option selected="selected" value="{{ at.0 }}">{{ at.1 }}</option>
-                                   {% else %}
-                                      <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                   {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Status:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_appstatus" name="appstatus">
-                                    <option value="" selected="selected">All</option>
-                                    {% for at in app_appstatus %}
-                                        {% if appstatus|floatformat:"0" == at.0|floatformat:"0" %}
-                                           <option selected value="{{ at.0 }}">{{ at.1}}</option>
-                                        {% else %}
-                                           <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Workflow Step:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_wfstatus" name="wfstatus">
-                                    <option value="" selected="selected">All</option>
-                                    {% for at in app_wfstatus %}
-                                    {% if wfstatus == at %}
-                                    <option selected value="{{ at }}">{{ at}}</option>
-                                    {% else %}
-                                    <option value="{{ at }}">{{ at }}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
+              
+                <!-- Row: Type / Status / Workflow -->
+                <div class="row g-3 mt-1">
+                  <div class="col-12 col-lg-6">
+                    <label for="id_apptype" class="form-label">Type:</label>
+                    <select class="form-select" id="id_apptype" name="apptype">
+                      <option value="">All</option>
+                      {% for at in app_apptypes %}
+                        <option value="{{ at.0 }}" {% if apptype == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-12 col-lg-3">
+                    <label for="id_appstatus" class="form-label">Status:</label>
+                    <select class="form-select" id="id_appstatus" name="appstatus">
+                      <option value="">All</option>
+                      {% for at in app_appstatus %}
+                        <option value="{{ at.0 }}" {% if appstatus|floatformat:"0" == at.0|floatformat:"0" %}selected{% endif %}>{{ at.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-12 col-lg-3">
+                    <label for="id_wfstatus" class="form-label">Workflow Step:</label>
+                    <select class="form-select" id="id_wfstatus" name="wfstatus">
+                      <option value="">All</option>
+                      {% for at in app_wfstatus %}
+                        <option value="{{ at }}" {% if wfstatus == at %}selected{% endif %}>{{ at }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
                 </div>
-                <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-12">
-	                         <a class="btn btn-primary pull-right" href="{% url 'application_apply' %}">Create a new application</a>
-                        </div>
+                <div class="col-md-6">
+                    <label for="search_field" class="form-label">Keyword:</label>
+                    <input id="search_field" type="text" class="form-control" name="q" placeholder="Enter Keywords" value="{{ query_string }}">
                 </div>
-                <div class="col-sm-12 col-lg-12">
-                    <div class="col-sm-12 col-lg-9">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Keyword:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-6">
-                            <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                        </div>
-                        <div class="col-sm-12 col-lg-6">
-                        </div>
-                    </div>
-                    <!-- end -->
+            
+                <!-- Search Button -->
+                <div class="col-12 d-flex justify-content-between">
+                    <button type="submit" name="search" value="1" class="btn btn-primary mt-3">Search</button>
+                        <a class="btn btn-primary mt-3" href="{% url 'application_apply' %}">Create New Application</a>
                 </div>
-                <div class="col-sm-12 col-lg-3">
-                </div>
-
-            </form>
+              </form>                            
             <BR>
         </div>
         <hr>
@@ -163,18 +108,18 @@
                             {% endif %}
                             <td>
                                <ul class="nav navbar-nav">
-                                      <li class="dropdown">
-                                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Actions<span class="caret"></span></a>
+                                      <li class="dropdown nav-item">
+                                      <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" role="button" aria-expanded="true">Actions</a>
                                       <ul class="dropdown-menu" role="menu">
 					{% if app_obj.app.state == 1 %}
                                            {% if app_obj.app.app_type == None %}
-                                           	<li><a href="{% url 'application_apply_form' app_obj.app.pk 'apptype' %}" title="View">Continue</a></li>
+                                           	<li class="nav-item"><a class="dropdown-item" href="{% url 'application_apply_form' app_obj.app.pk 'apptype' %}" title="View">Continue</a></li>
 				           {% else %}
-						<li><a href="{% url 'application_update' app_obj.app.pk %}" title="View">Continue</a></li>
+						<li class="nav-item"><a class="dropdown-item" href="{% url 'application_update' app_obj.app.pk %}" title="View">Continue</a></li>
 					   {% endif %}
-					<li><a href="{% url 'application_discard' app_obj.app.pk %}" title="View">Discard</a></li>
+					<li class="nav-item"><a class="dropdown-item" href="{% url 'application_discard' app_obj.app.pk %}" title="View">Discard</a></li>
 					{% else %}
-							<li><a href="{% url 'application_detail' app_obj.app.pk %}" title="View">View</a></li>
+							<li class="nav-item"><a class="dropdown-item" href="{% url 'application_detail' app_obj.app.pk %}" title="View">View</a></li>
 					{% endif %}
                                      </ul>
                                      </li>

@@ -1,0 +1,5 @@
+<li><a class="dropdown-item" href="{% url "person_details_actions" user.pk "personal" %}">My personal details</a></li>
+<li><a class="dropdown-item" href="/ledger-ui/system-accounts">Manage Account</a></li>
+{% if staff == False %}
+<li><a class="dropdown-item" href="{% url "person_details_actions" user.pk "companies" %}" title="My Companies">My Companies</a></li>
+{% endif %}

@@ -1,77 +1,53 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="location_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#location_collapse" aria-expanded="true" aria-controls="location_collapse">
-                           Location
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+        <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                <div class="row">
+                        <div class="col-6">
+                                Location
+                        </div>
+                        <div class="col-6 text-end">
+                        <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box12-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse {{ collapse.title }}" id="location_collapse" role="tabpanel" aria-labelledby="location_heading">
-                    <div class="panel-body">
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Street Number</label>
+                
+                <div class="collapse show {{ collapse.title }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                        <div class="card-body" id="box12-card-body">
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Street Number</div>
+                                    <div class="col-lg-6">{{ location.street_number_name }}</div>
                                 </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.street_number_name }}
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Lot</div>
+                                    <div class="col-lg-6">{{ location.lot }}</div>
                                 </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Lot</label>
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Reserve number</div>
+                                    <div class="col-lg-6">{{ location.reserve }}</div>
                                 </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.lot }}
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Town / Suburb</div>
+                                    <div class="col-lg-6">{{ location.suburb }}</div>
                                 </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Reverse number</label>
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Nearest road intersection</div>
+                                    <div class="col-lg-6">{{ location.intersection }}</div>
                                 </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.reserve }}
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Local government authority</div>
+                                    <div class="col-lg-6">{{ location.local_government_authority }}</div>
                                 </div>
-                      </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Town / Suburb</label>
+                            
+                                <div class="row mb-3">
+                                    <div class="col-lg-6 fw-bold">Are any proposed works, acts or activities in or over waters?</div>
+                                    <div class="col-lg-6">{{ object.over_water }}</div>
                                 </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.suburb }}
-                                </div>
-                        </div>
-
-                      <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Nearest road intersection</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.intersection }}
-                                </div>
-                        </div>
-
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Local government authority</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ location.local_government_authority }}
-                                </div>
-                        </div>
-
-                        <div class='col-sm-12 col-lg-12'>
-                                <div class='col-sm-12 col-lg-6'>
-                                        <label>Are any proposed works, acts or activities in or over waters?</label>
-                                </div>
-                                <div class='col-sm-12 col-lg-6'>
-                                        {{ object.over_water }}
-                                </div>
-                        </div>
-                    </div>
+                            </div>                            
                 </div>
             </div>
+            <br>
 

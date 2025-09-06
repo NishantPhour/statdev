@@ -1,70 +1,46 @@
 
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card">
+    <div class="card-body">
         <div class="row">
             <form action="" method="get">
-                <div class="col-sm-12 col-lg-12" style='display:none'>
-                    <input type='hidden' name='searchaction' value='search'>
-                    <!-- RES -->
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Type:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <select class="select form-control" id="id_apptype" name="apptype">
-                                <option value="" >All</option>
-                                {% for at in app_apptypes %}
-                                {% if apptype == at.0 %}
-                                <option selected="selected" value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% else %}
-                                <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                <div class="row d-none">
+                    <input type="hidden" name="searchaction" value="search">
+                    
+                    <!-- Type -->
+                    <div class="col-lg-3 mb-3">
+                        <label for="id_apptype" class="form-label">Type:</label>
+                        <select class="form-select" id="id_apptype" name="apptype">
+                            <option value="">All</option>
+                            {% for at in app_apptypes %}
+                                <option value="{{ at.0 }}" {% if apptype == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-3">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <label>Status:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <select class="select form-control" id="id_appstatus" name="appstatus">
-                                <option value="" selected="selected">All</option>
-                                {% for at in app_appstatus %}
-                                {% if appstatus == at.0 %}
-	                                <option selected value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% else %}
-	                                <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+            
+                    <!-- Status -->
+                    <div class="col-lg-3 mb-3">
+                        <label for="id_appstatus" class="form-label">Status:</label>
+                        <select class="form-select" id="id_appstatus" name="appstatus">
+                            <option value="" {% if not appstatus %}selected{% endif %}>All</option>
+                            {% for at in app_appstatus %}
+                                <option value="{{ at.0 }}" {% if appstatus == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
-                <div class="col-sm-12 col-lg-12">
-                    <div class="col-sm-12 col-lg-9">
-                        <div class="col-sm-12 col-lg-12">
-                            <label>Keyword:</label>
-                        </div>
-                        <div class="col-sm-12 col-lg-12">
-                            <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                        </div>
+            
+                <!-- Keyword and Search Button -->
+                <div class="row">
+                    <div class="col-lg-9 mb-3">
+                        <label for="search_field" class="form-label">Keyword:</label>
+                        <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
                     </div>
-                    <div class="col-sm-12 col-lg-3">
-                        <div class="col-sm-12 col-lg-6">
-                            <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                        </div>
-                        <div class="col-sm-12 col-lg-6">
-                        </div>
-
+                    <div class="col-lg-3 d-flex align-items-end mb-3">
+                        <input type="submit" name="search" value="Search" class="btn btn-primary w-100">
                     </div>
-                    <!-- end -->
                 </div>
-                <div class="col-sm-12 col-lg-3">
-
-                </div>
-
             </form>
+            
             <BR>
         </div>
         <hr>
@@ -87,54 +63,54 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row_obj in items %}
+                        {% for row_obj in app_list %}
                         <tr>
-                            <td><a href="{% url "referral_conditions" row_obj.application.id %}">WO-{{ row_obj.application.id }}</a></td>
+                            <td><a href="{% url "referral_conditions" row_obj.app.application.id %}">WO-{{ row_obj.app.application.id }}</a></td>
 
-                            <td>{{ row_obj.application.get_app_type_display }}</td>
-                            <td>{{ row_obj.application.title }}</td>
-                            <td>{% if row_obj.application.organisation %}
-                                 {{ row_obj.application.organisation }}
+                            <td>{{ row_obj.app.application.get_app_type_display }}</td>
+                            <td>{{ row_obj.app.application.title }}</td>
+                            <td>{% if row_obj.app.application.organisation %}
+                                 {{ row_obj.app.application.organisation }}
                                 {% else %}
                                 {{ row_obj.applicant.legal_first_name }} {{ row_obj.applicant.legal_last_name }}
                                 {% endif %}
                             </td>
                             <td>
-				{% if row_obj.status == 1 %} 
+				{% if row_obj.app.status == 1 %} 
 					Open 
-				{% elif row_obj.status == 2 %} 
+				{% elif row_obj.app.status == 2 %} 
 					Processed
-                                {% elif row_obj.status == 3 %}
+                                {% elif row_obj.app.status == 3 %}
 					Expired
-                                {% elif row_obj.status == 4 %}
+                                {% elif row_obj.app.status == 4 %}
 					Expired
-				{% elif row_obj.status == 5 %}
+				{% elif row_obj.app.status == 5 %}
 					Processed
 				{% endif %}
 			    </td>
                             <td align='center'>
-                                {% if row_obj.status == 1 %}
+                                {% if row_obj.app.status == 1 %}
 					<span class="glyphicon glyphicon-info-sign" style='color: #ffe700;' aria-hidden="true"></span>
-                                {% elif row_obj.status == 2 %}
+                                {% elif row_obj.app.status == 2 %}
                                         <span class="glyphicon glyphicon-ok-circle" style='color: #66de42;' aria-hidden="true"></span> 
-                                {% elif row_obj.status == 3 %}
+                                {% elif row_obj.app.status == 3 %}
                                         <span class="glyphicon glyphicon-remove-circle" style='color: #fa2a2c;' aria-hidden="true"></span>
-                                {% elif row_obj.status == 4 %}
+                                {% elif row_obj.app.status == 4 %}
                                         <span class="glyphicon glyphicon-remove-circle" style='color: #fa2a2c;' aria-hidden="true"></span>
-                                {% elif row_obj.status == 5 %}
+                                {% elif row_obj.app.status == 5 %}
                                         <span class="glyphicon glyphicon-ok-circle" style='color: #66de42;' aria-hidden="true"></span> 
                                 {% endif %}
 
 			    </td>
-                            <td>{{ row_obj.application.submit_date|date:"d-M-Y" }}</td>
+                            <td>{{ row_obj.app.application.submit_date|date:"d-M-Y" }}</td>
 				<td>{{ row_obj.submitted_by.legal_first_name }} {{ row_obj.submitted_by.legal_last_name }}</td>
-			     <td>{{ row_obj.sent_date }}</td>
-                             <td>{{ row_obj.expire_date }}</td>
+			     <td>{{ row_obj.app.sent_date }}</td>
+                             <td>{{ row_obj.app.expire_date }}</td>
                             <td>
 				{% if row.obj.response_date %}
-					<a href="{% url "referral_conditions" row_obj.application.id %}" title="View">View</a>
+					<a href="{% url "referral_conditions" row_obj.app.application.id %}" title="View">View</a>
 				{% else %}
-					<a href="{% url "referral_conditions" row_obj.application.id %}" title="View">Feedback</a>
+					<a href="{% url "referral_conditions" row_obj.app.application.id %}" title="View">Feedback</a>
 				{% endif %}
 				</td>
                         </tr>
