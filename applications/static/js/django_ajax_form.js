@@ -164,7 +164,7 @@ return xhr;
 },
 mimeType:"multipart/form-data"
 }).done(function(res) { //
-        django_form_checks.var.form_changed = 'changed';
+        // django_form_checks.var.form_changed = 'changed';
 //        console.log('upload complete');
 //        var input_array =[];
 console.log('DONE');        
