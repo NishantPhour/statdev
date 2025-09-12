@@ -17,21 +17,32 @@
 	}
 
         // river_lease_require_river_lease
-        $("input[name=river_lease_require_river_lease]").click(function(e) {
-                var value = this.value;
-                if (value == 'True') {
-                        $('#div_id_river_lease_scan_of_application').show();
-                } else {
-                        $('#div_id_river_lease_scan_of_application').hide();
-                }
-        });
+        $(document).ready(function () {
 
-        var river_lease_require_river_lease = $("#id_river_lease_require_river_lease_1").is(':checked');
-        if (river_lease_require_river_lease == true) {
-                 $('#div_id_river_lease_scan_of_application').show();
-        } else {
-                $('#div_id_river_lease_scan_of_application').hide();
-        }
+            if ($("input[name=river_lease_reserve_licence]:checked").val() === 'True') {
+                  $('#div_id_river_lease_application_number').show();
+            } else {
+                  $('#div_id_river_lease_application_number').hide();
+            }
+
+            var selectedValue = $("input[name=river_lease_require_river_lease]:checked").val();
+            if (selectedValue === 'True') {
+                  $('#div_id_river_lease_scan_of_application').show();
+            } else {
+                  $('#div_id_river_lease_scan_of_application').hide();
+            }
+
+            // Handle click events
+            $("input[name=river_lease_require_river_lease]").click(function () {
+                  var value = this.value;
+                  if (value === 'True') {
+                        $('#div_id_river_lease_scan_of_application').show();
+                  } else {
+                        $('#div_id_river_lease_scan_of_application').hide();
+                  }
+            });
+            });
+
 
 
         function loadForm() {
