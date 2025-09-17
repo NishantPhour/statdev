@@ -66,15 +66,3 @@
                                         </tr>
                                         {% endfor %}
                         </table>
-<script>
-function loadForm() { 
-
-                $.ajax({
-                        url: '{% url 'application_conditions_table' object.pk %}',
-                        async: false,
-                        success: function(data) {
-                                $('#conditions_table').html(data);
-                        }
-                });
-        }       
-</script>
