@@ -1,4 +1,4 @@
-Django==5.2
+Django~=5.2.6
 git+https://github.com/dbca-wa/dpaw-utils.git@0.4.2#egg=dpaw-utils
 # git+https://github.com/django-oscar/django-oscar.git
 # git+https://github.com/django-oscar/django-oscar.git@3.2.2#egg=django-oscar
