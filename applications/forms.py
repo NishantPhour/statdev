@@ -19,6 +19,7 @@ from .models import (
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 from model_utils import Choices
+from django.forms import DateInput
 
 from django import forms
 
@@ -674,9 +675,21 @@ class ApplicationWebPublishForm(ModelForm):
         self.fields['publish_draft_expiry'].label = "Expiry (Unpublish Date)"
         self.fields['publish_final_expiry'].label = "Expiry (Unpublish Date)"
 
-        self.fields['publish_documents_expiry'].css_class = 'dateinput'
-        self.fields['publish_draft_expiry'].css_class = 'dateinput'
-        self.fields['publish_final_expiry'].css_class = 'dateinput'
+        # self.fields['publish_documents_expiry'].css_class = 'dateinput'
+        # self.fields['publish_draft_expiry'].css_class = 'dateinput'
+        # self.fields['publish_final_expiry'].css_class = 'dateinput'
+        
+                
+        self.fields['publish_documents_expiry'].widget = DateInput(attrs={
+            'autocomplete': 'off'
+        })
+        self.fields['publish_draft_expiry'].widget = DateInput(attrs={
+            'autocomplete': 'off'
+        })
+        self.fields['publish_final_expiry'].widget = DateInput(attrs={
+            'autocomplete': 'off'
+        })
+
 
         # Delete publish fields not required for update.
         if kwargs['initial']['publish_type'] in 'received':
