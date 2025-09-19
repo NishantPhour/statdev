@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from django.forms import Form, ModelForm, ChoiceField, FileField, CharField, Textarea, ClearableFileInput, HiddenInput, Field, RadioSelect, ModelChoiceField, Select, FileInput
 from applications.widgets import ClearableMultipleFileInput, RadioSelectWithCaptions, AjaxFileUploader
 from multiupload.fields import MultiFileField
-from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
+from .crispy_common import crispy_heading, crispy_para_with_label, crispy_box, crispy_empty_box, crispy_para, crispy_para_red, check_fields_exist, crispy_button_link, crispy_button,crispy_button_group, crispy_para_no_label, crispy_h1, crispy_h2, crispy_h3,crispy_h4,crispy_h5,crispy_h6, crispy_alert
 from ledger_api_client.ledger_models import EmailUserRO as EmailUser, Address, Document
 from ledger_api_client.managed_models import SystemUser, SystemUserAddress, SystemGroup
 from .models import (
@@ -119,7 +119,17 @@ class ApplicationApplyForm(ModelForm):
 
         self.helper.form_id = 'id_form_apply_application'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('Continue', 'Continue', css_class='btn-lg'))
+        
+        self.helper.add_layout(
+            Layout(
+                crispy_boxes,
+                Div(
+                    Submit('Continue', 'Continue', css_class='btn-lg'),
+                    css_class='col-xs-12 col-sm-4 col-md-3 col-lg-2'
+                )
+            )
+        )
+
 
 
 class PaymentDetailForm(ModelForm):
@@ -503,7 +513,15 @@ class ApplicationApplyUpdateForm(ModelForm):
         self.helper.layout = Layout(crispy_boxes,)
         self.helper.form_id = 'id_form_apply_application'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('Continue', 'Continue', css_class='btn-lg'))
+        self.helper.add_layout(
+            Layout(
+                crispy_boxes,
+                Div(
+                    Submit('Continue', 'Continue', css_class='btn-lg'),
+                    css_class='col-xs-12 col-sm-4 col-md-3 col-lg-2'
+                )
+            )
+        )
 
 class CommunicationCreateForm(ModelForm):
 #    records = Field(required=False, widget=ClearableMultipleFileInput(attrs={'multiple':'multiple'}),  label='Documents')
@@ -1076,16 +1094,21 @@ class ApplicationLicencePermitForm(ApplicationFormMixin, ModelForm):
         dynamic_selections = HTML('{% include "applications/application_form_js_licence_dynamics.html" %}')
         self.helper.layout = Layout(crispy_boxes,dynamic_selections)
 
-        if show_form_buttons == 'True' and may_update == "True":
-                 if 'condactions' in self.initial['workflow']:
-                     if  self.initial['workflow']['condactions'] is not None:
-                         for ca in self.initial['workflow']['condactions']: 
-                              if 'steplabel' in self.initial['workflow']['condactions'][ca]: 
-                                   self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
-                     else:
-                          
-                          self.helper.add_input(Submit('cancel', 'Cancel'))
-                          self.helper.add_input(Submit('save', 'Save'))
+        if show_form_buttons == 'True' and may_update == 'True':
+            if 'condactions' in self.initial['workflow']:
+                condactions = self.initial['workflow']['condactions']
+                if condactions:
+                    buttons = []
+                    for ca in condactions:
+                        if 'steplabel' in condactions[ca]:
+                            buttons.append((ca, condactions[ca]['steplabel']))
+                    self.helper = crispy_button_group(self.helper, buttons)
+                else:
+                    self.helper = crispy_button_group(self.helper, [
+                        ('cancel', 'Cancel'),
+                        ('save', 'Save')
+                    ])
+
                              
 
 
@@ -1342,15 +1365,21 @@ class ApplicationPermitForm(ApplicationFormMixin, ModelForm):
         self.helper.layout = Layout(crispy_boxes,dynamic_selections)
         #if 'hide_form_buttons' in self.initial["workflow"]["hidden"]:
         if show_form_buttons == 'True':
-             if 'condactions' in self.initial['workflow']:
-                 if  self.initial['workflow']['condactions'] is not None:
-                     for ca in self.initial['workflow']['condactions']:
-                         if 'steplabel' in self.initial['workflow']['condactions'][ca]:
-                             self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
-                 else:
-                     
-                     self.helper.add_input(Submit('cancel', 'Cancel'))
-                     self.helper.add_input(Submit('save', 'Save'))
+            if 'condactions' in self.initial['workflow']:
+                condactions = self.initial['workflow']['condactions']
+                if condactions:
+                    buttons = []
+                    for ca in condactions:
+                        if 'steplabel' in condactions[ca]:
+                            buttons.append((ca, condactions[ca]['steplabel']))
+                    self.helper = crispy_button_group(self.helper, buttons)
+                else:
+                    self.helper = crispy_button_group(self.helper, [
+                        ('cancel', 'Cancel'),
+                        ('save', 'Save')
+                    ])
+
+
 
 
         #self.fields['other_supporting_docs'].label = "Attach supporting information to demonstrate compliance with relevant Trust policies"
@@ -1730,19 +1759,23 @@ class ApplicationPart5Form(ApplicationFormMixin, ModelForm):
 #                                   'document_determination_approved'
 #                          )
                         )
-
         if show_form_buttons == 'True':
-#        if 'hide_form_buttons' in self.initial["workflow"]["hidden"]:
-#             if self.initial["workflow"]["hidden"]["hide_form_buttons"] == 'False':
-                  if 'condactions' in self.initial['workflow']:
-                      if  self.initial['workflow']['condactions'] is not None:
-                          for ca in self.initial['workflow']['condactions']:
-                              if 'steplabel' in self.initial['workflow']['condactions'][ca]:
-                                   self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
-                      else:
-                          
-                          self.helper.add_input(Submit('cancel', 'Cancel'))
-                          self.helper.add_input(Submit('save', 'Save'))
+#           if 'hide_form_buttons' in self.initial["workflow"]["hidden"]:
+#               if self.initial["workflow"]["hidden"]["hide_form_buttons"] == 'False':
+                    if 'condactions' in self.initial['workflow']:
+                        condactions = self.initial['workflow']['condactions']
+                        if condactions:
+                            buttons = []
+                            for ca in condactions:
+                                if 'steplabel' in condactions[ca]:
+                                    buttons.append((ca, condactions[ca]['steplabel']))
+                            self.helper = crispy_button_group(self.helper, buttons)
+                        else:
+                            self.helper = crispy_button_group(self.helper, [
+                                ('cancel', 'Cancel'),
+                                ('save', 'Save')
+                            ])
+
 
         if 'assessment_start_date' in self.fields:
             self.fields['assessment_start_date'].label = "Start Date" 
@@ -1800,13 +1833,19 @@ class ApplicationEmergencyForm(ModelForm):
         dynamic_selections = HTML('{% include "applications/application_form_emergency_works_js_dynamics.html" %}')
 
         if 'condactions' in self.initial['workflow']:
-             if  self.initial['workflow']['condactions'] is not None:
-                 for ca in self.initial['workflow']['condactions']:
-                     if 'steplabel' in self.initial['workflow']['condactions'][ca]:
-                          self.helper = crispy_button(self.helper,ca,self.initial['workflow']['condactions'][ca]['steplabel'])
-             else:
-                 self.helper.add_input(Submit('save', 'Save'))
-                 #self.helper.add_input(Submit('cancel', 'Cancel'))
+            condactions = self.initial['workflow']['condactions']
+            if condactions:
+                buttons = []
+                for ca in condactions:
+                    if 'steplabel' in condactions[ca]:
+                        buttons.append((ca, condactions[ca]['steplabel']))
+                self.helper = crispy_button_group(self.helper, buttons)
+            else:
+                self.helper = crispy_button_group(self.helper, [
+                    ('save', 'Save'),
+                    # ('cancel', 'Cancel')
+                ])
+
 
 
         del self.fields['applicant']

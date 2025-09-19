@@ -125,3 +125,28 @@ def crispy_button(helper,stepid,steplabel):
 def crispy_alert(message):
 
     return HTML("<div class=\"alert alert-danger\" role=\"alert\"><span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span><span class=\"sr-only\">Error:</span>&nbsp;&nbsp;"+message+"</div>")
+
+def crispy_button_group(helper, buttons):
+    """
+    Adds a group of buttons in a single row, aligned left, with spacing.
+    
+    :param helper: The Crispy FormHelper instance.
+    :param buttons: A list of tuples (stepid, steplabel).
+    :return: Updated helper with buttons added.
+    """
+    button_elements = [
+        Submit(stepid, steplabel, css_class='btn btn-primary')
+        for stepid, steplabel in buttons
+    ]
+
+    helper.layout.append(
+        Div(
+            Div(
+                *button_elements,
+                css_class='d-flex gap-2 flex-wrap'  # Flex container for buttons
+            ),
+            css_class='mb-3 row'
+        )
+    )
+    return helper
+
