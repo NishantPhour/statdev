@@ -72,86 +72,68 @@ from urllib.parse import quote_plus
 
 logger = logging.getLogger(__name__)
 
+class LoginSuccess(TemplateView):
+    template_name = 'login_success.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context = {'LEDGER_UI_URL' : settings.LEDGER_UI_URL}
+        response = render(request, self.template_name, context)
+        return response
+
+
+
 class HomePage(TemplateView):
     # preperation to replace old homepage with screen designs..
 
     template_name = 'applications/home_page.html'
+
     def render_to_response(self, context):
-        path_logout = reverse('logout')
-        path_first_time = '/ledger-ui/system-accounts-firsttime'
-        if self.request.user.is_authenticated:     
-            template = get_template(self.template_name)
-            #context = RequestContext(self.request, context)
-            context['csrf_token_value'] = get_token(self.request)
-            return HttpResponse(template.render(context))
+        context['csrf_token_value'] = get_token(self.request)
+        template = get_template(self.template_name)
+        return HttpResponse(template.render(context))
 
     def get_context_data(self, **kwargs):
-        context = super(HomePage, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context = template_context(self.request)
-        APP_TYPE_CHOICES = []
-        APP_TYPE_CHOICES_IDS = []
- 
-
-        # mypdf = MyPDF()
-        # mypdf.get_li()
-
-        #pdftool = PDFtool()
-        #pdftool.generate_part5()
-        #pdftool.generate_permit()
-        #pdftool.generate_section_84()
-        #pdftool.generate_licence()
 
         context['referee'] = 'no'
-        
-        referee = SystemGroup.objects.get(name='Statdev Referee')
-        usergroups = self.request.user.get_system_group_permission(self.request.user.id)
-        if referee.id in usergroups:
-            context['referee'] = 'yes'
-
-        # Have to manually populate when using render_to_response()
         context['messages'] = messages.get_messages(self.request)
         context['request'] = self.request
         context['user'] = self.request.user
 
-        fl = FormsList()
-        if 'action' in self.kwargs:
-           action = self.kwargs['action']
-        else:
-           action = ''
-  
-        if self.request.user.is_authenticated: 
-            if action == '':
-               context = fl.get_application(self,self.request.user.id,context)
-               context['home_nav_other_applications'] = 'active'
-            elif action == 'approvals':
-               context = fl.get_approvals(self,self.request.user.id,context)
-               context['home_nav_other_approvals'] = 'active'
-            elif action == 'clearance': 
-               context = fl.get_clearance(self,self.request.user.id,context)
-               context['home_nav_other_clearance'] = 'active'
-            elif action == 'referrals':
-               context['home_nav_other_referral'] = 'active'
+        action = self.kwargs.get('action', '')
+        if self.request.user.is_authenticated:
+            try:
+                referee_group = SystemGroup.objects.get(name='Statdev Referee')
+                usergroups = self.request.user.get_system_group_permission(self.request.user.id)
+                if referee_group.id in usergroups:
+                    context['referee'] = 'yes'
+            except SystemGroup.DoesNotExist:
+                pass  # Group doesn't exist, skip
 
-               if 'q' in self.request.GET and self.request.GET['q']:
+            fl = FormsList()
+
+            if action == '':
+                context = fl.get_application(self, self.request.user.id, context)
+                context['home_nav_other_applications'] = 'active'
+            elif action == 'approvals':
+                context = fl.get_approvals(self, self.request.user.id, context)
+                context['home_nav_other_approvals'] = 'active'
+            elif action == 'clearance':
+                context = fl.get_clearance(self, self.request.user.id, context)
+                context['home_nav_other_clearance'] = 'active'
+            elif action == 'referrals':
+                context['home_nav_other_referral'] = 'active'
+                if 'q' in self.request.GET and self.request.GET['q']:
                     query_str = self.request.GET['q']
                     query_str_split = query_str.split()
                     search_filter = Q()
                     for se_wo in query_str_split:
-                         search_filter &= Q(pk__contains=se_wo) | Q(title__contains=se_wo)
+                        search_filter &= Q(pk__contains=se_wo) | Q(title__contains=se_wo)
+                    # You might want to use this filter in the query below
+                context['items'] = Referral.objects.filter(referee=self.request.user.id).exclude(status=5).order_by('-id')
 
-               context['items'] = Referral.objects.filter(referee=self.request.user.id).exclude(status=5).order_by('-id')
-
-            else:
-               donothing ='' 
-        #for i in Application.APP_TYPE_CHOICES:
-        #    if i[0] in [4,5,6,7,8,9,10,11]:
-        #       skip = 'yes'
-        #    else:
-        #       APP_TYPE_CHOICES.append(i)
-        #       APP_TYPE_CHOICES_IDS.append(i[0])
-        #context['app_apptypes']= APP_TYPE_CHOICES
-        #applications = Application.objects.filter(app_type__in=APP_TYPE_CHOICES_IDS)
-        #print applications
         return context
 
 
@@ -950,9 +932,12 @@ class ApplicationApplicantChange(LoginRequiredMixin,DetailView):
             query_str_split = query_str.split()
             search_filter = Q()
             search_filter = Q(first_name__icontains=query_str) | Q(last_name__icontains=query_str) | Q(email__icontains=query_str)
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True).exclude(ledger_id__isnull=True)[:100]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)
         else:
-            listusers =  SystemUser.objects.all().exclude(is_staff=True).exclude(ledger_id__isnull=True)[:100]
+            listusers =  SystemUser.objects.all().exclude(is_staff=True)
+            
+        listusers = listusers.filter(Q(legal_first_name__isnull=False) & Q(legal_last_name__isnull=False)).distinct()[:100]
+
 
         context['acc_list'] = []
         for lu in listusers:
@@ -1298,8 +1283,9 @@ class ApplicationList(LoginRequiredMixin,ListView):
                 if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
+                    if(applicant.legal_first_name and applicant.legal_last_name):
+                        context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                        context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
 
             # end of creation
             if app.group is not None:
@@ -1406,11 +1392,13 @@ class EmergencyWorksList(ListView):
             
             if app.applicant:
                 applicant = SystemUser.objects.get(ledger_id=app.applicant)
+                row['applicant'] = applicant
                 if applicant.ledger_id in context['app_applicants']:
                     donothing = ''
                 else:
-                    context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-                    context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
+                    if(applicant.legal_first_name and applicant.legal_last_name):
+                        context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                        context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
             # end of creation
 
             if app.group is not None:
@@ -1529,20 +1517,25 @@ class ComplianceList(TemplateView):
 
             # Create a distinct list of applicants
             
-            # if app.applicant:
-            #     applicant = SystemUser.objects.get(ledger_id=app.applicant)
-            #     if applicant.ledger_id in context['app_applicants']:
-            #         donothing = ''
-            #     else:
-            #         context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-            #         context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
-            
+            if item.applicant:
+                applicant = SystemUser.objects.get(ledger_id=item.applicant)
+                row['applicant'] = applicant
+                if applicant.ledger_id in context['app_applicants']:
+                    donothing = ''
+                else:
+                    if(applicant.legal_first_name and applicant.legal_last_name):
+                        context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                        context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
+                
+            if item.assignee:
+                assignee = SystemUser.objects.get(ledger_id=item.assignee)
+                row['assignee'] = assignee
             # end of creation
 
- #            if app.group is not None:
-#                if app.group in usergroups:
-#                    row['may_assign_to_person'] = 'True'
-#            context['app_list'].append(row)
+            if item.group is not None:
+               if item.group.id in usergroups:
+                   row['may_assign_to_person'] = 'True'
+            context['app_list'].append(row)
         # TODO: any restrictions on who can create new applications?
         context['may_create'] = True
         processor = SystemGroup.objects.get(name='Statdev Processor')
@@ -1618,13 +1611,22 @@ class OrganisationAccessRequest(ListView):
 
         if 'applicant' in self.request.GET:
             if self.request.GET['applicant'] != '':
-                query  |= Q(email_user=self.request.GET['applicant'])
+                query  &= Q(email_user=int(self.request.GET['applicant']))
         if 'appstatus' in self.request.GET:
             if self.request.GET['appstatus'] != '':
                 query  &= Q(status=self.request.GET['appstatus'])
 
-        context['orgs_pending'] = OrganisationPending.objects.filter(query)[:200]
-
+        orgs_pending_list = OrganisationPending.objects.filter(query)[:200]
+        context['orgs_pending'] = []
+        for org in orgs_pending_list:
+            row = {}
+            row['org'] = org
+            if org.email_user:
+                row['email_user'] = SystemUser.objects.get(ledger_id=org.email_user)
+            if org.assignee:
+                row['assignee'] = SystemUser.objects.get(ledger_id=org.assignee)
+            context['orgs_pending'].append(row)
+                
 
         if 'applicant' in self.request.GET:
            if self.request.GET['applicant'] != '':
@@ -1814,10 +1816,11 @@ class SearchPersonList(ListView):
             # Add Organsations Results , Will also filter out duplicates
             search_filter |= Q(pk__in=orgs)
             # Get all applicants
-            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True).exclude(ledger_id__isnull=True)[:200]
+            listusers = SystemUser.objects.filter(search_filter).exclude(is_staff=True)
         else:
-            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id').exclude(ledger_id__isnull=True)[:200]       
+            listusers = SystemUser.objects.all().exclude(is_staff=True).order_by('-id')      
 
+        listusers = listusers.filter(Q(legal_first_name__isnull=False) & Q(legal_last_name__isnull=False)).distinct()[:200]
         context['acc_list'] = []
         for lu in listusers:
             row = {}
@@ -2156,31 +2159,27 @@ class SearchReference(ListView):
         #context['messages'] = self.messages
         template = get_template(self.template_name)
         #context = RequestContext(self.request, context)
-        return HttpResponse(template.render(context))
+        return HttpResponse(template.render(context, request=self.request))
 
     def get_context_data(self, **kwargs):
-        # def get(self, request, *args, **kwargs):
-        context = {}
-        # print 'test'
         context = super(SearchReference, self).get_context_data(**kwargs)
-        context = template_context(self.request)
+        context.update(template_context(self.request))
         context['messages'] = messages.get_messages(self.request)
         context['query_string'] = ''
         context['form_prefix'] = ''
-        context['form_no'] = ''
+        context['form_no'] = 0
 
-        if 'q' in self.request.GET and self.request.GET['q']:
-            query_str = self.request.GET['q']
-            query_str_split = query_str.split()
-
+        query_str = self.request.GET.get('q', '').strip()
+        if query_str:
+            context['query_string'] = query_str
             form_prefix = query_str[:3]
-            form_no = query_str.replace(form_prefix,'')
+            form_no_str = query_str[3:]
+
             context['form_prefix'] = form_prefix
-            if len(form_no) > 0:
-               context['form_no'] = int(form_no)
-            else:
-               context['form_no'] = 0 
-            context['query_string'] = self.request.GET['q']
+            try:
+                context['form_no'] = int(form_no_str)
+            except ValueError:
+                context['form_no'] = 0  # fallback if form_no_str is not a valid integer
 
         return context
 
@@ -2596,10 +2595,8 @@ class ApplicationDetail(DetailView):
             if context['may_update'] == "True":
                 if app.assignee != self.request.user.id:
                     context['may_update'] = "False"
-                    del context['workflow_actions']
                     context['workflow_actions'] = []
             if app.assignee != self.request.user.id:
-                del context['workflow_actions']
                 context['workflow_actions'] = []
 
         context['may_update_vessels_list'] = "False"
@@ -2681,7 +2678,7 @@ class AccountActions(LoginRequiredMixin,DetailView):
         obj = self.get_object()
         # TODO: define a GenericRelation field on the Application model.
         context['actions'] = Action.objects.filter(
-            content_type=ContentType.objects.get_for_model(obj), object_id=obj.ledger_id).order_by('-timestamp')
+            content_type=ContentType.objects.get_for_model(obj), object_id=obj.ledger_id.id).order_by('-timestamp')
         return context
 
 class OrganisationActions(LoginRequiredMixin,DetailView):
@@ -2907,6 +2904,7 @@ class AccountComms(LoginRequiredMixin,DetailView):
         u = self.get_object()
         # TODO: define a GenericRelation field on the Application model.
         context['communications'] = CommunicationAccount.objects.filter(user=u.ledger_id.id).order_by('-created')
+        context['communications'] = CommunicationAccount.objects.filter(user=u.ledger_id.id).order_by('-created')
         return context
 
 
@@ -2952,6 +2950,7 @@ class AccountCommsCreate(LoginRequiredMixin,CreateView):
         """
         self.object = form.save(commit=False)
         user_id = self.kwargs['pk']
+
         user = SystemUser.objects.get(id=user_id)
         self.object.user = user.ledger_id.id
         self.object.save()
@@ -3090,15 +3089,47 @@ class ReferralList(LoginRequiredMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super(ReferralList, self).get_context_data(**kwargs)
 
+        context['app_applicants'] = {}
+        context['app_applicants_list'] = []
         if 'q' in self.request.GET and self.request.GET['q']:
             query_str = self.request.GET['q']
             query_str_split = query_str.split()
             search_filter = Q()
-            for se_wo in query_str_split:
-                  search_filter &= Q(pk__contains=se_wo) | Q(title__contains=se_wo)
+            for se_wo in query_str_split:  
 
+                search_filter &= (
+                    Q(pk__contains=se_wo) |
+                    Q(application__title__icontains=se_wo) |
+                    Q(application__description__icontains=se_wo)
+                )
 
-        context['items'] = Referral.objects.filter(referee=self.request.user.id)
+            items = Referral.objects.filter(referee=self.request.user.id).filter(search_filter)
+        else:
+            items = Referral.objects.filter(referee=self.request.user.id)
+        
+        context['app_list'] = []
+        for item in items:
+            row = {}
+            row['app'] = item
+
+            # Create a distinct list of applicants
+            
+            if item.application.applicant:
+                applicant = SystemUser.objects.get(ledger_id=item.application.applicant)
+                row['applicant'] = applicant
+                if applicant.ledger_id in context['app_applicants']:
+                    donothing = ''
+                else:
+                    if(applicant.legal_first_name and applicant.legal_last_name):
+                        context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                        context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
+                
+            if item.application.submitted_by:
+                submitted_by = SystemUser.objects.get(ledger_id=item.application.submitted_by)
+                row['submitted_by'] = submitted_by
+            # end of creation
+
+            context['app_list'].append(row)
         return context
 
 class ReferralConditions(UpdateView):
@@ -3130,6 +3161,10 @@ class ReferralConditions(UpdateView):
         app = self.get_object()
 
         referral = Referral.objects.get(application=app,referee=self.request.user.id)
+        if app.applicant is not None:
+            applicant = SystemUser.objects.get(ledger_id=referral.application.applicant)
+            context['applicant'] = applicant
+            context['postal_address'] = SystemUserAddress.objects.get(system_user=context['applicant'], address_type='postal_address')
         multifilelist = []
         a1 = referral.records.all()
         for b1 in a1:
@@ -5310,11 +5345,12 @@ class ApplicationAssignNextAction(LoginRequiredMixin, UpdateView):
             assignee = None
             assessed_by = self.request.user.id 
             groupassignment = SystemGroup.objects.get(name=DefaultGroups['grouplink'][action])
-            #TODO check this
             if app.assigned_officer:
-               assigned_officer = EmailUser.objects.get(ledger_id=app.assigned_officer)
-               if assigned_officer.groups().filter(group__in=[groupassignment.name]).exists():
+                assigned_officer = EmailUser.objects.get(id=app.assigned_officer)
+                usergroups = assigned_officer.get_system_group_permission(assigned_officer.id)
+                if groupassignment.id in usergroups:
                     assignee = app.assigned_officer
+
 
         #route = flow.getNextRouteObj(action, app.routeid, workflowtype)
         route = flow.getNextRouteObjViaId(int(actionid), app.routeid, workflowtype)   
@@ -10037,9 +10073,10 @@ class PersonOther(LoginRequiredMixin, DetailView):
                          if applicant.ledger_id in context['app_applicants']:
                              donothing = ''
                          else:
-                             context['app_applicants'][app.applicant] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-                             context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
-                         row['applicant'] = applicant            
+                             if(applicant.legal_first_name and applicant.legal_last_name):
+                                context['app_applicants'][app.applicant] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                                context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name})
+
                      context['app_list'].append(row)
 
              elif action == "emergency":
@@ -10271,6 +10308,8 @@ class OrganisationDetails(LoginRequiredMixin, DetailView):
                  context['nav_details_linkedperson'] = "active"
                  org = Organisation.objects.get(id=self.kwargs['pk'])
                  linkedpersons = Delegate.objects.filter(organisation=org)
+                 if OrganisationExtras.objects.filter(organisation=org.id).exists():
+                    context['org_extras'] = OrganisationExtras.objects.get(organisation=org.id)
 
                 # Recreate the linkedpersons list with an additional 'user' key
                  context['linkedpersons'] = []
@@ -10459,10 +10498,11 @@ class OrganisationOther(LoginRequiredMixin, DetailView):
                         if applicant.ledger_id in context['app_applicants']:
                             donothing = ''
                         else:
-                            context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
-                            context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
-                            context['applicant'] = applicant
-                     # end of creation
+                            if(applicant.legal_first_name and applicant.legal_last_name):
+                                context['app_applicants'][applicant.ledger_id] = applicant.legal_first_name + ' ' + applicant.legal_last_name
+                                context['app_applicants_list'].append({"id": applicant.ledger_id.id, "name": applicant.legal_first_name + ' ' + applicant.legal_last_name  })
+                    # end of creation
+
                      context['app_list'].append(row)
 
              elif action == "emergency":
@@ -10623,7 +10663,6 @@ class OrganisationUpdate(LoginRequiredMixin, UpdateView):
     """
     model = Organisation
     form_class = apps_forms.OrganisationForm
-    template_name = "accounts/organisation_form.html"
 
     def get(self, request, *args, **kwargs):
         # Rule: request user must be a delegate (or superuser).
@@ -11259,7 +11298,8 @@ def getPDFapplication(request,application_id):
 #      if app.id:
           pdftool = PDFtool()
           if app.app_type == 4:
-              pdftool.generate_emergency_works(app)
+              approval = Approval.objects.get(application = app)
+              pdftool.generate_emergency_works(approval)
 
       if os.path.isfile(filename) is True:
           pdf_file = open(filename, 'rb')

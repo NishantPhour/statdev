@@ -1,0 +1,6 @@
+{% if user.is_superuser %}
+<li><a class="dropdown-item" href="{% url 'admin:index' %}" title="Administration">Admin</a></li>
+{% endif %}
+{% if staff == True %}
+<li><a class="dropdown-item" href="{% url 'application_flows' %}" title="Flows">Flows</a></li>
+{% endif %}

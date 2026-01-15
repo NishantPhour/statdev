@@ -1,51 +1,54 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#title_collapse" aria-expanded="true" aria-controls="title_collapse">
-                           Description
-                           <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+<div class="card">
+        <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+                <div class="col-6">
+                Description
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
-			<div class='col-sm-12 col-md-12 col-lg-12'>
-			<div class='col-sm-12 col-md-3 col-lg-3'>
-                        <label>Description of works, acts or activities?</label>
-			</div>
-			<div class='col-sm-12 col-md-9 col-lg-9'>
-				{{ object.description }}
-			</div>
-			</div>
-			<div class='col-sm-12 col-md-12 col-lg-12'>
-
-			<div class='col-sm-12 col-md-3 col-lg-3'>
-				<label>Proposed development plans</label>
-			</div>
-                        <div class='col-sm-12 col-md-9 col-lg-9'>
+                <div class="col-6 text-end">
+                <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box25-card-body" onclick=""></i>
+                </div>
+        </div> 
+        </div>
+        
+        <div class="collapse show {{ collapse.title }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                <div class="card-body" id="box25-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Description of works, acts or activities?</label>
+                            </div>
+                            <div class="col-md-9">
+                                {{ object.description }}
+                            </div>
+                        </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Proposed development plans</label>
+                            </div>
+                            <div class="col-md-9">
                                 {% for doc in object.proposed_development_plans.all %}
-				<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>
+                                    <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>
                                 {% endfor %}
+                            </div>
                         </div>
-			</div>
-
-			<div class='col-sm-12 col-md-12 col-lg-12'>
-
-			<div class='col-sm-12 col-md-3 col-lg-3'>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
                                 <label>Supporting info demonstrate compliance trust policies</label>
-                        </div>
-                        <div class='col-sm-12 col-md-9 col-lg-9'>
+                            </div>
+                            <div class="col-md-9">
                                 {% if object.supporting_info_demonstrate_compliance_trust_policies %}
-                                        {% for doc in object.supporting_info_demonstrate_compliance_trust_policies.all %}
-					<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                                        {% endfor %}
+                                    {% for doc in object.supporting_info_demonstrate_compliance_trust_policies.all %}
+                                        <div class="mb-1">
+                                            <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a>
+                                        </div>
+                                    {% endfor %}
                                 {% else %}
-                                No Attachments
+                                    No Attachments
                                 {% endif %}
+                            </div>
                         </div>
-			</div>
-                    </div>
-
+                    </div>                    
 		
                 </div>
             </div>

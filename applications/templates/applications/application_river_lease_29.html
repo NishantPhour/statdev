@@ -1,44 +1,49 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="river_reserve_lease_section_29_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#river_reserve_lease_section_29_collapse" aria-expanded="false" aria-controls="river_reserve_lease_section_29_collapse">
-                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 29
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            River Reserve Lease (Swan and Cannning Management Act 2006 - section 29)
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box41-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.river_reserve_lease_section_29 }}" id="river_reserve_lease_section_29_collapse" role="tabpanel" aria-labelledby="river_reserve_lease_section_29_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                If you intend to apply for a lease in relation to this proposed develeopment, you will need to complete a seperate Form - Application for a River reserve lease - and lodge it concurrently with this application. Note " River reserve leases will not be granted for developments requiring approval under section 70 of the Act - to which the proposed lease relates - unless that approval has been granted.
-                            </div>
+                <div class="collapse show {{ collapse.river_reserve_lease_section_29 }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box41-card-body">
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            If you intend to apply for a lease in relation to this proposed development, you will need to complete a separate Form – Application for a River reserve lease – and lodge it concurrently with this application.  
+                            <br><br>
+                            Note: River reserve leases will not be granted for developments requiring approval under section 70 of the Act – to which the proposed lease relates – unless that approval has been granted.
+                          </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Does the development reqiure a River reserve lease?</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {% if object.river_lease_require_river_lease is True %}
-                                Yes
-                                {% else %}
-                                No
-                                {% endif %}
-                            </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-3 fw-bold">Does the development require a River reserve lease?</div>
+                          <div class="col-9">
+                            {% if object.river_lease_require_river_lease is True %}
+                              Yes
+                            {% else %}
+                              No
+                            {% endif %}
+                          </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>If Yes, Please Attach application. (PDF)</Label>
-                            </div>
-                            <div class="col-lg-12">
-                                {% if object.river_lease_scan_of_application %}
-				<A HREF='{{ object.river_lease_scan_of_application.file_url }}' target="new_tab_{{ object.river_lease_scan_of_application.id }}">{{ river_lease_scan_of_application_short }}</A>
-                                {% else %}
-                                No Attachment Added
-                                {% endif %}
-                            </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-3 fw-bold">If Yes, Please Attach application (PDF)</div>
+                          <div class="col-9">
+                            {% if object.river_lease_scan_of_application %}
+                              <a href="{{ object.river_lease_scan_of_application.file_url }}" target="new_tab_{{ object.river_lease_scan_of_application.id }}">
+                                {{ river_lease_scan_of_application_short }}
+                              </a>
+                            {% else %}
+                              No Attachment Added
+                            {% endif %}
+                          </div>
                         </div>
-                    </div>
+                      </div>                      
                 </div>
             </div>
+            <br>
 

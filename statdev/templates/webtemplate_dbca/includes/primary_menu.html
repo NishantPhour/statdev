@@ -1,3 +1,16 @@
+{% if staff == True %}
+<li class="nav-item" ><a class="nav-link" href="/">Dashboard</a></li>
+<li class="nav-item" ><a class="nav-link" href="{% url 'application_list' %}" title="Applications">Applications</a></li>
+<li class="nav-item" ><a class="nav-link" href="{% url 'approval_list' %}" title="Approvals">Approvals</a></li>
+<li class="nav-item" ><a class="nav-link" href="{% url 'compliance_list' %}">Clearance of Conditions</a></li>
+<li class='nav-item' ><a class="nav-link" href="{% url 'emergencyworks_list' %}">Emergency works</a></li>
+<li class="nav-item" ><a class="nav-link" href="{% url 'organisation_access_requests' %}" title="Company Access">Company Access</a></li>
+<li class="nav-item" ><a class="nav-link" href="{% url 'search_list' %}">Search</a></li>
+{% else %}
+<li class="nav-item" ><a class="nav-link" href="" title="Contact Us">Contact Us</a></li> 
+<li class="nav-item" ><a class="nav-link" href="" title="Further Information">Further Information</a></li>
+{% endif %}
+
 <script>
     var payment_processing = 
     {

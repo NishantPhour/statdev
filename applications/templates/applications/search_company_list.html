@@ -2,36 +2,45 @@
 
 {% block page_content_inner %}
 
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="title_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#search_person_company_collapse" aria-expanded="false" aria-controls="search_person_company_collapse">
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
                 Search Company
-                <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-            </a>
-        </h3>
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
 
-    <div class="panel-collapse collapse in" id="search_person_company_collapse" role="tabpanel" aria-labelledby="search_person_company_heading">
-        <div class="panel-body">
+
+    <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box1-card-body">
             <!-- Search bar -->
             <form action="" method="get">
-                <div class="row">
-                    <div class="hidden-xs col-sm-12 col-md-1 col-lg-1">
-                        <label for="search_field">Search:</label>
+                <div class="row align-items-center">
+                    <!-- Label (hidden on extra small screens) -->
+                    <div class="col-md-1 d-none d-sm-block">
+                        <label for="search_field" class="form-label">Search:</label>
                     </div>
-                    <div class="col-sm-12 col-md-8 col-lg-8">
+            
+                    <!-- Input field -->
+                    <div class="col-md-8">
                         <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
                     </div>
-                    <div class="col-sm-12 col-md-1 col-lg-1">
+            
+                    <!-- Submit button -->
+                    <div class="col-md-1 mt-2 mt-md-0">
                         <input type="submit" name="search" value="Search" class="btn btn-primary" id="submit-id-save">
                     </div>
-
-                    <div class="col-xs-12 col-sm-11 col-md-8">
+            
+                    <!-- Optional span -->
+                    <div class="col-md-8 mt-2">
                         <span></span>
                     </div>
                 </div>
-            </form>
+            </form>            
             <hr>
 
             <table id='search-company-table' class="table table-striped table-bordered table-condensed">

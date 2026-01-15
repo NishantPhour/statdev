@@ -1,233 +1,249 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="publication_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#publication_collapse" aria-expanded="false" aria-controls="publication_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Publication
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box43-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.publication }}" id="publication_collapse" role="tabpanel" aria-labelledby="publication_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.publication }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box43-card-body">
+                    
                         {% if hidden.publish_publication_feedback_draft == "False" %}
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-4">
-                                <label>Signed copy (signed by DG) of draft report</label>
-                            </div>
-                            <div class="col-lg-4">
-                                {% if object.document_draft_signed %}
-                                        {% for doc in object.document_draft_signed.all %}
-                                        <div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                                        {% endfor %}
-                                {% else %}
-                                        No Attachments
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-10">
-                                Publish signed report on website
-                            </div>
-                            <div class="col-lg-2 align-right text-right">
-                                <td>
-                                    {% if object.publish_draft_report %}
-                                    <a href="javascript:void();" class="btn btn-primary" role="button">
-                                        Published on the {{ object.publish_draft_report }}
-                                    </a>
-                                    {% else %}
-                                    {% if object.document_draft_signed.all|length >  0 %}
-                                     {% if mode == 'update' %}
-                                    <a href="{% url 'application_publish_documents' object.pk 'draft' %}" class="btn btn-primary" role="button">
-                                        Publish
-                                    </a>
-                                    {% endif %}
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% if hidden.publication_feedback_draft == "False" %}
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Received Feedback (Draft)</label>
-                            </div>
-                            <div class="panel-body">
-                                <div id='feedback_draft_table'>
-                                         {% include "applications/application_feedback_draft_table.html" %}
+                        <div class="card-body">
+                        <div class="row mb-3">
+                          <div class="col-md-3 fw-bold">Signed copy (signed by DG) of draft report</div>
+                          <div class="col-md-9">
+                            {% if object.document_draft_signed %}
+                              {% for doc in object.document_draft_signed.all %}
+                                <div class="mb-1">
+                                  <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a>
                                 </div>
-
-                                {% if workflow_actions %}
-                                {% if object.publish_final_report %}
-                                {% else %}
-                                {% if may_update_publication_feedback_draft == "True" %}
-                                         {% if mode == 'update' %}
-                                            <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_feedbackpublication_draft' object.pk 'draft' %}','Add Feedback');" type="button">Add Feedback</button>
-                                         {% endif %}
+                              {% endfor %}
+                            {% else %}
+                              No Attachments
+                            {% endif %}
+                          </div>
+                        </div>
+                      
+                        <div class="row mb-3 align-items-center">
+                          <div class="col-md-10 fw-bold">Publish signed report on website</div>
+                          <div class="col-md-2 text-end">
+                            {% if object.publish_draft_report %}
+                              <a href="javascript:void();" class="btn btn-primary" role="button">
+                                Published on the {{ object.publish_draft_report }}
+                              </a>
+                            {% else %}
+                              {% if object.document_draft_signed.all|length > 0 %}
+                                {% if mode == 'update' %}
+                                  <a href="{% url 'application_publish_documents' object.pk 'draft' %}" class="btn btn-primary" role="button">
+                                    Publish
+                                  </a>
                                 {% endif %}
-                                {% endif %}
-                                {% endif %}
-
-                            </div>
+                              {% endif %}
+                            {% endif %}
+                          </div>
                         </div>
                     </div>
+                    <br>
+                        {% endif %}
+                                            
+                    {% if hidden.publication_feedback_draft == "False" %}
+                    <div class="card-body">
+                        {% if hidden.publish_publication_feedback_draft == "False" %}
+                        
+                        <div class="row mb-3">
+                          <div class="col-md-3 fw-bold">Signed copy (signed by DG) of draft report</div>
+                          <div class="col-md-9">
+                            {% if object.document_draft_signed %}
+                              {% for doc in object.document_draft_signed.all %}
+                                <div class="mb-1">
+                                  <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a>
+                                </div>
+                              {% endfor %}
+                            {% else %}
+                              No Attachments
+                            {% endif %}
+                          </div>
+                        </div>
+                      
+                        <div class="row mb-3 align-items-center">
+                          <div class="col-md-10 fw-bold">Publish signed report on website</div>
+                          <div class="col-md-2 text-end">
+                            {% if object.publish_draft_report %}
+                              <a href="javascript:void();" class="btn btn-primary" role="button">
+                                Published on the {{ object.publish_draft_report }}
+                              </a>
+                            {% else %}
+                              {% if object.document_draft_signed.all|length > 0 %}
+                                {% if mode == 'update' %}
+                                  <a href="{% url 'application_publish_documents' object.pk 'draft' %}" class="btn btn-primary" role="button">
+                                    Publish
+                                  </a>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          </div>
+                        </div>
+                      
+                        {% endif %}
+                      </div>
+                      <br>
+                      
                     {% endif %}
 
 		    
 
                     {% if hidden.publication_feedback_final == "False" %}
 
-                    <div class="panel-body">
+                    <div class="card-body">
                         {% if hidden.publish_publication_feedback_final == "False" %}
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-3">
-                                <label>Signed copy (signed by DG) of final report</label>
-                            </div>
-                            <div class="col-lg-9">
-                                <div class="col-lg-12">
-
-                                {% if object.document_final_signed.exists %}
-                                        {% for doc in object.document_final_signed.all %}
-                                        <div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                                        {% endfor %}
-                                {% else %}
-                                        No Attachments
-                                {% endif %}
-
+                        <div class="row mb-3">
+                          <div class="col-md-3 fw-bold">Signed copy (signed by DG) of final report</div>
+                          <div class="col-md-9">
+                            {% if object.document_final_signed.exists %}
+                              {% for doc in object.document_final_signed.all %}
+                                <div class="mb-1">
+                                  <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a>
                                 </div>
-                            </div>
+                              {% endfor %}
+                            {% else %}
+                              No Attachments
+                            {% endif %}
+                          </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-10">
-                                Publish signed report on website
-                            </div>
-                            <div class="col-lg-2 align-right text-right">
-                                <td>
-                                    {% if object.publish_final_report %}
-                                    <a href="javascript:void();" class="btn btn-primary" role="button">
-                                        Published on the {{ object.publish_final_report }}
-                                    </a>
-                                    {% else %}
-                                    {% if object.document_final_signed.all|length >  0 %}
-                                    {% if mode == 'update' %}
-                                    <a href="{% url 'application_publish_documents' object.pk 'final' %}" class="btn btn-primary" role="button">
-                                        Publish
-                                    </a>
-                                     {% endif %}
-
-                                    {% endif %}
-
-                                    {% endif %}
-                                </td>
-                            </div>
+                      
+                        <div class="row mb-3 align-items-center">
+                          <div class="col-md-10 fw-bold">Publish signed report on website</div>
+                          <div class="col-md-2 text-end">
+                            {% if object.publish_final_report %}
+                              <a href="javascript:void();" class="btn btn-primary" role="button">
+                                Published on the {{ object.publish_final_report }}
+                              </a>
+                            {% else %}
+                              {% if object.document_final_signed.all|length > 0 %}
+                                {% if mode == 'update' %}
+                                  <a href="{% url 'application_publish_documents' object.pk 'final' %}" class="btn btn-primary" role="button">
+                                    Publish
+                                  </a>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          </div>
                         </div>
                         {% endif %}
-
-                   </div>
-
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Received Feedback (Final)</label>
-                            </div>
-                            <div class="panel-body">
-                                <div id='feedback_final_table'>
-                                         {% include "applications/application_feedback_final_table.html" %}
-                                </div>
-
-                                {% if workflow_actions %}
-                                {% if object.publish_determination_report %}
-                                {% else %}
-                                {% if may_update_publication_feedback_final == "True" %}
-                                         {% if mode == 'update' %}
-                                            <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_feedbackpublication_draft' object.pk 'final' %}','Add Feedback');" type="button">Add Feedback</button>
-                                         {% endif %}
-                                {% endif %}
-                                {% endif %}
-                                {% endif %}
-
-                            </div>
+                      </div>
+                      <br>
+                      
+                      <div class="card-body">
+                        <div class="row mb-3">
+                          <div class="col-12 fw-bold">Received Feedback (Final)</div>
                         </div>
-                    </div>
-		   
-                     {% endif %}
+                      
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <div id="feedback_final_table">
+                              {% include "applications/application_feedback_final_table.html" %}
+                            </div>
+                          </div>
+                        </div>
+                      
+                        {% if workflow_actions %}
+                          {% if not object.publish_determination_report %}
+                            {% if may_update_publication_feedback_final == "True" %}
+                              {% if mode == 'update' %}
+                                <div class="row mb-3">
+                                  <div class="col-12">
+                                    <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_feedbackpublication_draft' object.pk 'final' %}','Add Feedback');" type="button">
+                                      Add Feedback
+                                    </button>
+                                  </div>
+                                </div>
+                              {% endif %}
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                        
+                      </div>
+                      <br>
+                      {% endif %}
 
 
-			<div class="panel-body">
+                      <div class="card-body">
                         {% if hidden.publish_publication_feedback_determination == "False" %}
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-3">
-                                <label>Signed copy (signed by DG) of determination report</label>
-                            </div>
-                            <div class="col-lg-9">
-                                <div class="col-lg-12">
-                                {% if object.document_determination_approved.exists %}
-                                        {% for doc in object.document_determination_approved.all %}
-                                        <div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc }}</A></div>
-                                        {% endfor %}
-                                {% else %}
-                                        No Attachments
-                                {% endif %}
-
+                        <div class="row mb-3">
+                          <div class="col-md-3 fw-bold">Signed copy (signed by DG) of determination report</div>
+                          <div class="col-md-9">
+                            {% if object.document_determination_approved.exists %}
+                              {% for doc in object.document_determination_approved.all %}
+                                <div class="mb-1">
+                                  <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a>
                                 </div>
-                            </div>
+                              {% endfor %}
+                            {% else %}
+                              No Attachments
+                            {% endif %}
+                          </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-10">
-                                Publish signed report on website
-                            </div>
-                            <div class="col-lg-2 align-right text-right">
-                                <td>
-                                    {% if object.publish_determination_report %}
-                                    <a href="javascript:void();" class="btn btn-primary" role="button">
-                                        Published on the {{ object.publish_determination_report }}
-                                    </a>
-                                    {% else %}
-                                    {% if object.document_determination_approved.all|length >  0 %}
-                                           {% if mode == 'update' %}
-                                    <a href="{% url 'application_publish_documents' object.pk 'determination' %}" class="btn btn-primary" role="button">
-                                        Publish
-                                    </a>
-                                           {% endif %}
-                                    {% endif %}
-                                    {% endif %}
-                                </td>
-                            </div>
+                      
+                        <div class="row mb-3 align-items-center">
+                          <div class="col-md-10 fw-bold">Publish signed report on website</div>
+                          <div class="col-md-2 text-end">
+                            {% if object.publish_determination_report %}
+                              <a href="javascript:void();" class="btn btn-primary" role="button">
+                                Published on the {{ object.publish_determination_report }}
+                              </a>
+                            {% else %}
+                              {% if object.document_determination_approved.all|length > 0 %}
+                                {% if mode == 'update' %}
+                                  <a href="{% url 'application_publish_documents' object.pk 'determination' %}" class="btn btn-primary" role="button">
+                                    Publish
+                                  </a>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          </div>
                         </div>
                         {% endif %}
-                   </div>
-
-		   
-                  {% if hidden.publication_feedback_determination == "False" %}
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Received Feedback (Determination)</label>
-                            </div>
-                            <div class="panel-body">
-
-                                <div id='feedback_determination_table'>
-                                         {% include "applications/application_feedback_determination_table.html" %}
-                                </div>
-
-                                {% if workflow_actions %}
-                                    {% if may_update_publication_feedback_determination == "True" %}
-                                         {% if mode == 'update' %}
-                                        <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_feedbackpublication_draft' object.pk 'determination' %}','Add Feedback');" type="button">Add Feedback</button>
-                                         {% endif %}
-                                    {% endif %}
-                                {% endif %}
-
-
-                            </div>
+                        
+                      </div>
+                      <br>
+                      
+                      {% if hidden.publication_feedback_determination == "False" %}
+                      <div class="card-body">
+                        <div class="row mb-3">
+                          <div class="col-12 fw-bold">Received Feedback (Determination)</div>
                         </div>
+                      
+                        <div class="row mb-3">
+                          <div class="col-12">
+                            <div id="feedback_determination_table">
+                              {% include "applications/application_feedback_determination_table.html" %}
+                            </div>
+                          </div>
+                        </div>
+                      
+                        {% if workflow_actions %}
+                          {% if may_update_publication_feedback_determination == "True" %}
+                            {% if mode == 'update' %}
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <button class="btn btn-primary btn-sm" onclick="django_ajax_form.OpenForm('{% url 'application_add_feedbackpublication_draft' object.pk 'determination' %}','Add Feedback');" type="button">
+                                    Add Feedback
+                                  </button>
+                                </div>
+                              </div>
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                      <br>
+                      {% endif %}
+                      
                     </div>
-                    {% endif %}
-
                 </div>
             </div>
-
+<br>

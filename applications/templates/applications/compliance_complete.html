@@ -13,49 +13,36 @@
 
         <div class="col-sm-12 col-md-12 col-lg-12">
             <!-- Conditions -->
-            <div class="panel panel-default">
-                <div class="panel-collapse collapse in" id="conditions_collapse">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-				<label>Your compliance has been successfully submitted</label>
-                                <BR><BR>
-			</div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-				<div class="col-sm-12 col-md-3 col-lg-3">
-					<label>Compliance</label>
-				</div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-				        CO-{{ object.id }}
-				</div>
-			</div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                        <label>Date/Time</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-                                        {{ object.submit_date }}
-                                </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                <BR>
-                                Thank you for your submission.
-                                <BR><BR>
-                        </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-			     Your submission will be provided to an officer to guage compliance of this condition.
-                             <BR><BR>
-                        </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                             You will be notified by email once your submission has been reviewed and / or if further action is required.
-			     <BR><BR>
-                        </div>
-
-
-            </div>
-
-        </div>
-    </div>
+            <div class="card">
+                <div class="card-body" id="conditions_collapse">
+                  <div class="mb-4">
+                    <label class="fw-bold">Your compliance has been successfully submitted</label>
+                  </div>
+              
+                  <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Compliance</div>
+                    <div class="col-md-9">CO-{{ object.id }}</div>
+                  </div>
+              
+                  <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Date/Time</div>
+                    <div class="col-md-9">{{ object.submit_date }}</div>
+                  </div>
+              
+                  <div class="mb-3">
+                    <p class="mb-2">Thank you for your submission.</p>
+                  </div>
+              
+                  <div class="mb-3">
+                    <p class="mb-2">Your submission will be provided to an officer to gauge compliance of this condition.</p>
+                  </div>
+              
+                  <div class="mb-3">
+                    <p>You will be notified by email once your submission has been reviewed and/or if further action is required.</p>
+                  </div>
+                </div>
+              </div>
+              
 </div>
 {% endblock page_content_inner %}
 

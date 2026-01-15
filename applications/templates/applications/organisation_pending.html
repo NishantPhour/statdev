@@ -1,83 +1,59 @@
 {% extends "base_statdev.html" %}
 
 {% block page_content_inner %}
-
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="title_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#application_list_collapse" aria-expanded="false" aria-controls="application_list_collapse">
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
                 Organisation's Pending
-                <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-            </a>
-        </h3>
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
 
-    <div class="panel-collapse collapse in" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
-        <div class="panel-body">
 
+    <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box1-card-body">
             <div class="row">
-                <form action="" method="get">
-                    <div class="col-sm-12 col-lg-12">
-                        <input type='hidden' name='action' value='search'>
-                        <!-- RES -->
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Applicant:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_applicant" name="applicant">
-                                    <option value="" selected="selected">All</option>
-                                    {% for person in orgs_pending_applicants %}
-					{% if applicant == person.ledger_id %}
-                                    <option selected="selected" value="{{ person.ledger_id }}">{{ person.legal_first_name }} {{person.legal_last_name }}</option>
-					{% else %}
-						<option value="{{ person.ledger_id }}">{{ person.legal_first_name }} {{person.legal_last_name }}</option>
-					{% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Status:</label>
-                            </div>
-
-                            <div class="col-sm-12 col-lg-12">
-                                <select class="select form-control" id="id_appstatus" name="appstatus">
-                                    <option value="" selected="selected">All</option>
-                                    {% for at in orgs_pending_status %}
-                                    {% if appstatus == at.0 %}
-                                    <option selected value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% else %}
-                                    <option value="{{ at.0 }}">{{ at.1 }}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
+                <form action="" method="get" class="row g-3">
+                    <input type="hidden" name="action" value="search">
+                  
+                    <!-- Applicant -->
+                    <div class="col-md-3">
+                      <label for="id_applicant" class="form-label">Applicant:</label>
+                      <select class="form-select" id="id_applicant" name="applicant">
+                        <option value="" selected>All</option>
+                        {% for person in orgs_pending_applicants %}
+                        <option value="{{ person.ledger_id.id }}" {% if applicant == person.id %}selected{% endif %}>{{ person.legal_first_name }} {{ person.legal_last_name }}</option>
+                        {% endfor %}
+                      </select>
                     </div>
-                    <div class="col-sm-12 col-lg-12">
-                        <div class="col-sm-12 col-lg-9">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Keyword:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                            </div>
-                        </div>
-                        <!-- end -->
+                  
+                    <!-- Status -->
+                    <div class="col-md-3">
+                      <label for="id_appstatus" class="form-label">Status:</label>
+                      <select class="form-select" id="id_appstatus" name="appstatus">
+                        <option value="" selected>All</option>
+                        {% for at in orgs_pending_status %}
+                          <option value="{{ at.0 }}" {% if appstatus == at.0 %}selected{% endif %}>{{ at.1 }}</option>
+                        {% endfor %}
+                      </select>
                     </div>
-                    <div class="col-sm-12 col-lg-3">
-
+                  
+                    <!-- Keyword -->
+                    <div class="col-md-6">
+                      <label for="search_field" class="form-label">Keyword:</label>
+                      <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
                     </div>
-
-                </form>
+                  
+                    <!-- Search Button -->
+                    <div class="col-md-6 d-flex align-items-end">
+                      <button type="submit" name="search" class="btn btn-primary mt-3 mb-3">Search</button>
+                    </div>
+                  </form>
+                  
             </div>
             <br>
             <div class="row">
@@ -97,17 +73,17 @@
                         <tbody>
                             {% for item_obj in orgs_pending %}
                             <tr>
-                                <td><a href="{% url "organisation_access_requests_view" item_obj.pk %}">AR-{{ item_obj.pk }}</a></td>
-                                <td>{{ item_obj.name }}</td>
+                                <td><a href="{% url "organisation_access_requests_view" item_obj.org.pk %}">AR-{{ item_obj.org.pk }}</a></td>
+                                <td>{{ item_obj.org.name }}</td>
                                 <td>{{ item_obj.email_user.legal_first_name }} {{ item_obj.email_user.legal_last_name }}</td>
-                                <td>{{ item_obj.get_status_display }} </td>
-                                <td>{{ item_obj.submit_date|date:"d-M-Y" }}</td>
+                                <td>{{ item_obj.org.get_status_display }} </td>
+                                <td>{{ item_obj.org.submit_date|date:"d-M-Y" }}</td>
                                 <td>{{ item_obj.assignee.legal_first_name }} {{ item_obj.assignee.legal_last_name }}</td>
                                 <td>
-				    {% if item_obj.status == 1 %}
-                                    	<a class="btn btn-info pull-right" role="button" href="{% url "organisation_access_requests_view" item_obj.pk %}">Process</a> 
+				    {% if item_obj.org.status == 1 %}
+                                    	<a class="btn btn-info pull-right" role="button" href="{% url "organisation_access_requests_view" item_obj.org.pk %}">Process</a> 
 				    {% else %}
-					<a class="btn btn-primary pull-right" role="button" href="{% url "organisation_access_requests_view" item_obj.pk %}">View</a>
+					<a class="btn btn-primary pull-right" role="button" href="{% url "organisation_access_requests_view" item_obj.org.pk %}">View</a>
  				    {% endif %}
                                 </td>
                             </tr>
@@ -120,17 +96,33 @@
     </div>
 </div>
 <script>
-function loadTable() {
-    $('#application-table').dataTable({searching: false, paging: true, "pageLength": 25,
-	columnDefs: [
-	       { type: 'natural-nohtml', targets: 0 }, { type: 'date-dd-mmm-yyyy', targets: 4 }, { 'bSortable': false, 'aTargets':  6 }
-        ]
-
-});
-}
-window.onload= function() {
-    loadTable();
-}
-</script>
+    function loadTable() {
+      $('#application-table').DataTable({
+        searching: false,
+        paging: true,
+        pageLength: 25,
+        order: [[0, 'desc']],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+        columnDefs: [
+          { type: 'natural-nohtml', targets: 0 },
+          { type: 'date-dd-mmm-yyyy', targets: 4 },
+          { orderable: false, targets: 6 }
+        ],
+        dom:
+          '<"row mb-2"' +
+            '<"col-md-6 d-flex align-items-center"l>' +
+            '<"col-md-6 d-flex justify-content-end"f>' +
+          '>' +
+          'rt' +
+          '<"row mt-2"' +
+            '<"col-md-6 d-flex align-items-center"i>' +
+            '<"col-md-6 d-flex justify-content-end"p>' +
+          '>'
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadTable);
+    </script>
+    
 
 {% endblock %}

@@ -91,8 +91,9 @@ class ApprovalChangeStatus(ModelForm):
         # populated on form field error.  So the dropdown doesn't come through blank
         self.helper.add_input(Hidden('status',self.initial['status']))
         ###
-        self.helper.add_input(Submit('changestatus', 'Change Status', css_class='btn-lg'))
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('changestatus', 'Change Status'))
+        
 
         # Limit the organisation queryset unless the user is a superuser.
 
@@ -117,8 +118,9 @@ class CommunicationCreateForm(ModelForm):
         self.helper = BaseFormHelper()
         self.helper.form_id = 'id_form_create_communication'
         self.helper.attrs = {'novalidate': ''}
-        self.helper.add_input(Submit('save', 'Create', css_class='btn-lg'))
+        
         self.helper.add_input(Submit('cancel', 'Cancel'))
+        self.helper.add_input(Submit('save', 'Create'))
         # Add labels for fields
         #self.fields['app_type'].label = "Application Type"
 

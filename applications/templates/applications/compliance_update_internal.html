@@ -15,195 +15,207 @@
     <!-- Action panel start -->
     <div class="row">
         <!--- remove everything eblow this tag to the end tag if everything has been moved -->
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Workflow</h3>
+        <div class="col-lg-3 col-md-3 col-sm-4">
+            <!-- Workflow Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Workflow</h5>
                 </div>
-                <div class="panel-body">
-                    <h4>Actions</h4>
-		<ul>
-                  {% if object.status == 9 or object.status == 5 or object.status == 6 %}
-		  <li><a href="{% url 'compliance_assign_person' object.pk %}">{% if object.assignee is None %}Assign{% else %}Re-Assign{% endif %}</a></li>
-                  {% endif %}
-		</ul>
-                    <h4>Status:</h4>
+                <div class="card-body">
+                    <h6>Actions</h6>
+                    <ul>
+                        {% if object.status == 5 or object.status == 6 or object.status == 9 %}
+                            <li>
+                                <a href="{% url 'compliance_assign_person' object.pk %}">
+                                    {% if object.assignee is None %}Assign{% else %}Re-Assign{% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <h6>Status:</h6>
                     <p>{{ object.get_status_display }}</p>
-                    <h4>Assigned to:</h4>
-                    {% if assignee %}
+                    <h6>Assigned to:</h6>
                     <p>
-                    {% if assignee.legal_first_name %}
-                        {{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
-                    {% else %}
-                        {{ assignee.email }}
-                    {% endif %}
+                        {% if assignee %}
+                            {% if assignee.legal_first_name %}
+                                {{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
+                            {% else %}
+                                {{ assignee.email }}
+                            {% endif %}
+                        {% else %}
+                            --
+                        {% endif %}
                     </p>
-                    {% else %}
-                    <p>--</p>
-                    {% endif %}
                 </div>
+                
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Submission</h3>
+            <br>
+        
+            <!-- Submission Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Submission</h5>
                 </div>
-                <div class="panel-body">
-                    <h4>Submitted by:</h4>
+                <div class="card-body">
+                    <h6>Submitted by:</h6>
                     <p>
-                    {% if submitted_by.legal_first_name %}
-                        {{ submitted_by.legal_first_name }} {{ submitted_by.legal_last_name }}
-                    {% else %}
-                        {{ submitted_by.email }}
-                    {% endif %}
+                        {% if submitted_by.legal_first_name %}
+                            {{ submitted_by.legal_first_name }} {{ submitted_by.legal_last_name }}
+                        {% else %}
+                            {{ submitted_by.email }}
+                        {% endif %}
                     </p>
-                    <h4>Lodged on</h4>
+                    <h6>Lodged on</h6>
                     <p>{{ object.submit_date|date:"d-M-Y" }}</p>
-                    {% comment %}
-                    <br />
-                    <h4>Lodgement  Date   Action</h4>
-                    {% endcomment %}
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Actions</h3>
+        
+            <!-- Actions Card -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actions</h5>
                 </div>
-                <div class="panel-body">
-                    <h5>Communications</h5>
-                    <p><a href="{% url 'approvals_comms' object.approval_id %}">Show</a> | <a href="{% url 'approvals_comms_create' object.approval_id %}">Add Entry</a></p>
+                <div class="card-body">
+                    <h6>Communications</h6>
+                    <p>
+                        <a href="{% url 'approvals_comms' object.approval_id %}">Show</a> |
+                        <a href="{% url 'approvals_comms_create' object.approval_id %}">Add Entry</a>
+                    </p>
                     <hr />
-                    <h5>Actions</h5>
+                    <h6>Actions</h6>
                     <ul>
-	            <li><a href="{% url 'compliance_actions' object.pk %}">Actions log</a></li>
+                        <li><a href="{% url 'compliance_actions' object.pk %}">Actions log</a></li>
                     </ul>
-                    <ul>
                 </div>
-
-                <div class="panel-body" style='display:none'>
-                    <h5>Communications</h5>
-                    <p><a href="{% url 'compliance_comms' object.pk %}">Show</a> | <a href="{% url 'compliance_comms_create' object.pk %}">Add Entry</a></p>
-                    <hr/>
-                    <h5>Actions</h5>
+        
+                <div class="card-body d-none">
+                    <h6>Communications</h6>
+                    <p>
+                        <a href="{% url 'compliance_comms' object.pk %}">Show</a> |
+                        <a href="{% url 'compliance_comms_create' object.pk %}">Add Entry</a>
+                    </p>
+                    <hr />
+                    <h6>Actions</h6>
                     <ul>
-                        <!-- Action log -->
-                        {% if admin_staff == True %}<li><a href="{% url 'compliance_actions' object.pk %}">Actions log</a></li>{% endif %}
-                        <!-- Action log end -->
+                        {% if admin_staff %}
+                            <li><a href="{% url 'compliance_actions' object.pk %}">Actions log</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
-        </div>
+            <br>
+        </div>        
         <!-- remove all above to beginning of this tag if everything been moved -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="col-sm-8 col-md-9 col-lg-9">
 
         <div class="col-sm-12 col-md-12 col-lg-12">
             <!-- Conditions -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#conditions_collapse">
-                    <h3 class="panel-title">
-                        Clearance of Condition
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Clearance of Condition
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box20-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse in" id="conditions_collapse">
-                    <div class="panel-body">
-                        <div>
-                            {% if conditions %} 
-                            {% for c in conditions %}
-
-                            <!-- Current -->
-                            {% if c.status == 1 %}
-                            {% endif %}
-                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <b>Condition</b>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        {{ c.condition.condition }} 
-					</bR><BR>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <b>Advise</b>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        {{ c.condition.advise }}
-                                        </bR><BR>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-					<b>Comments</b>
-				    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                  
+                <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box20-card-body">
+                        <div class="container-fluid">
+                            {% if conditions %}
+                                {% for c in conditions %}
+                                    {% if c.status == 1 %}
+                                    {% endif %}
+                                    <div class="row mb-4">
+                                        <!-- Condition -->
+                                        <div class="col-12">
+                                            <strong>Condition</strong>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ c.condition.condition }}
+                                            <br><br>
+                                        </div>
+                    
+                                        <!-- Advise -->
+                                        <div class="col-12">
+                                            <strong>Advise</strong>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ c.condition.advise }}
+                                            <br><br>
+                                        </div>
+                    
+                                        <!-- Comments -->
+                                        <div class="col-12">
+                                            <strong>Comments</strong>
+                                        </div>
+                                        <div class="col-12">
                                             {% if c.comments %}
                                                 {{ c.comments }}
                                             {% else %}
-                                               <i>Please provide comment</i>
+                                                <em>Please provide comment</em>
                                             {% endif %}
-					    </bR><BR>
-                                     </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <b>External Comments</b>
+                                            <br><br>
+                                        </div>
+                    
+                                        <!-- External Comments -->
+                                        <div class="col-12">
+                                            <strong>External Comments</strong>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ c.external_comments }}
+                                            <br><br>
+                                        </div>
+                    
+                                        <!-- Staff Documents -->
+                                        <div class="col-12">
+                                            <strong>Staff Documents (holder can see)</strong>
+                                        </div>
+                                        <div class="col-12">
+                                            {% if c.external_documents.exists %}
+                                                {% for doc in c.external_documents.all %}
+                                                    <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                             {{ c.external_comments }}
-					     </bR><BR>
-                                     </div>
-                                </div>
-
-
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <b>Staff Documents (holder can see)</b>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-
-                                             {% if c.external_documents.exists %}
-                                                  {% for doc in c.external_documents.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>{% endfor %}
-                                             {% endif %}
-                                     </div>
-                                </div>
-
-                            </div>
-                            {% endfor %}
+                                {% endfor %}
                             {% endif %}
-                        </div>
-		
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-				&nbsp;
-			    <div class="col-sm-12 col-md-12 col-lg-12">
-
-                            <div class="col-sm-12 col-md-12 col-lg-1">
-                                <label>Supporting Documents</label>
+                        
+                    
+                        <!-- Supporting Documents -->
+                        <div class="row mt-4">
+                            <div class="col-lg-2 col-md-3 col-sm-12">
+                                <label class="fw-bold">Supporting Documents</label>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-9">
+                            <div class="col-lg-10 col-md-9 col-sm-12">
                                 {% for c in conditions %}
-                                     {% for d in c.records.all %}
-				     <img src="/static/images/pdf.png"> &nbsp; <A HREF='{{ d.file_url }}' target="new_tab_{{ doc.id }}">{{ d }}</A><BR>
-                                     {% endfor %}
+                                    {% for d in c.records.all %}
+                                        <img src="/static/images/pdf.png" alt="PDF icon"> &nbsp;
+                                        <a href="{{ d.file_url }}" target="new_tab_{{ doc.id }}">{{ d }}</a><br>
+                                    {% endfor %}
                                 {% endfor %}
                             </div>
-			   </div>
                         </div>
-                    </div>
+                    
+                    </div>                    
                 </div>
             </div>
             </div>
+            <br>
 	    {% if assignee.ledger_id == request.user.id %}
            <div class="col-sm-12 col-md-12 col-lg-12">
-           <div class="panel panel-default">
+           <div class="card">
              <!-- Default panel contents -->
-             <div class="panel-heading">Compliance {{ object.get_app_type_display }} - {{ object.pk }}</div>
-             <div class="panel-body">
+             <div class="card-header">Compliance {{ object.get_app_type_display }} - {{ object.pk }}</div>
+             <div class="card-body">
                   {% crispy form %}
              </div>
            </div>
+           <br>
            
            </div>
            </div>
@@ -214,49 +226,56 @@
             {% if object.status == 4 %}
             <div class="col-sm-12 col-md-12 col-lg-12">
             <!-- Conditions -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#ac_collapse">
-                    <h3 class="panel-title">
-                       Assessment 
-                       <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Assessment
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box9-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                
-                <div class="panel-collapse collapse in " id="ac_collapse">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-				<div class="col-sm-12 col-md-3 col-lg-3">
-				    <label>Assessment Result</Label>
-				</div>
-				<div class="col-sm-12 col-md-9 col-lg-9">
-				Approved	
-				</div>
-			</div>
-                       <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                    <label>Assessed By</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-				   {{ assessed_by.legal_first_name }} {{ assessed_by.legal_last_name }}
-                                </div>
+                  
+                <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box9-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Assessment Result</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                Approved
+                            </div>
                         </div>
-
-                       <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                    <label>Date</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-					{{ object.assessed_date }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Assessed By</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                {{ assessed_by.legal_first_name }} {{ assessed_by.legal_last_name }}
+                            </div>
                         </div>
-
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Date</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                {{ object.assessed_date }}
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
+            <br>
             </div>
             {% endif %}
             </div>
         </div>
+    </div>
     </div>
 </div>
 {% endblock page_content_inner %}

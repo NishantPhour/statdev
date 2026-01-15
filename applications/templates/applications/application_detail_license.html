@@ -19,26 +19,32 @@
         {% include "applications/application_side_menu.html" %}
 
         <!-- Main panel start -->
-        <div class="col-sm-8 col-md-9 col-lg-10">
+        <div class="col-sm-8 col-md-9 col-lg-9">
 	{% if object.state == 1 %}
 		{% if object.submitter_comment|length > 1 %}
-			<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span>&nbsp;&nbsp;{{ object.submitter_comment }}</div>
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            <strong class="visually-hidden">Error:</strong>
+            &nbsp;&nbsp;{{ object.submitter_comment }}
+        </div>  
 		{% endif %}
 	{% endif %}
 
             <!-- Applicant panel -->
             {% if hidden.applicant == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="applicant_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#applicant_collapse" aria-expanded="false" aria-controls="application_collapse">
-                            Applicant
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Applicant
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.applicant }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.applicant }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box1-card-body">
                     {# TODO: applicant details should only be visible to internal users. #}
                     <div class="row">
                     {% if object.organisation %}
@@ -50,76 +56,88 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.title == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#title_collapse" aria-expanded="true" aria-controls="title_collapse">
-                            Title
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                              Title
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.title }}" id="title_collapse" role="tabpanel" aria-labelledby="title_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box2-card-body">
                         <p>{{ object.title }}</p>
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.proposed_activities == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="title_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#proposed_activities_collapse" aria-expanded="false" aria-controls="proposed_activities_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Proposed Commercial Acts and Activites
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.proposed_activities }} " id="proposed_activities_collapse" role="tabpanel" aria-labelledby="proposed_activities_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box3-card-body">
                         <p>{{ object.description }}</p>
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
             {% if hidden.vessels == "False" %}
             <!-- Vessel / Craft Panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="vessel_details_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#vessel_details_collapse" aria-expanded="false" aria-controls="vessel_details_collapse">
-                             Vessel Details
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Vessel Details
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box4-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.vessel_details }} " id="vessel_details_collapse" role="tabpanel" aria-labelledby="vessel_details_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box4-card-body">
                          {% include "applications/application_vessels.html" %}
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
 
 	    {% if hidden.proposed_details == "False" %}
             <!-- Proposal details panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="prop_details_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#prop_details_collapse" aria-expanded="false" aria-controls="prop_details_collapse">
-                            Proposal details
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Proposal Details
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box5-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.proposed_details }}" id="prop_details_collapse" role="tabpanel" aria-labelledby="prop_details_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box5-card-body">
                         <div class="fluid-container">
                             <div class="row">
                                 <div class="col-xs-12">
@@ -236,21 +254,24 @@
                     </div>
                 </div>
             </div>
+            <br>
 			{% endif %}
 
 			{% if hidden.certificate_of_survery == "False" %}
             <!-- Other Documents panel -->
-			 <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="prop_details_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#certificate_of_survery_collapse" aria-expanded="false" aria-controls="certificate_of_survery_collapse">
-                             Other documents
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Other Documents
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box6-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.certificate_of_survery }}" id="certificate_of_survery_collapse" role="tabpanel" aria-labelledby="certificate_of_survery_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box6-card-body">
                                                 <div class="fluid-container">
 
                     <div class ="row">
@@ -320,21 +341,24 @@
                 </div>
                     </div>
             </div>
+            <br>
            {% endif %}
 
             <!-- Landowner Consent panel -->
             {% if hidden.landowner_consent == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="landowner_consent_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#landowner_consent_collapse" aria-expanded="false" aria-controls="landowner_consent_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Landowner Consent
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box7-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.landowner_consent }} " id="landowner_consent_collapse" role="tabpanel" aria-labelledby="landowner_consent_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box7-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 Print <a href=''>this document</a> and have it signed by each landowner (or body responsible for management.<BR><BR>
@@ -354,22 +378,25 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %} 
 
 
             <!-- Deed panel -->
 			{% if hidden.deed == "False" %}
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="deed_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#deed_collapse" aria-expanded="false" aria-controls="deed_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Deed
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box8-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.deed }}" id="deed_collapse" role="tabpanel" aria-labelledby="deed_heading">
-                    <div class="panel-body">
+                <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box8-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-12">
                                 Print <a href=''>this deed</a>, sign it and attach it to this application<BR>
@@ -381,6 +408,7 @@
                     </div>
                 </div>
             </div>
+            <br>
             {% endif %}
             {% if is_staff == True %}
 

@@ -1,244 +1,251 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="assessment_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#assessment_collapse" aria-expanded="false" aria-controls="assessment_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Assessment
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box9-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.assessments }}" id="assessment_collapse" role="tabpanel" aria-labelledby="assessment_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="collapse show {{ collapse.assessments }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box9-card-body">
+                        <div class="card-body">
                             {% if hidden.assessments_draft_report == "False" %}
-                            <div class="col-lg-12">
-                                <label><u>Draft Report</u></label>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    <label>Current Version of Report</label>
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <label class="fw-bold text-decoration-underline">Draft Report</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_new_draft.exists %}
-				    {% for doc in object.document_new_draft.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Assessment Report 2 - {{ doc }}</a><br>{% endfor %}
-
-                                    {% else %}
+                              </div>
+                          
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Current Version of Report</div>
+                                <div class="col-md-9">
+                                  {% if object.document_new_draft.exists %}
+                                    {% for doc in object.document_new_draft.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Assessment Report 2 - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
                                     {% if object.document_draft.exists %}
-				    {% for doc in object.document_draft.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Assessment Report - {{ doc }}</a><br>{% endfor %}
+                                      {% for doc in object.document_draft.all %}
+                                        <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Assessment Report - {{ doc }}</a><br>
+                                      {% endfor %}
                                     {% else %}
+                                      No Attachment
+                                    {% endif %}
+                                  {% endif %}
+                                </div>
+                              </div>
+                          
+                              {% if hidden.assessments_swan_river_trust_board_feedback == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Swan River Trust Board Feedback</div>
+                                <div class="col-md-9">
+                                  {% if object.swan_river_trust_board_feedback.exists %}
+                                    {% for doc in object.swan_river_trust_board_feedback.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Feedback - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
                                     No Attachment
-                                    {% endif %}
-                                    {% endif %}
+                                  {% endif %}
                                 </div>
-                            </div>
-
-                            {% if hidden.assessments_swan_river_trust_board_feedback == "False" %}
-                            <div class="col-lg-12">
-
-                           	    <div class="col-lg-3">
-                                    <label>Swan River Trust Board Feedback</label>
-                                </div>
-                                <div class="col-lg-9">
-                                    {% if object.swan_river_trust_board_feedback.exists %}
-				    {% for doc in object.swan_river_trust_board_feedback.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Feedback - {{ doc }}</a><br>{% endfor %}
+                              </div>
+                              {% endif %}
+                          
+                              {% if hidden.assessments_new_draft == "False" %}
+                                {% if not object.document_new_draft %}
+                                <div class="row mb-3">
+                                  <div class="col-md-3 fw-bold">Attach new version of Report</div>
+                                  <div class="col-md-9">
+                                    {% if object.document_new_draft %}
+                                      <a href="{{ object.document_new_draft.file_url }}" target="new_tab_{{ object.document_new_draft.id }}">Assessment Report Version 2.PDF</a>
                                     {% else %}
-                                    No Attachment
+                                      <a href="{% url 'application_update' object.pk %}">
+                                        {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                      </a>
                                     {% endif %}
-                                </div>
-                            </div>
-
-                            {% endif %}
-
-                            {% if hidden.assessments_new_draft == "False" %}
-                                {% if object.document_new_draft %}
-                                {% else %}
-                                <div class="col-lg-12">
-
-                                    <div class="col-lg-3">
-                                        <label>Attach new version of Report</label>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        {% if object.document_new_draft %}
-					<A HREF='{{ object.document_new_draft.file_url }}' target="new_tab_{{ object.document_new_draft.id }}">Assessment Report Version 2.PDF</A>
-                                        {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                        {% endif %}
-                                    </div>
+                                  </div>
                                 </div>
                                 {% endif %}
-                            {% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    <label> Start Date</label>
-                                </div>
-                                <div class="col-lg-9">
-                                    {{ object.assessment_start_date }}
-                                </div>
-                            </div>
-
-                            {% if hidden.swanriverpostaladdress == "False" %}
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                       <label>To be posted to:</Label>
-                                </div>
-                                <div class="col-lg-9">
-                                    <strong>
-                                    Swan River Trust Board, attn Peter Secretary <BR>
-                                    PO Box 3344<br>
-                                    Perth WA 6000<br>
-                                    </strong>
-                                </div>
-                             </div>
-                             {% endif %}
-
-                       {% if hidden.publish_publication_feedback_draft == "False" %}
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-3">
-                                <label>Signed copy (signed by DG) of draft report</label>
-                            </div>
-                            <div class="col-lg-9">
-                                    {% if object.document_draft_signed.exists %}
-                                    {% for doc in object.document_draft_signed.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}" >Signed Draft - {{ doc }}</a><br>{% endfor %}
-                                    {% else %}
-                                    No Attachment
-                                    {% endif %}
-
-
-                            </div>
-                        </div>
-						{% endif %}
-
-                             <div class="col-lg-12">
-                                 <div class="col-lg-3">
-                                     <label> {{ workflow.assessment_extra.label }}</label>
-                                 </div>
-                                 <div class="col-lg-9">
-                                     <strong style='{% if workflow.assessment_extra.color %}color: {{ workflow.assessment_extra.color }} {% endif %}' > {{ workflow.assessment_extra.description }} </strong>
-                                 </div>
+                              {% endif %}
+                          
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Start Date</div>
+                                <div class="col-md-9">{{ object.assessment_start_date }}</div>
                               </div>
-                        <div class="col-lg-12">
-                        {% if may_update_assessment_draft == "True" %}
-                        <a href="{% url 'application_update' object.pk %}" class="btn btn-primary" role="button">
-                            Update
-                        </a>
-
-                        {% endif %}
-                        </div>
-
-                        {% endif %}
-
-                        </div>
-                        {% if hidden.assessments_draft_report_after_public_consultation == "False" %}
-                         <BR>
-                        <div class="col-lg-12">
-                            <div class="col-lg-12">
-                                <label><u>Final Report after public consultation</u></label>
-                            </div>
-				 {% if hidden.reportandmemoprint == "False" %}
-				 <div class="col-lg-12">
-                                    <div class="col-lg-12">
-                                       <label> Print the report and memo and send to Director General</label>
-                                    </div>
-                                 </div>
-	                         {% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Final Report 
+                          
+                              {% if hidden.swanriverpostaladdress == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">To be posted to:</div>
+                                <div class="col-md-9">
+                                  <strong>
+                                    Swan River Trust Board, attn Peter Secretary<br>
+                                    PO Box 3344<br>
+                                    Perth WA 6000
+                                  </strong>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_final.exists %}
-				    {% for doc in object.document_final.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}" >Assessment Report Version 3 - {{ doc }}</a><br>{% endfor %}
-                                    {% else %}
-                                    <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
+                              </div>
+                              {% endif %}
+                          
+                              {% if hidden.publish_publication_feedback_draft == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Signed copy (signed by DG) of draft report</div>
+                                <div class="col-md-9">
+                                  {% if object.document_draft_signed.exists %}
+                                    {% for doc in object.document_draft_signed.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Signed Draft - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
+                                    No Attachment
+                                  {% endif %}
                                 </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Memo 2
+                              </div>
+                              {% endif %}
+                          
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">{{ workflow.assessment_extra.label }}</div>
+                                <div class="col-md-9">
+                                  <strong style="{% if workflow.assessment_extra.color %}color: {{ workflow.assessment_extra.color }}{% endif %}">
+                                    {{ workflow.assessment_extra.description }}
+                                  </strong>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_memo_2.exists %}
-				    {% for doc in object.document_memo_2.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Memo 2 - {{ doc }}</a><br>{% endfor %}
-                                    {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
-                                 </div>
-                            </div>
-			    {% if object.document_final_signed.exists %}
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Signed Final Report
+                              </div>
+                          
+                              {% if may_update_assessment_draft == "True" %}
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <a href="{% url 'application_update' object.pk %}" class="btn btn-primary" role="button">Update</a>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_final_signed.exists %}
-                                    {% for doc in object.document_final_signed.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Signed Final - {{ doc }}</a><br>{% endfor %}
-                                    {% else %}
-                                       No Attachment
-                                    {% endif %}
-                                 </div>
-                            </div>
-			    {% endif %}
-
-
-                        </div>
-                        {% endif %}
-
-                        {% if hidden.assessments_determination_and_briefing_note == "False" %}
-
-                        <div class="col-lg-12">
-                            <div class="col-lg-12">
-                                <label><u>Determination and Briefing Note</u></label>
-                            </div>
-   				     {% if hidden.finalreportdetermination == "False" %}
-                             <div class="col-lg-12">
-                                 <div class="col-lg-12">
-                                     <label> Print the determination, breifing note and final report and send to the Director General</label>
-                                 </div>
-                             </div>
+                              </div>
+                              {% endif %}
                             {% endif %}
-
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Determination
+                          </div>
+                          
+                            {% if hidden.assessments_draft_report_after_public_consultation == "False" %}
+                            <br>
+                            <div class="card-body">
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <label class="fw-bold text-decoration-underline">Final Report after public consultation</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    {% if object.document_determination.exists %}
-				    {% for doc in object.document_determination.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Determination - {{ doc }}</a><br>{% endfor %}
-                                    {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
-                                    {% endif %}
-
+                              </div>
+                            
+                              {% if hidden.reportandmemoprint == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-12 fw-bold">
+                                  Print the report and memo and send to Director General
                                 </div>
-
+                              </div>
+                              {% endif %}
+                            
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Final Report</div>
+                                <div class="col-md-9">
+                                  {% if object.document_final.exists %}
+                                    {% for doc in object.document_final.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Assessment Report Version 3 - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Memo 2</div>
+                                <div class="col-md-9">
+                                  {% if object.document_memo_2.exists %}
+                                    {% for doc in object.document_memo_2.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Memo 2 - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            
+                              {% if object.document_final_signed.exists %}
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Signed Final Report</div>
+                                <div class="col-md-9">
+                                  {% for doc in object.document_final_signed.all %}
+                                    <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Signed Final - {{ doc }}</a><br>
+                                  {% endfor %}
+                                </div>
+                              </div>
+                              {% endif %}
                             </div>
-                            <div class="col-lg-12">
-                                <div class="col-lg-3">
-                                    Briefing Note
+                            {% endif %}                            
+
+                            {% if hidden.assessments_determination_and_briefing_note == "False" %}
+                            <div class="card-body">
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <label class="fw-bold text-decoration-underline">Determination and Briefing Note</label>
                                 </div>
-                                <div class="col-lg-9">
-			            {% if object.document_briefing_note.exists %}
-				    {% for doc in object.document_briefing_note.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Briefing - {{ doc }}</a><br>{% endfor %}
+                              </div>
+                            
+                              {% if hidden.finalreportdetermination == "False" %}
+                              <div class="row mb-3">
+                                <div class="col-12 fw-bold">
+                                  Print the determination, briefing note and final report and send to the Director General
+                                </div>
+                              </div>
+                              {% endif %}
+                            
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Determination</div>
+                                <div class="col-md-9">
+                                  {% if object.document_determination.exists %}
+                                    {% for doc in object.document_determination.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Determination - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            
+                              <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Briefing Note</div>
+                                <div class="col-md-9">
+                                  {% if object.document_briefing_note.exists %}
+                                    {% for doc in object.document_briefing_note.all %}
+                                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">Briefing - {{ doc }}</a><br>
+                                    {% endfor %}
+                                  {% else %}
+                                    <a href="{% url 'application_update' object.pk %}">
+                                      {% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}
+                                    </a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            
+                              {% if may_update == "True" %}
+                              <div class="row mb-3">
+                                <div class="col-12">
+                                  <a class="btn btn-primary" role="button" href="{% url 'application_update' object.pk %}">
+                                    {% if formcomponent.update.title %}
+                                      {{ formcomponent.update.title }}
                                     {% else %}
-                                        <A HREF="{% url 'application_update' object.pk %}">{% if may_update == "True" %}Attach File{% else %}No Attachment{% endif %}</A>
+                                      Update application
                                     {% endif %}
+                                  </a>
                                 </div>
-
+                              </div>
+                              {% endif %}
                             </div>
-
-
-                        </div>
-                        {% if may_update == "True" %}
-                        <div class="col-lg-12">
-
-                                <a class="btn btn-primary" role="button" href="{% url 'application_update' object.pk %}">{% if formcomponent.update.title %}{{ formcomponent.update.title }}{% else %} Update application{% endif %}</a>
-                        </div>
-                        {% endif %}
-                        {% endif %}
+                            {% endif %}
+                            
                     </div>
                 </div>
             </div>
+            <br>
 

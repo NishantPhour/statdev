@@ -1,0 +1,66 @@
+{% extends "base_statdev.html" %}
+{% load static %}
+
+
+
+{% block content %}
+{% block menu_spacer %}
+
+{% endblock %}
+
+{% if request.session.is_authenticated %}
+<div style="">
+    <div class='login-success-bg-body'>
+        <div class="container login-success-bg-body-container" >
+			<div class='row'>
+				<div class="col-lg-3 mb-4">
+					
+				</div>
+
+				<div class="col-lg-6 mb-4 login-success-box-before">
+					<div class="round-box col-12 px-3 pt-3 text-center login-success-message-box">
+						<div class='login-success-message-icon' ><img src='{% static "images/tick-success.png" %}'></div>
+						<h2 style='padding-top: 30px;' class="h1">Login Success</h2>
+						<br>
+
+						<div class='fs-5' style='font-size: 20px;'>							
+							You have successfully logged into Swan Canning Riverpark online application system.
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-3 mb-4">
+				</div>            
+			</div>
+        </div>
+
+        &nbsp;
+    </div>
+</div>
+
+
+
+
+<!-- 
+<div class="container" style="z-index:1">
+	<h3>Login Success</h3>
+	<div class="col-lg-12 mb-4">
+		        <div class="round-box col-12 px-3 pt-3 pb-3" style="background-color: #f1f1f1; border: 1px solid #d2d2d2;">
+					You have successfully logged into Swan Canning Riverpark online application system.
+				</div>
+ 	</div>			
+</div> -->
+
+{% else %}
+<div class="container" style="z-index:1">
+	<h3>Session Expired</h3>
+	<div class="col-lg-12 mb-4">
+		        <div class="round-box col-12 px-3 pt-3 pb-3" style="background-color: #f1f1f1; border: 1px solid #d2d2d2;">
+					  You are not logged into Swan Canning Riverpark online application system.   To login please click the <a href='/ssologin'>Login</a> Button to login.
+				</div>
+ 	</div>			
+</div>
+
+{% endif %}
+
+{% endblock %}

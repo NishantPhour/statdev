@@ -2,8 +2,8 @@
 
 {% block page_content_inner %}
 
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card">
+    <div class="card-body">
         <div class="row">
             <div class="col-sm-12 col-md-8 col-lg-8">
                 <div class="col-lg-12">
@@ -16,16 +16,26 @@
         </div>
     </div>
 </div>
+<br>
 
-<div class="col-sm-12 col-md-12 col-lg-12">
+<div class="col-12">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="{{ home_nav_review }}"><a href="{% url "public_application_list" "review" %}">Received</a></li>
-        <li role="presentation" class="{{ home_nav_draft }}"><a href="{% url "public_application_list" "draft" %}">Part 5 Drafts</a></li>
-        <li role="presentation" class="{{ home_nav_final }}" ><a href="{% url "public_application_list" "final" %}">Part 5 Final</a></li>
-        <li role="presentation" class="{{ home_nav_determination }}" ><a href="{% url "public_application_list" "determination" %}">Part 5 Approved</a></li>
+        <li class="nav-item">
+            <a class="nav-link {{ home_nav_review }}" href="{% url 'public_application_list' 'review' %}">Received</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ home_nav_draft }}" href="{% url 'public_application_list' 'draft' %}">Part 5 Drafts</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ home_nav_final }}" href="{% url 'public_application_list' 'final' %}">Part 5 Final</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ home_nav_determination }}" href="{% url 'public_application_list' 'determination' %}">Part 5 Approved</a>
+        </li>
     </ul>
     <br>
 </div>
+
 <div class="col-sm-12 col-md-12 col-lg-12" >
      {% include "public/applications.html" %}
 

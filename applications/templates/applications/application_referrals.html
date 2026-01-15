@@ -1,16 +1,18 @@
 <!-- Referrals panel -->
 <!-- <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" /> -->
-<div class="panel panel-default">
-	<div class="panel-heading" role="tab" id="referrals_heading">
-		<h3 class="panel-title">
-			<a role="button" data-toggle="collapse" href="#referrals_collapse" aria-expanded="false" aria-controls="referrals_collapse">
-				Referrals
-                                <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-			</a>
-		</h3>
-	</div>
-	<div class="panel-collapse collapse {{ collapse.referrals }} " id="referrals_collapse" role="tabpanel" aria-labelledby="referrals_heading">
-		<div class="panel-body">
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
+                  Referrals
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box8-card-body" onclick=""></i>
+            </div>
+      </div> 
+    </div>
+    <div class="collapse show {{ collapse.title }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+        <div class="card-body" id="box8-card-body">
 			<div id='referrals_table'> 
 			{% if object.referral_set.exists %}
 				{% include "applications/application_referrals_table.html" %}
@@ -57,5 +59,6 @@
 		</div>
 	</div>
 </div>
+<br>
 
 

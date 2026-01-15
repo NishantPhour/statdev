@@ -1,68 +1,66 @@
 <script>
 
-	$("input[name=beverage]").click(function(e) {
-		var value = this.value;
-                if (value == 'True') { 
+	$(document).ready(function () {
+		// Initial visibility check for 'beverage'
+		if ($("input[name=beverage]:checked").val() === 'True') {
 			$('#div_id_liquor_licence').show();
 		} else {
-			$('#div_id_liquor_licence').hide();		
+			$('#div_id_liquor_licence').hide();
 		}
-	});
 
-        $("input[name=jetty_dot_approval]").click(function(e) {
-                var value = this.value;
-                if (value == 'True') {
-                        $('#div_id_jetty_dot_approval_expiry').show();
-                } else {
-                        $('#div_id_jetty_dot_approval_expiry').hide();
-                }
-        });
-
-
-	var beverage = $('#id_beverage_1').is(':checked');
-        if (beverage == true) {
-		$('#div_id_liquor_licence').show();
-        } else {
-	        $('#div_id_liquor_licence').hide();
-	}
-
-	var jetty_dot_approval = $('#id_jetty_dot_approval_1').is(':checked');
-        if (jetty_dot_approval == true) {
-                $('#div_id_jetty_dot_approval_expiry').show();
-        } else {
-                $('#div_id_jetty_dot_approval_expiry').hide();
-        }
-
-	// var vessel_or_craft = $('#id_vessel_or_craft_details_1').is(':checked');
-
-	$("input[name=vessel_or_craft_details]").click(function(e) {
-		var value = this.value;
-                if (value == '1') {
-                    $('#box_crafts_collapse').hide();
-                    $('#vessel_and_crafts_option').show();
-		} else if (value == '2') {
-		    $('#vessel_and_crafts_option').hide();
-                    $('#box_crafts_collapse').show();
+		// Initial visibility check for 'jetty_dot_approval'
+		if ($("input[name=jetty_dot_approval]:checked").val() === 'True') {
+			$('#div_id_jetty_dot_approval_expiry').show();
 		} else {
-   		    $('#box_crafts_collapse').hide();
-                    $('#vessel_and_crafts_option').hide();
+			$('#div_id_jetty_dot_approval_expiry').hide();
 		}
+
+		// Initial visibility check for 'vessel_or_craft_details'
+		var vesselValue = $("input[name=vessel_or_craft_details]:checked").val();
+		if (vesselValue === '1') {
+			$('#box_crafts_collapse').hide();
+			$('#vessel_and_crafts_option').show();
+		} else if (vesselValue === '2') {
+			$('#vessel_and_crafts_option').hide();
+			$('#box_crafts_collapse').show();
+		} else {
+			$('#box_crafts_collapse').hide();
+			$('#vessel_and_crafts_option').hide();
+		}
+
+		// Click event handlers
+		$("input[name=beverage]").click(function () {
+			if (this.value === 'True') {
+				$('#div_id_liquor_licence').show();
+			} else {
+				$('#div_id_liquor_licence').hide();
+			}
+		});
+
+		$("input[name=jetty_dot_approval]").click(function () {
+			if (this.value === 'True') {
+				$('#div_id_jetty_dot_approval_expiry').show();
+			} else {
+				$('#div_id_jetty_dot_approval_expiry').hide();
+			}
+		});
+
+		$("input[name=vessel_or_craft_details]").click(function () {
+			var value = this.value;
+			if (value === '1') {
+				$('#box_crafts_collapse').hide();
+				$('#vessel_and_crafts_option').show();
+			} else if (value === '2') {
+				$('#vessel_and_crafts_option').hide();
+				$('#box_crafts_collapse').show();
+			} else {
+				$('#box_crafts_collapse').hide();
+				$('#vessel_and_crafts_option').hide();
+			}
+		});
 	});
 
-        $('#box_crafts_collapse').hide();
-        $('#vessel_and_crafts_option').hide();
-	
-	var id_vessel_or_craft_details_1 = $('#id_vessel_or_craft_details_1').is(':checked');
-	if (id_vessel_or_craft_details_1 == true) {
-                    $('#box_crafts_collapse').hide();
-                    $('#vessel_and_crafts_option').show();
-	}
 
-	var id_vessel_or_craft_details_2 = $('#id_vessel_or_craft_details_2').is(':checked');
-	if (id_vessel_or_craft_details_2 == true) {
-               $('#vessel_and_crafts_option').hide();
-               $('#box_crafts_collapse').show();
-	}
 
 	function loadForm() { 
 

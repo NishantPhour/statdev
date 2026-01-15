@@ -1,55 +1,62 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="details_of_proposed_development_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#details_of_proposed_development_collapse" aria-expanded="false" aria-controls="details_of_proposed_development_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Details of Proposed Development
-                            <span class="glyphicon collapse-glyph glyphicon-chevron-down"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box30-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse collapse {{ collapse.details_of_proposed_development }}" id="details_of_proposed_development_collapse" role="tabpanel" aria-labelledby="details_of_proposed_development_heading">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Estimated cost of development (AU$)</Label>
+                <div class="collapse {{ collapse.details_of_proposed_development }}" id="applicant_collapse" role="tabpanel" aria-labelledby="applicant_heading">
+                    <div class="card-body" id="box30-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Estimated cost of development (AU$)</label>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-9">
                                 {{ object.cost }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Current use of land</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Current use of land</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ object.proposed_development_current_use_of_land }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Proposed development</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Proposed development</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {{ object.proposed_development_description }}
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-lg-12">
-                                <label>Attach a full set of plans</Label>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">
+                                <label>Attach a full set of plans</label>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-md-9">
                                 {% if proposed_development_plans_list %}
-
-                                {% for doc in proposed_development_plans_list %}
-				<div class="col-sm-12 col-md-12 col-lg-12"><A HREF='{{ doc.file_url }}' target="new_tab_{{ doc.id }}">{{ doc.path_short }}</A></div>
-                                {% endfor %}
+                                    {% for doc in proposed_development_plans_list %}
+                                        <div class="mb-1">
+                                            <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc.path_short }}</a>
+                                        </div>
+                                    {% endfor %}
                                 {% else %}
-                                No Attachments
+                                    No Attachments
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
+            <br>
 
 

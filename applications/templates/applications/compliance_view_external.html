@@ -14,61 +14,67 @@
         <!--- remove everything eblow this tag to the end tag if everything has been moved -->
         <div class="col-sm-12 col-md-9 col-lg-9">
             <!-- Conditions -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#conditions_collapse">
-                    <h3 class="panel-title">
-                        Clearance of Condition
-                        <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Clearance of Condition
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                <div class="panel-collapse collapse in" id="conditions_collapse">
-                    <div class="panel-body">
-                        <div>
-                            {% if conditions %} 
-                            {% for c in conditions %}
-
-                            <!-- Current -->
-                            {% if c.status == 1 %}
-                            {% endif %}
-                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <b>Condition ({{ c.id }})</b>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-                                        {{ c.condition.condition }} 
-					</bR><BR>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
-					<b>Comments</b>
-				    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                  
+                <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box1-card-body">
+                        <div class="container-fluid">
+                            {% if conditions %}
+                                {% for c in conditions %}
+                                    {% if c.status == 1 %}
+                                    {% endif %}
+                                    <div class="row mb-4">
+                                        <!-- Condition -->
+                                        <div class="col-12">
+                                            <strong>Condition ({{ c.id }})</strong>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ c.condition.condition }}
+                                            <br><br>
+                                        </div>
+                    
+                                        <!-- Comments -->
+                                        <div class="col-12">
+                                            <strong>Comments</strong>
+                                        </div>
+                                        <div class="col-12">
                                             {% if c.comments %}
                                                 {{ c.comments }}
                                             {% else %}
-                                               <i>Please provide comment</i>
+                                                <em>Please provide comment</em>
                                             {% endif %}
-                                     </div>
-                                </div>
-                            </div>
-                            {% endfor %}
+                                            <br><br>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             {% endif %}
                         </div>
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="col-sm-12 col-md-12 col-lg-1">
-                                <label>Supporting Documents</label>
+                    
+                        <!-- Supporting Documents -->
+                        <div class="row mt-4">
+                            <div class="col-lg-2 col-md-3 col-sm-12">
+                                <label class="fw-bold">Supporting Documents</label>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-9">
+                            <div class="col-lg-10 col-md-9 col-sm-12">
                                 {% for c in conditions %}
-                                     {% for d in c.records.all %}
-				     <img src="/static/images/pdf.png"> &nbsp; <A HREF='{{ d.file_url }}' target="new_tab_{{ doc.id }}">{{ d }}</A><BR>
-                                     {% endfor %}
+                                    {% for d in c.records.all %}
+                                        <img src="/static/images/pdf.png" alt="PDF icon"> &nbsp;
+                                        <a href="{{ d.file_url }}" target="new_tab_{{ doc.id }}">{{ d }}</a><br>
+                                    {% endfor %}
                                 {% endfor %}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
             </div>
@@ -76,43 +82,47 @@
             {% if object.status == 4 %}
             <div class="col-sm-12 col-md-12 col-lg-12">
             <!-- Conditions -->
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" data-target="#ac_collapse">
-                    <h3 class="panel-title">
-                       Assessment 
-                       <span class="glyphicon glyphicon-minus collapse-glyph"></span>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
+                            Assessment
+                        </div>
+                        <div class="col-6 text-end">
+                              <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+                        </div>
+                  </div> 
                 </div>
-                
-                <div class="panel-collapse collapse in " id="ac_collapse">
-                    <div class="panel-body">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-				<div class="col-sm-12 col-md-3 col-lg-3">
-				    <label>Assessment Result</Label>
-				</div>
-				<div class="col-sm-12 col-md-9 col-lg-9">
-				Approved	
-				</div>
-			</div>
-                       <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                    <label>Assessed By</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-				   {{ assessed_by.legal_first_name }} {{ assessed_by.legal_last_name }}
-                                </div>
+                  
+                <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box2-card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Assessment Result</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                Approved
+                            </div>
                         </div>
-
-                       <div class="col-sm-12 col-md-12 col-lg-12">
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                    <label>Date</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-					{{ object.assessed_date }}
-                                </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Assessed By</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                {{ assessed_by.legal_first_name }} {{ assessed_by.legal_last_name }}
+                            </div>
                         </div>
-
-                    </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-md-3 col-sm-12">
+                                <label class="fw-bold">Date</label>
+                            </div>
+                            <div class="col-md-9 col-sm-12">
+                                {{ object.assessed_date }}
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
             </div>
             </div>

@@ -18,17 +18,23 @@
     font-size: 14px;
 }
 
-#div_id_app_type {
+/* #div_id_app_type {
     padding-left:30px;
-}
+} */
 
-#div_id_apply_on_behalf_of {
+/* #div_id_apply_on_behalf_of {
     padding-left:30px;
 
 }
+    
 
 #div_id_organisation {
     padding-left:30px;
+} */
+
+.col-form-label {
+    margin-left:10px;
+
 }
 
 

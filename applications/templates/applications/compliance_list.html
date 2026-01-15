@@ -2,176 +2,185 @@
 
 {% block page_content_inner %}
 
-<div class="panel panel-default">
-
-    <div class="panel-heading" role="tab" id="title_heading">
-        <h3 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#application_list_collapse" aria-expanded="false" aria-controls="application_list_collapse">
+<div class="card">
+    <div class="card-header fw-bold h4" style="padding:30px;">
+        <div class="row">
+            <div class="col-6">
                 Compliance - Clearance of Conditions
-                <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-            </a>
-        </h3>
+            </div>
+            <div class="col-6 text-end">
+                  <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+            </div>
+      </div> 
     </div>
 
-    <div class="panel-collapse collapse in" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
-        <div class="panel-body">
-
+    <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+        <div class="card-body" id="box1-card-body">
+            <div class="row">    
             <!-- Search bar -->
-            <form action="" method="get">
-		    <input type='hidden' name='action' value='search'>
-
-                <div class="row">
-                <div class="col-sm-12 col-lg-9">
-                        <!-- RES -->
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>From Due Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                        <input class="dateinput form-control" id="id_from_date" name="from_date" value="{{ from_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-4">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>To Due Date:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                  <input class="dateinput form-control" id="id_to_date" name="to_date" value="{{ to_date }}" type="text" autocomplete='off'>
-                            </div>
-                        </div>
-                </div>
-                    <div class="col-sm-12 col-lg-12">
-                        <div class="col-sm-12 col-lg-9">
-                            <div class="col-sm-12 col-lg-12">
-                                <label>Keyword:</label>
-                            </div>
-                            <div class="col-sm-12 col-lg-12">
-                                <input id="search_field" type="text" class="form-control" name="q" placeholder="Search..." value="{{ query_string }}">
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            <div class="col-sm-12 col-lg-12">
-                                <input type="submit" name="search" value="Search" class="btn btn-primary btn-lg" id="submit-id-save">
-                            </div>  
-                        </div>          
-                        <!-- end -->       
-                    </div>   
-
-
+            <form action="" method="get" class="row g-3">
+                <input type="hidden" name="action" value="search">
+              
+                <!-- From Due Date -->
+                <div class="col-md-4">
+                  <label for="id_from_date" class="form-label">From Due Date:</label>
+                  <input type="text" class="form-control dateinput" id="id_from_date" name="from_date" value="{{ from_date }}" autocomplete="off">
                 </div>
               
-            </form>
-            <hr>
-            <table id='compliance-table' class="table table-striped table-bordered table-condensed">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Type</th>
-                        <th>Approval Number</th>
-                        <th>Title</th>
-                        <th>Holder</th>
-                        <th>Status</th>
-                        <th>Due Date</th>
-                        <th>Assiged To</th>
-                        <th>Actions</th>
-                    </tr>
+                <!-- To Due Date -->
+                <div class="col-md-4">
+                  <label for="id_to_date" class="form-label">To Due Date:</label>
+                  <input type="text" class="form-control dateinput" id="id_to_date" name="to_date" value="{{ to_date }}" autocomplete="off">
+                </div>
+              
+                <!-- Keyword -->
+                <div class="col-md-4">
+                  <label for="search_field" class="form-label">Keyword:</label>
+                  <input type="text" class="form-control" id="search_field" name="q" placeholder="Search..." value="{{ query_string }}">
+                </div>
+              
+                <!-- Search Button -->
+                <div class="col-md-4 d-flex align-items-end">
+                  <button type="submit" name="search" class="btn btn-primary mt-3 mb-3">Search</button>
+                </div>
+              </form>       
+            <table id="compliance-table" class="table table-striped table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>No.</th>
+                    <th>Type</th>
+                    <th>Approval Number</th>
+                    <th>Title</th>
+                    <th>Holder</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Assigned To</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    {% for obj in items|dictsort:"due_date" %}
-                    <tr>
-                        <td><a HREF='{% url 'compliance_approval_update_internal' obj.pk %}'>CO-{{ obj.pk }}</A></td>
-                        <td>{{ obj.get_app_type_display }}</td>
-			<td>{% if obj.approval_id is None %}None{% else %}<a href='{% url 'approval_detail' obj.approval_id %}'>AP-{{ obj.approval_id }}</a>{% endif %}</td>
-                        <td>{{ obj.title }}</td>
-                        <td>
-				   {% if obj.organisation %}
-                                        {{ obj.organisation }}
-                                   {% else %}
-                                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
-                                   {% endif %}
-
-                        </td>
-                        
-                        <td>
-		            {% if staff == True %} {{ obj.get_status_display }} {% else %} 
-                               {% if obj.status == 2 or obj.status == 3 or obj.status == 4 or obj.status == 8 or obj.status == 9 %}
-                                      {{ obj.get_status_display }} 
-                               {% else %}
-                                   Submitted
-                               {% endif %}
+                  {% for obj in app_list %}
+                  <tr>
+                    <td><a href="{% url 'compliance_approval_update_internal' obj.app.pk %}">CO-{{ obj.app.pk }}</a></td>
+                    <td>{{ obj.app.get_app_type_display }}</td>
+                    <td>
+                      {% if obj.app.approval_id is None %}
+                        None
+                      {% else %}
+                        <a href="{% url 'approval_detail' obj.app.approval_id %}">AP-{{ obj.app.approval_id }}</a>
+                      {% endif %}
+                    </td>
+                    <td>{{ obj.app.title }}</td>
+                    <td>
+                      {% if obj.app.organisation %}
+                        {{ obj.app.organisation }}
+                      {% else %}
+                        {{ obj.applicant.legal_first_name }} {{ obj.applicant.legal_last_name }}
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if staff %}
+                        {{ obj.app.get_status_display }}
+                      {% else %}
+                        {% if obj.app.status == 2 or obj.app.status == 3 or obj.app.status == 4 or obj.app.status == 8 or obj.app.status == 9 %}
+                          {{ obj.app.get_status_display }}
+                        {% else %}
+                          Submitted
+                        {% endif %}
+                      {% endif %}
+                    </td>
+                    <td>{{ obj.app.due_date|date:"d-M-Y" }}</td>
+                    <td>{{ obj.assignee.legal_first_name }} {{ obj.assignee.legal_last_name }}</td>
+                    <td>
+                      <div class="dropdown">
+                        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" role="button" aria-expanded="false">Actions</a>
+                        <ul class="dropdown-menu">
+                          {% if app_obj.app.app.state == 1 %}
+                            <li><a class="dropdown-item" href="{% url 'compliance_condition_update' obj.app.approval_id %}">Process</a></li>
+                            {% if app_obj.app.app.assignee > 0 %}
+                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.app.pk %}">Reassign</a></li>
+                            {% else %}
+                              <li><a class="dropdown-item" href="{% url 'application_assign_person' app_obj.app.app.pk %}">Assign</a></li>
                             {% endif %}
-
-                        </td>
-                        <td>{{ obj.due_date|date:"d-M-Y" }}</td>
-                        <td>{{ obj.assignee }}</td>
-                        <td>
-                            <ul class="nav navbar-nav">
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Actions<span class="caret"></span></a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        {% if app_obj.app.state == 1 %}
-                                        <!-- Show Process button if draft -->
-                                        <li><a href="{% url 'compliance_condition_update' obj.approval_id %}">Process</a></li>
-                                        {% if app_obj.app.assignee > 0%}
-                                        <li><a href="{% url 'application_assign_person' app_obj.app.pk %}">Reassign</a></li>
-                                        {% else %}
-                                        <li><a href="{% url 'application_assign_person' app_obj.app.pk %}">Assign</a></li>
-                                        {% endif %}
-                                        {% else %}
-					{% if obj.status == 7 or obj.status == 1 or obj.status == 2 or obj.status == 3 %}
-                                                  <li><a href="{% url 'compliance_approval_update_external' obj.pk %}">Submit</a></li>
-					{% endif %}
-                                        <li><a href="{% url 'compliance_approval_update_internal' obj.pk %}">View</a></li>
-                                        {% endif %}
-                                    </ul>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                          {% else %}
+                            {% if obj.app.status == 1 or obj.app.status == 2 or obj.app.status == 3 or obj.app.status == 7 %}
+                              <li><a class="dropdown-item" href="{% url 'compliance_approval_update_external' obj.app.pk %}">Submit</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'compliance_approval_update_internal' obj.app.pk %}">View</a></li>
+                          {% endif %}
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
-            </table>
+              </table>
+                         
         </div>
     </div>
     <script>
-function loadTable() {
-    $('#compliance-table').dataTable({searching: false, paging: true, "pageLength": 25, "order": [[ 0, "desc" ]],
-    dom: 'lrtipB',
-    buttons: [
-      'copy',
-
-      {
-        extend: "excelHtml5",
-        filename: function fred() { return "Excel - " + Date.now(); },
-        exportOptions: { orthogonal: "exportxls", columns: ':not(:last-child)', }
-      },
-      {
-        extend: "csvHtml5",
-        filename: function fred() { return "CSV - " + Date.now(); },
-        exportOptions: { orthogonal: "exportcsv", columns: ':not(:last-child)', }
-      },
-      {
-        extend: "pdfHtml5",
-        filename: function fred() { return "PDF - " + Date.now(); },
-        exportOptions: { orthogonal: "exportpdf",columns: ':not(:last-child)', }
-      },
-
-      'print'
-    ],
-     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-
-
-      columnDefs: [
-       { type: 'natural-nohtml', targets: 0 }, { type: 'natural-nohtml', targets: 2 }, { type: 'date-dd-mmm-yyyy', targets: 5 }, { 'bSortable': false, 'aTargets':  6 }
-     ]
-
-
-});
-}
-window.onload= function() {
-    loadTable();
-}
-    </script>
+        function loadTable() {
+          const dt = $('#compliance-table').DataTable({
+            searching: false,
+            paging: true,
+            pageLength: 25,
+            order: [[0, 'desc']],
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+            dom:
+              '<"row mb-2"' +
+                '<"col-md-6 d-flex align-items-center"l>' +
+                '<"col-md-6 d-flex justify-content-end gap-2"B>' +
+              '>' +
+              'rt' +
+              '<"row mt-2"' +
+                '<"col-md-6 d-flex align-items-center"i>' +
+                '<"col-md-6 d-flex justify-content-end"p>' +
+              '>',
+            buttons: [
+              {
+                extend: 'copy',
+                className: 'btn btn-primary'
+              },
+              {
+                extend: 'excelHtml5',
+                filename: () => `Excel_${new Date().toISOString().slice(0, 10)}`,
+                exportOptions: { orthogonal: 'exportxls', columns: ':not(:last-child)' },
+                className: 'btn btn-primary'
+              },
+              {
+                extend: 'csvHtml5',
+                filename: () => `CSV_${new Date().toISOString().slice(0, 10)}`,
+                exportOptions: { orthogonal: 'exportcsv', columns: ':not(:last-child)' },
+                className: 'btn btn-primary'
+              },
+              {
+                extend: 'pdfHtml5',
+                filename: () => `PDF_${new Date().toISOString().slice(0, 10)}`,
+                exportOptions: { orthogonal: 'exportpdf', columns: ':not(:last-child)' },
+                orientation: 'landscape',
+                pageSize: 'A4',
+                className: 'btn btn-primary'
+              },
+              {
+                extend: 'print',
+                className: 'btn btn-primary'
+              }
+            ],
+            columnDefs: [
+              { type: 'natural-nohtml', targets: 0 },
+              { type: 'natural-nohtml', targets: 2 },
+              { type: 'date-dd-mmm-yyyy', targets: 6 },
+              { orderable: false, targets: 8 }
+            ]
+          });
+        
+          // Optional: Add spacing and rounded corners to buttons
+          $(dt.buttons().nodes()).addClass('me-2 mb-2 rounded');
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadTable);
+        </script>
+        
 
     {% endblock %}
 

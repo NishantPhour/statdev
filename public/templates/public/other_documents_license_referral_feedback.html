@@ -1,15 +1,18 @@
             <!-- Other Documents panel -->
-                         <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="prop_details_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#certificate_of_survery_collapse" aria-expanded="false" aria-controls="certificate_of_survery_collapse">
-                             Other documents
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                <div class="row">
+                        <div class="col-6">
+                                Other documents
+                        </div>
+                        <div class="col-6 text-end">
+                        <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box13-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse {{ collapse.certificate_of_survery }}" id="certificate_of_survery_collapse" role="tabpanel" aria-labelledby="certificate_of_survery_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.certificate_of_survery }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                        <div class="card-body" id="box13-card-body">
                                                 <div class="fluid-container">
 
                     <div class ="row">
@@ -69,3 +72,4 @@
                 </div>
                     </div>
             </div>
+            <br>

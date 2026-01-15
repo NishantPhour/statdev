@@ -120,8 +120,11 @@ L20,20 C40,40 40,40 60,20
                                       <div id='flow_point_bottom_{{ v.step_id }}' style='z-index: 10;position: absolute;  margin-top: 75px; margin-left: 55px;'>O</div> 
                                       <div id='flow_point_left_{{ v.step_id }}' style='z-index: 10; position: absolute;  margin-top: 26px; margin-left: -16px;'>O</div>
 				      <div id='flow_point_right_{{ v.step_id }}' style='z-index: 10;position: absolute;  margin-top: 26px; margin-left: 131px;'>O</div>
-                                      Title: {{ v.title }}<br>
-                                      <A HREF='/applications/flows/{{ app_type }}/?route={{ r }}'>Route: {{ r }}</A>
+              <div class="small lh-sm mb-0">
+                Title: {{ v.title }}<br>
+                <a href="/applications/flows/{{ app_type }}/?route={{ r }}">Route: {{ r }}</a>
+              </div>
+              
                                </div>
 			       {% endif %}
                                {% endif %}

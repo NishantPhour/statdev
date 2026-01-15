@@ -4,56 +4,59 @@
 
 {% if request.user.is_authenticated %}
 {% if admin_staff == True %}
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8">
-                <div class="col-lg-12">
-                    <h1>Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
-                </div>
-		<div class="col-lg-12">
-                    <p>Please select and area:</p>
-                </div>
-            </div>
+<div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="h3">Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
+          <p class="mt-3">Please select an area:</p>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<ul class="nav nav-pills nav-stacked">
-  <li><a href="{% url "application_list" %}">Applications</a></li>
-  <li><a href="{% url "approval_list" %}">Approvals</a></li>
-  <li><a href="{% url "compliance_list" %}">Clearance of Conditions</a></li>
-  <li><a href="{% url "search_list" %}">Search</a></li>
-</ul>
+  <div class="list-group">
+    <a href="{% url 'application_list' %}" class="list-group-item list-group-item-action">Applications</a>
+    <a href="{% url 'approval_list' %}" class="list-group-item list-group-item-action">Approvals</a>
+    <a href="{% url 'compliance_list' %}" class="list-group-item list-group-item-action">Clearance of Conditions</a>
+    <a href="{% url 'search_list' %}" class="list-group-item list-group-item-action">Search</a>
+  </div>
 
 {% else %}
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8">
-                <div class="col-lg-12">
-                    <h1>Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
-                </div>
-                <div class="col-lg-12">
-                    <p>Here you can access your existing approvals, view any applications in progress, lodge new applications or submit information required to clear conditions of your approvals.</p>
-                </div>
-            </div>
+<div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="h3">Welcome to the Swan Canning Riverpark online application system dashboard.</h1>
+          <p class="mt-3">
+            Here you can access your existing approvals, view any applications in progress, lodge new applications or submit information required to clear conditions of your approvals.
+          </p>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="col-sm-12 col-md-12 col-lg-12">
+  <div class="col-12">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="{{ home_nav_other_applications }}"><a href="{% url "home" %}">Applications</a></li>
-        <li role="presentation" class="{{ home_nav_other_approvals }}" ><a href="{% url "home_page_tabs" "approvals" %}">Approvals</a></li>
-        <li role="presentation" class="{{ home_nav_other_clearance }}" ><a href="{% url "home_page_tabs" "clearance" %}">Clearance of Conditions</a></li>
-	{% if referee == 'yes' %}
-	<li role="presentation" class="{{ home_nav_other_referral }}" ><a href="{% url "home_page_tabs" "referrals" %}">Referrals</a></li>
-	{% endif %}
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_applications }}" href="{% url 'home' %}">Applications</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_approvals }}" href="{% url 'home_page_tabs' 'approvals' %}">Approvals</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ home_nav_other_clearance }}" href="{% url 'home_page_tabs' 'clearance' %}">Clearance of Conditions</a>
+      </li>
+      {% if referee == 'yes' %}
+        <li class="nav-item">
+          <a class="nav-link {{ home_nav_other_referral }}" href="{% url 'home_page_tabs' 'referrals' %}">Referrals</a>
+        </li>
+      {% endif %}
     </ul>
     <br>
-</div>
+  </div>
+  
 
 <div class="col-sm-12 col-md-12 col-lg-12" >
     {% if home_nav_other_applications == 'active' %}
@@ -72,48 +75,34 @@
 
 {% else %}
 
-<div class="row">
-    <div class="col-sm-12 col-md-8 col-lg-8">
-        <div class="col-lg-12">
-            <h1>Welcome to the Swan Canning Riverpark online application system.</h1>
-        </div>
-        <div class="col-lg-12">
-            <p>To apply for an approval of activities or development within the Swan Canning Riverpark’s <A href=''>Development Control Area</A>, please enter your email address.  You will then receive an email with a direct link into the application system.</p>
-            <p>If this is your first time logging in, you will be asked to provide your contact details and proof of identity</p>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-4 col-lg-4">
-        <div class="col-sm-12 col-md-10 col-lg-10 ">
-            <div class="panel panel-default">
-                <div class="panel-body " style='background-color: #f7fcff'>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <h2>Swan Canning Riverpark application system</h2>
-                        <form method="post" action="{% url "social:complete" backend="email" %}">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token_value }}" />
-                            <div class="form-group required-form-field"><label class="control-label" for="id_email">Email</label><input class="form-control" id="id_email" maxlength="254" name="email" title="" type="email" required=""></div>
-
-
-                            <div id="submit-container">
-                                <button class="btn btn-primary pull-right">Submit</button>
-
-                            </div>
-                        </form>
+        <div class="container px-4 pt-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 class="mb-4">
+                        Welcome to the Swan Canning Riverpark online application system
+                    </h2>
+                    {% comment %}
+                    <div>
+                        TODO: Add home content for unauthenticated user here.
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <BR>
-                        <label>Submit your email to login or start the new-user registration process.</label>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <hr>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <h3>Password-less Logins</h3>
-                        At the Department of Biodiversity, Conservation and Attractions,  we employ a password-less authentication system, meaning you never need to remember a password.  When you need to login to a site, simply enter you email and an authentication link will be sent to your registered email address. From there, simply follow the link to complete the login process.
+                    {% endcomment %}
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Access Swan Canning Riverpark online application system</strong>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                At the Department of Biodiversity, Conservation and Attractions, we employ a password-less authentication system, meaning you never need to remember
+                                a password. When you need to login to a site, such as Swan Canning Riverpark online application system, simply enter your email and an
+                                authentication link will be sent to your registered email address. From there, simply follow the link to complete the login process.
+                            </p>
+                            <a href="/ssologin" class="btn btn-primary">Login</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div>
         </div>
         {% endif %}
 

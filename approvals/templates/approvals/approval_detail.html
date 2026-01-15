@@ -15,80 +15,99 @@
 		{% include "approvals/approval_side_menu.html" %}
 
 		<!--- remove everything eblow this tag to the end tag if everything has been moved -->
-		<div class="col-sm-4 col-md-3 col-lg-2"  style='display: none'>
-			<div class="panel panel-default">
-
-				<div class="panel-heading">
-			              <h3 class="panel-title">Actions</h3>
+		<div class="col-sm-4 col-md-3 col-lg-3"  style='display: none'>
+			<!-- Actions Card -->
+			<div class="card mb-3">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Actions</h5>
 				</div>
-				<div class="panel-body">
-					<ul>
-						{% if may_update %}<li><a href="{% url 'application_update' object.pk %}">Update application</a></li>{% endif %}
-						{% if may_create_condition %}<li><a href="{% url 'condition_create' object.pk %}">Create a condition</a></li>{% endif %}
-						{% if may_assign_emergency %}<li><a href="{% url 'application_assign' object.pk 'assign_emergency' %}">Assign</a></li>{% endif %}
-						{% if may_issue %}<li><a href="{% url 'application_issue' object.pk %}">Issue/decline application</a></li>{% endif %}
+				<div class="card-body">
+					<ul class="list-unstyled mb-0">
+						{% if may_update %}
+							<li><a href="{% url 'application_update' object.pk %}">Update application</a></li>
+						{% endif %}
+						{% if may_create_condition %}
+							<li><a href="{% url 'condition_create' object.pk %}">Create a condition</a></li>
+						{% endif %}
+						{% if may_assign_emergency %}
+							<li><a href="{% url 'application_assign' object.pk 'assign_emergency' %}">Assign</a></li>
+						{% endif %}
+						{% if may_issue %}
+							<li><a href="{% url 'application_issue' object.pk %}">Issue/decline application</a></li>
+						{% endif %}
 						<li><a href="{% url 'application_actions' object.pk %}">Actions log</a></li>
-						{% if may_generate_pdf %}<li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>{% endif %}
+						{% if may_generate_pdf %}
+							<li><a href="{% url 'application_detail_pdf' object.pk %}">Generate a PDF</a></li>
+						{% endif %}
 					</ul>
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Submission</h3>
+			<br>
+		
+			<!-- Submission Card -->
+			<div class="card mb-3">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Submission</h5>
 				</div>
-				<div class="panel-body">
-					<h4>Submitted by:</h4>
-					<p>
-					{% if applicant.first_name %}
-                        {{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
-					{% else %}
-                        {{ applicant.email }}
-					{% endif %}
+				<div class="card-body">
+					<h6 class="fw-bold">Submitted by:</h6>
+					<p class="mb-2">
+						{% if applicant.first_name %}
+							{{ applicant.legal_first_name }} {{ applicant.legal_last_name }}
+						{% else %}
+							{{ applicant.email }}
+						{% endif %}
 					</p>
-					<h4>Lodged on</h4>
+					<h6 class="fw-bold">Lodged on:</h6>
 					<p>{{ object.submit_date|date:"d-M-Y" }}</p>
-					{% comment %}
-					<br />
-					<h4>Lodgement  Date   Action</h4>
-					{% endcomment %}
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Workflow</h3>
+			<br>
+		
+			<!-- Workflow Card -->
+			<div class="card mb-3">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Workflow</h5>
 				</div>
-				<div class="panel-body">
-					<h4>Status:</h4>
-					<p>{{ object.get_state_display }}</p>
-					<h4>Assigned to:</h4>
+				<div class="card-body">
+					<h6 class="fw-bold">Status:</h6>
+					<p class="mb-2">{{ object.get_state_display }}</p>
+					<h6 class="fw-bold">Assigned to:</h6>
 					{% if assignee %}
-					<p>
-					{% if assignee.legal_first_name %}{{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
-					{% else %}{{ assignee.email }}
-					{% endif %}
-					</p>
+						<p>
+							{% if assignee.legal_first_name %}
+								{{ assignee.legal_first_name }} {{ assignee.legal_last_name }}
+							{% else %}
+								{{ assignee.email }}
+							{% endif %}
+						</p>
 					{% else %}
-					<p>--</p>
+						<p>--</p>
 					{% endif %}
 				</div>
 			</div>
-
+			<br>
 		</div>
+		
 		<!-- remove all above to beginning of this tag if everything been moved -->
 
 
 		<!-- Main panel start -->
-		<div class="col-sm-8 col-md-9 col-lg-10">
-			<!-- Holder panel -->
-			<div class="panel panel-default">
-				<div class="panel-heading" data-toggle="collapse" data-target="#holder_collapse">
-					<h3 class="panel-title">
-						Holder
-						<span class="glyphicon glyphicon-minus collapse-glyph"></span>
-					</h3>
-				</div>
-				<div class="panel-collapse collapse in" id="holder_collapse">
-					<div class="panel-body">
+		<div class="col-sm-8 col-md-9 col-lg-9">
+		<div class="card">
+            <div class="card-header fw-bold h4" style="padding:30px;">
+            <div class="row">
+                    <div class="col-6">
+                        Holder
+                    </div>
+                    <div class="col-6 text-end">
+                    <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box1-card-body" onclick=""></i>
+                    </div>
+            </div> 
+            </div>
+            
+            <div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box1-card-body">
 						<div class="col-sm-8 col-md-6 col-lg-4">
 							<table class="table table-borderless">
 								<tr>
@@ -110,124 +129,135 @@
 					</div>
 				</div>
 			</div>
+			<br>
 
 			<!-- Address details panel -->
-			<div class="panel panel-default">
-				<div class="panel-heading" data-toggle="collapse" data-target="#address_collapse">
-					<h3 class="panel-title">
-						Address Details
-						<span class="glyphicon glyphicon-minus collapse-glyph"></span>
-					</h3>
+			<div class="card">
+				<div class="card-header fw-bold h4" style="padding:30px;">
+				<div class="row">
+						<div class="col-6">
+							Address Details
+						</div>
+						<div class="col-6 text-end">
+						<i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box2-card-body" onclick=""></i>
+						</div>
+				</div> 
 				</div>
-				<div class="panel-collapse collapse in" id="address_collapse">
-					<div class="panel-body">
-						<div class="col-sm-12 col-md-9 col-lg-9">
-							<div class="col-sm-12 col-md-9 col-lg-9">
-								<div class="col-sm-12 col-md-12 col-lg-12">
-									<div class="col-sm-12 col-md-3 col-lg-3">
-										<label>Postal Address</label>
-									</div>
-									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ postal_address.line1 }}
-									</div>
-								</div>
-								{% if postal_address.line2 %}
-								<div class="col-sm-12 col-md-12 col-lg-12">
-									<div class="col-sm-12 col-md-3 col-lg-3">
-										<label>Postal Address</label>
-									</div>
-									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ postal_address.line2 }}
-									</div>
-								</div> 
-								{% endif %}
-								<div class="col-sm-12 col-md-12 col-lg-12">
-									<div class="col-sm-12 col-md-3 col-lg-3">
-										<label>Town / Suburb</label>
-									</div>
-									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ postal_address.locality }}
-									</div>
-								</div>		
-
-								<div class="col-sm-12 col-md-12 col-lg-12">
-									<div class="col-sm-12 col-md-3 col-lg-3">
-										<label>State</label>
-									</div>
-									<div class="col-sm-12 col-md-9 col-lg-9">
-										{{ postal_address.state }}
-									</div>
-								</div>
-
-							<div class="col-sm-12 col-md-12 col-lg-12">
-								<div class="col-sm-12 col-md-3 col-lg-3">
-									<label>Postcode</label>
-								</div>
-								<div class="col-sm-12 col-md-9 col-lg-9">
-									{{ postal_address.postcode }}
-								</div>
+				
+				<div class="collapse show {{ collapse.vessel_details }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+					<div class="card-body" id="box2-card-body">
+						<div class="row mb-3">
+							<div class="col-lg-3">
+								<label class="fw-bold col-form-label">Postal Address</label>
+							</div>
+							<div class="col-lg-9">
+								{{ postal_address.line1 }}
 							</div>
 						</div>
-					</div>
-				</div>
+					
+						{% if postal_address.line2 %}
+						<div class="row mb-3">
+							<div class="col-lg-3">
+								<label class="fw-bold col-form-label">&nbsp;</label> <!-- Empty label for alignment -->
+							</div>
+							<div class="col-lg-9">
+								{{ postal_address.line2 }}
+							</div>
+						</div>
+						{% endif %}
+					
+						<div class="row mb-3">
+							<div class="col-lg-3">
+								<label class="fw-bold col-form-label">Town / Suburb</label>
+							</div>
+							<div class="col-lg-9">
+								{{ postal_address.locality }}
+							</div>
+						</div>
+					
+						<div class="row mb-3">
+							<div class="col-lg-3">
+								<label class="fw-bold col-form-label">State</label>
+							</div>
+							<div class="col-lg-9">
+								{{ postal_address.state }}
+							</div>
+						</div>
+					
+						<div class="row mb-3">
+							<div class="col-lg-3">
+								<label class="fw-bold col-form-label">Postcode</label>
+							</div>
+							<div class="col-lg-9">
+								{{ postal_address.postcode }}
+							</div>
+						</div>
+					</div>									
 			</div>
 		</div>
+		<br>
 
 		<!-- Emergency works panel -->
-		<div class="panel panel-default">
-			<div class="panel-heading" data-toggle="collapse" data-target="#emergency_collapse">
-				<h3 class="panel-title">
-					{{ object.get_app_type_display }} 
-					<span class="glyphicon glyphicon-minus collapse-glyph"></span>
-				</h3>
+		<div class="card">
+			<div class="card-header fw-bold h4" style="padding:30px;">
+			<div class="row">
+					<div class="col-6">
+						{{ object.get_app_type_display }} 
+					</div>
+					<div class="col-6 text-end">
+					<i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box3-card-body" onclick=""></i>
+					</div>
+			</div> 
 			</div>
-			<div class="panel-collapse collapse in" id="emergency_collapse">
-				<div class="panel-body">
-					<div class="col-sm-12 col-md-9 col-lg-9">
-						<div class="col-sm-12 col-md-9 col-lg-9">
-							<!-- Issue Date -->
-							<div class="col-sm-12 col-md-12 col-lg-12">
-								<div class="col-sm-12 col-md-3 col-lg-3">
-									<label>Issue Date</label>
+			
+			<div class="collapse show" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+				<div class="card-body" id="box3-card-body">
+					<div class="row">
+						<div class="col-12 col-md-9">
+							<div class="row mb-3">
+								<!-- Issue Date -->
+								<div class="col-12 col-md-3">
+									<label class="fw-bold">Issue Date</label>
 								</div>
-								<div class="col-sm-12 col-md-9 col-lg-9">
+								<div class="col-12 col-md-9">
 									{{ object.issue_date|date:"d-M-Y" }}
 								</div>
 							</div>
-							<div class="col-sm-12 col-md-12 col-lg-12">
+							<div class="row mb-3">
 								<!-- Start Date -->
-								<div class="col-sm-12 col-md-3 col-lg-3">
-									<label>Start Date</label>
+								<div class="col-12 col-md-3">
+									<label class="fw-bold">Start Date</label>
 								</div>
-								<div class="col-sm-12 col-md-9 col-lg-9">
+								<div class="col-12 col-md-9">
 									{{ object.start_date|date:"d-M-Y" }}
 								</div>
 							</div>
-							<div class="col-sm-12 col-md-12 col-lg-12">
-								<!-- Expiry Date --> 
-								<div class="col-sm-12 col-md-3 col-lg-3">
-									<label>Expiry Date</label>
+							<div class="row mb-3">
+								<!-- Expiry Date -->
+								<div class="col-12 col-md-3">
+									<label class="fw-bold">Expiry Date</label>
 								</div>
-								<div class="col-sm-12 col-md-9 col-lg-9">
+								<div class="col-12 col-md-9">
 									{{ object.expiry_date|date:"d-M-Y" }}
 								</div>
 							</div>
-
-							<div class="col-sm-12 col-md-12 col-lg-12">
-                                <!-- Expiry Date -->
-                                <div class="col-sm-12 col-md-3 col-lg-3">
-                                    <label>Document</label>
-                                </div>
-                                <div class="col-sm-12 col-md-9 col-lg-9">
-									<img src="/static/images/pdf.png">&nbsp;&nbsp;<A HREF='{% url "approvals_view_pdf" object.pk %}'>Document</A>
-                                </div>
-                            </div>
-
+							<div class="row mb-3">
+								<!-- Document -->
+								<div class="col-12 col-md-3">
+									<label class="fw-bold">Document</label>
+								</div>
+								<div class="col-12 col-md-9">
+									<img src="/static/images/pdf.png" alt="PDF Icon">&nbsp;&nbsp;
+									<a href="{% url 'approvals_view_pdf' object.pk %}">Document</a>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
+				</div>				
+			</div>
 			</div>
 		</div>
+		<br>
 
 
 	</div>

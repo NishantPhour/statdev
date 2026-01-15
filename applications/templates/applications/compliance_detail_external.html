@@ -1,75 +1,55 @@
 <div class="container-fluid">
-    <!-- Action panel start -->
-    <div class="row">
-        <!--- remove everything eblow this tag to the end tag if everything has been moved -->
-        <!-- remove all above to beginning of this tag if everything been moved -->
-	<div id="div_id_" class="form-group">
-            <div id="div_id_" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-	            <div class="well">Clearance of condition details:</div>
-            </div>
-        </div>
-
-        {% if conditions %}
-	{% for c in conditions %}
-
-	{% if c.status == 1 %}
-	{% endif %}
-
-	<div id="div_id_" class="form-group"> 
-		<label for="id_" class="control-label col-xs-12 col-sm-4 col-md-3 col-lg-2">
-		         Condition
-		</label> 
-		<div class="controls col-xs-12 col-sm-8 col-md-9 col-lg-10"> 
-			{{ c.condition.condition }}
-		</div>
-        </div>
-	<div id="div_id_" class="form-group">
-		<label for="id_" class="control-label col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                         Advise
-		</label>
-                <div class="controls col-xs-12 col-sm-8 col-md-9 col-lg-10">
-                        {{ c.condition.advise }} 
-		</div>
-        </div>
-         
-
-        {% if c.external_comments %}
-        <div id="div_id_" class="form-group" >
-                <label for="id_" class="control-label col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                         Staff Comments
-                </label>
-                <div class="controls col-xs-12 col-sm-8 col-md-9 col-lg-10" >
-			 <div class="alert alert-info" role="alert">  
-                                  {{ c.external_comments }}
-		         </div>
+        <!-- Action panel start -->
+        <div class="row">
+          <!-- Section header -->
+          <div class="col-12 mb-3">
+            <div class="alert alert-secondary">Clearance of condition details:</div>
+          </div>
+      
+          {% if conditions %}
+            {% for c in conditions %}
+              {% if c.status == 1 %}
+                <!-- You can add logic here if needed -->
+              {% endif %}
+      
+              <div class="row mb-3">
+                <div class="col-md-2 fw-bold">Condition</div>
+                <div class="col-md-10">{{ c.condition.condition }}</div>
+              </div>
+      
+              <div class="row mb-3">
+                <div class="col-md-2 fw-bold">Advise</div>
+                <div class="col-md-10">{{ c.condition.advise }}</div>
+              </div>
+      
+              {% if c.external_comments %}
+                <div class="row mb-3">
+                  <div class="col-md-2 fw-bold">Staff Comments</div>
+                  <div class="col-md-10">
+                    <div class="alert alert-info" role="alert">
+                      {{ c.external_comments }}
+                    </div>
+                  </div>
                 </div>
-        </div>
-        {% endif %}
-
-
-        <div id="div_id_" class="form-group">
-                <label for="id_" class="control-label col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                       Staff Documents
-                </label>
-                <div class="controls col-xs-12 col-sm-8 col-md-9 col-lg-10">
-                     {% if c.external_documents.exists %}
-                          {% for doc in c.external_documents.all %}<a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>{% endfor %}
-                     {% endif %}
+              {% endif %}
+      
+              <div class="row mb-3">
+                <div class="col-md-2 fw-bold">Staff Documents</div>
+                <div class="col-md-10">
+                  {% if c.external_documents.exists %}
+                    {% for doc in c.external_documents.all %}
+                      <a href="{{ doc.file_url }}" target="new_tab_{{ doc.id }}">{{ doc }}</a><br>
+                    {% endfor %}
+                  {% endif %}
                 </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+      
+          <!-- Section footer -->
+          <div class="col-12 mt-4">
+            <div class="alert alert-secondary">Please complete your compliance information below:</div>
+          </div>
         </div>
-
-
-
-
-	{% endfor %}
-        {% endif %}
-	<div id="div_id_" class="form-group">
-	    <div id="div_id_" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-   	        <div class="well">Please complete your compliance information below:</div>
-            </div>
-	</div>
-
-
-
-    </div>
-</div>
+      </div>
+      

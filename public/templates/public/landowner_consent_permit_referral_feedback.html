@@ -1,14 +1,17 @@
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="landowner_consent_heading">
-                    <h3 class="panel-title">
-                        <a role="button" data-toggle="collapse" href="#landowner_consent_collapse" aria-expanded="false" aria-controls="landowner_consent_collapse">
+            <div class="card">
+                <div class="card-header fw-bold h4" style="padding:30px;">
+                    <div class="row">
+                        <div class="col-6">
                             Landowner Consent
-                            <span class="glyphicon glyphicon-chevron-down collapse-glyph"></span>
-                        </a>
-                    </h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <i class="bi fw-bold chevron-toggle down-chevron-open" style="cursor: pointer;" data-bs-target="#box11-card-body" onclick=""></i>
+                        </div>
+                </div> 
                 </div>
-                <div class="panel-collapse {{ collapse.landowner_consent }} " id="landowner_consent_collapse" role="tabpanel" aria-labelledby="landowner_consent_heading">
-                    <div class="panel-body">
+                
+                <div class="collapse show {{ collapse.landowner_consent }}" id="application_list_collapse" role="tabpanel" aria-labelledby="application_list_heading">
+                    <div class="card-body" id="box11-card-body">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="col-lg-4">
                                 {% if  object.land_owner_consent %}
@@ -24,4 +27,5 @@
                     </div>
                 </div>
             </div>
+            <br>
 
