@@ -1,6 +1,5 @@
 # Prepare the base environment.
-#FROM ubuntu:20.04 as builder_base_docker
-FROM ubuntu:24.04 as builder_base_docker
+FROM ghcr.io/dbca-wa/docker-apps-dev:ubuntu2404_base_latest as builder_base_docker
 MAINTAINER asi@dbca.wa.gov.au
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia/Perth
