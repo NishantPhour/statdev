@@ -1,4 +1,4 @@
-Django~=5.2.6
+Django~=5.2.17
 git+https://github.com/dbca-wa/dpaw-utils.git@0.4.2#egg=dpaw-utils
 # git+https://github.com/django-oscar/django-oscar.git
 # git+https://github.com/django-oscar/django-oscar.git@3.2.2#egg=django-oscar
@@ -6,9 +6,9 @@ git+https://github.com/xzzy/django_crispy_jcaptcha.git#egg=django_crispy_jcaptch
 # git+https://github.com/dbca-wa/ledger#egg=ledger
 # git+https://github.com/xzzy/ledger@master2#egg=ledger
 git+https://github.com/dbca-wa/ledger_api_client.git
-social-auth-app-django==5.4.2
+social-auth-app-django==7.2.0
 # git+https://github.com/scottp-dpaw/social-core.git@email_fix#egg=social-auth-core
-social-auth-core==4.5.4
+social-auth-core==6.2.0
 django-model-utils==5.0.0
 # webtemplate-dbca==0.6.0
 django-crispy-forms==2.3
@@ -24,14 +24,13 @@ django-multiupload==0.6.1
 fpdf==1.7.2
 reportlab==4.4.1
 django-tables2==2.3.0
-djangorestframework==3.15.2
+djangorestframework>=3.18.2
 djangorestframework-gis==1.0
 djangorestframework-csv==2.0.0
 pycountry==17.1.8
 django-countries==7.6.1
 # django-cron==0.6.0
 git+https://github.com/dbca-wa/django-cron#egg=django-cron
-py4j==0.10.2.1
 django-bootstrap3==24.3
 dj-static==0.0.6
 dj-database-url==0.5.0
@@ -49,3 +48,14 @@ django-phonenumber-field==8.0.0
 babel==2.17.0
 phonenumbers==9.0.4
 gunicorn==23.0.0
+setuptools>=84.1.0
+certifi>=2026.10.19
+cryptography>=50.0.0
+idna>=3.15
+oauthlib>=4.0.0
+pillow>=13.0.0
+Pygments>=2.20.0
+PyJWT>=2.15.0
+requests>=2.33.0
+sqlparse>=0.6.0
+urllib3>=2.8.0
